@@ -2,7 +2,11 @@
 /dist
 /.devcontainer
 /.github
+/.vscode
+**/*.spec.ts
 .dockerignore
 .gitignore
 Dockerfile
 README.md
+.eslintrc.js
+.prettierrc
