@@ -1,0 +1,19 @@
+{
+  "name": "to-notion-bot",
+  "version": "1.0.0",
+  "description": "Bot for instantly sending content from Telegram to Notion.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=20.11 <21.0.0",
+    "npm": ">=10.2 <11.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozharov/to-notion-bot.git"
+  },
+  "author": "Vladislav Mozharov <mozharovlad@gmail.com>",
+  "private": true
+}
