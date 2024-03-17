@@ -1,0 +1,8 @@
+/node_modules
+/dist
+/.devcontainer
+/.github
+.dockerignore
+.gitignore
+Dockerfile
+README.md
