@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "github.copilot-chat",
+        "github.copilot",
+        "dbaeumer.vscode-eslint",
+        "ms-vscode-remote.remote-containers",
+        "ldez.ignore-files",
+        "gruntfuggly.todo-tree",
+        "esbenp.prettier-vscode",
+        "github.vscode-github-actions"
+    ]
+}
