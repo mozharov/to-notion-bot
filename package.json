@@ -17,6 +17,7 @@
   "author": "Vladislav Mozharov <mozharovlad@gmail.com>",
   "private": true,
   "devDependencies": {
+    "@types/node": "^20.11.28",
     "typescript": "^5.4.2"
   },
   "dependencies": {
