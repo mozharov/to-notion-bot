@@ -1,0 +1,57 @@
+name: Deploy to Yandex Cloud
+
+env:
+  CR_REGISTRY: crp6e7mkplstj3uoptu4
+  CR_REPOSITORY: main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and Test
+        uses: ./.github/actions/build-and-lint
+        with:
+          node-version: '20.11.1'
+
+      - name: Login to Yandex Cloud
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v2
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy Serverless Container
+        id: deploy-sls-container
+        uses: yc-actions/yc-sls-container-deploy@v2
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          container-name: bot
+          folder-id: b1gvq2m8dpd0kqg2et9a
+          revision-service-account-id: ajef38if6k9opg9ctoos
+          revision-cores: 1
+          revision-memory: 512Mb
+          revision-core-fraction: 50
+          revision-concurrency: 16
+          revision-image-url: cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_REPOSITORY }}:${{ github.sha }}
+          revision-execution-timeout: 35
+          revision-provisioned: 0
+          revision-network-id: enpgh2pcpfc87k6pd85i
+          revision-env: |
+            NODE_ENV=production
+            WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
+            BOT_TOKEN=${{ secrets.BOT_TOKEN }}
