@@ -53,5 +53,6 @@ jobs:
           revision-network-id: enpgh2pcpfc87k6pd85i
           revision-env: |
             NODE_ENV=production
-            WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
-            BOT_TOKEN=${{ secrets.BOT_TOKEN }}
+          revision-secrets: |
+            BOT_TOKEN=e6q2rt29n1fjclo7jd2p/e6q17bih2pugjtqjfgpf/to_notion_robot_token
+            WEBHOOK_SECRET=e6q2rt29n1fjclo7jd2p/e6q17bih2pugjtqjfgpf/webhook_secret
