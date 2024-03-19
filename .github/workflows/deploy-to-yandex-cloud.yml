@@ -42,7 +42,7 @@ jobs:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           container-name: bot
           folder-id: b1gvq2m8dpd0kqg2et9a
-          revision-service-account-id: ajef38if6k9opg9ctoos
+          revision-service-account-id: ajeqbq8vgq6s246aqosg
           revision-cores: 1
           revision-memory: 512Mb
           revision-core-fraction: 50
