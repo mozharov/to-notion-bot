@@ -10,3 +10,5 @@ Dockerfile
 README.md
 .eslintrc.js
 .prettierrc
+.DS_Store
+.env*

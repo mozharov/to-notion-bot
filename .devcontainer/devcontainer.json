@@ -6,10 +6,10 @@
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"forwardPorts": [
-		3000,
+		8443,
 		5432
 	],
-	"postCreateCommand": "npm install -g npm && npm ci",
+	"postCreateCommand": "npm ci",
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -18,12 +18,13 @@
 				"GitHub.copilot",
 				"GitHub.copilot-chat",
 				"esbenp.prettier-vscode",
-				"Gruntfuggly.todo-tree"
+				"Gruntfuggly.todo-tree",
+				"Postman.postman-for-vscode"
 			]
 		}
 	},
 	"portsAttributes": {
-		"3000": {
+		"8443": {
 			"label": "Bot"
 		},
 		"5432": {
