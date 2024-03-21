@@ -25,3 +25,20 @@ Example:
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '{"url": "https://<webhook_url>", "secret_token": "<webhook_token>"}' https://api.telegram.org/bot<bot_token>/setWebhook
 ```
+
+# Migrations
+
+### Generate new migration
+
+1. clear the postgres database of the application
+2. `npm run migration:run`
+3. `npm run migration:generate`
+4. add the new migration module to `src/typeorm/typeorm.migration.options.ts`
+
+### Run migration
+
+`npm run migration:run`
+
+### Revert migration
+
+`npm run migration:revert`

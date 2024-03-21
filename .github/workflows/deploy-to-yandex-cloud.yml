@@ -53,6 +53,12 @@ jobs:
           revision-network-id: enpgh2pcpfc87k6pd85i
           revision-env: |
             NODE_ENV=production
+            DB_SYNCHRONIZE=true
           revision-secrets: |
             BOT_TOKEN=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/to_notion_robot_token
             WEBHOOK_SECRET=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/webhook_secret
+            DB_HOST=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_HOST
+            DB_PORT=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_PORT
+            DB_USER=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_USER
+            DB_PASSWORD=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_PASSWORD
+            DB_NAME=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_NAME

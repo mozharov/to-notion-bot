@@ -8,6 +8,7 @@
         "github.copilot-chat",
         "esbenp.prettier-vscode",
         "gruntfuggly.todo-tree",
-        "postman.postman-for-vscode"
+        "postman.postman-for-vscode",
+        "cweijan.vscode-database-client2"
     ]
 }

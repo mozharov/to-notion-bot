@@ -1,8 +1,11 @@
 import * as Joi from 'joi'
+import {LoggerService} from '../logger/logger.service'
 
 export class ConfigService {
-  public static get validateEnv(): Joi.ValidationResult<Configuration> {
-    return Joi.object({
+  public static validateEnv(): void {
+    const logger = new LoggerService('ConfigService')
+
+    const configValidation = Joi.object({
       NODE_ENV: Joi.string().valid('development', 'production', 'test').default('production'),
       WEBHOOK_SECRET: Joi.string().required(),
       BOT_TOKEN: Joi.string().required(),
@@ -11,7 +14,24 @@ export class ConfigService {
       LOGGER_LEVEL: Joi.string()
         .valid('fatal', 'error', 'warn', 'info', 'debug', 'trace')
         .default('info'),
-    }).validate(process.env)
+      DB_HOST: Joi.string().required(),
+      DB_PORT: Joi.number().required(),
+      DB_NAME: Joi.string().required(),
+      DB_USER: Joi.string().required(),
+      DB_PASSWORD: Joi.string().required(),
+      DB_SYNCHRONIZE: Joi.boolean().default(false),
+      DB_MIGRATION_RUN: Joi.boolean().default(false),
+    }).validate(process.env, {
+      stripUnknown: true,
+    })
+
+    if (configValidation.error) {
+      logger.fatal({
+        error: configValidation.error,
+        message: 'Invalid configuration',
+      })
+      throw configValidation.error
+    }
   }
 
   public static get isDevelopment(): boolean {
@@ -46,6 +66,27 @@ export class ConfigService {
     return process.env.LOGGER_LEVEL as Configuration['LOGGER_LEVEL']
   }
 
+  public static get database(): Pick<
+    Configuration,
+    | 'DB_HOST'
+    | 'DB_PORT'
+    | 'DB_NAME'
+    | 'DB_USER'
+    | 'DB_PASSWORD'
+    | 'DB_SYNCHRONIZE'
+    | 'DB_MIGRATION_RUN'
+  > {
+    return {
+      DB_HOST: process.env.DB_HOST as Configuration['DB_HOST'],
+      DB_PORT: Number(process.env.DB_PORT),
+      DB_NAME: process.env.DB_NAME as Configuration['DB_NAME'],
+      DB_USER: process.env.DB_USER as Configuration['DB_USER'],
+      DB_PASSWORD: process.env.DB_PASSWORD as Configuration['DB_PASSWORD'],
+      DB_SYNCHRONIZE: process.env.DB_SYNCHRONIZE === 'true',
+      DB_MIGRATION_RUN: process.env.DB_MIGRATION_RUN === 'true',
+    }
+  }
+
   public get<K extends keyof Configuration>(key: K): Configuration[K] {
     return process.env[key] as Configuration[K]
   }
@@ -58,4 +99,11 @@ type Configuration = {
   PORT: number
   LOGGER_FORMAT: 'json' | 'pretty'
   LOGGER_LEVEL: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
+  DB_HOST: string
+  DB_PORT: number
+  DB_NAME: string
+  DB_USER: string
+  DB_PASSWORD: string
+  DB_SYNCHRONIZE: boolean
+  DB_MIGRATION_RUN: boolean
 }
