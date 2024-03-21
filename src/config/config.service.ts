@@ -2,10 +2,16 @@ import * as Joi from 'joi'
 import {LoggerService} from '../logger/logger.service'
 
 export class ConfigService {
-  public static validateEnv(): void {
+  private readonly config: Configuration
+
+  constructor() {
+    this.config = ConfigService.validateEnv()
+  }
+
+  public static validateEnv(): Configuration {
     const logger = new LoggerService('ConfigService')
 
-    const configValidation = Joi.object({
+    const configValidation = Joi.object<Configuration>({
       NODE_ENV: Joi.string().valid('development', 'production', 'test').default('production'),
       WEBHOOK_SECRET: Joi.string().required(),
       BOT_TOKEN: Joi.string().required(),
@@ -21,6 +27,10 @@ export class ConfigService {
       DB_PASSWORD: Joi.string().required(),
       DB_SYNCHRONIZE: Joi.boolean().default(false),
       DB_MIGRATION_RUN: Joi.boolean().default(false),
+      FETCH_BOT_INFO: Joi.boolean().default(false),
+      BOT_FIRST_NAME: Joi.string(),
+      BOT_USERNAME: Joi.string(),
+      BOT_ID: Joi.number(),
     }).validate(process.env, {
       stripUnknown: true,
     })
@@ -32,6 +42,8 @@ export class ConfigService {
       })
       throw configValidation.error
     }
+
+    return configValidation.value
   }
 
   public static get isDevelopment(): boolean {
@@ -87,8 +99,20 @@ export class ConfigService {
     }
   }
 
+  public static get bot(): Pick<
+    Configuration,
+    'BOT_FIRST_NAME' | 'BOT_USERNAME' | 'BOT_ID' | 'FETCH_BOT_INFO'
+  > {
+    return {
+      BOT_FIRST_NAME: process.env.BOT_FIRST_NAME as Configuration['BOT_FIRST_NAME'],
+      BOT_USERNAME: process.env.BOT_USERNAME as Configuration['BOT_USERNAME'],
+      BOT_ID: Number(process.env.BOT_ID),
+      FETCH_BOT_INFO: process.env.FETCH_BOT_INFO === 'true',
+    }
+  }
+
   public get<K extends keyof Configuration>(key: K): Configuration[K] {
-    return process.env[key] as Configuration[K]
+    return this.config[key]
   }
 }
 
@@ -106,4 +130,8 @@ type Configuration = {
   DB_PASSWORD: string
   DB_SYNCHRONIZE: boolean
   DB_MIGRATION_RUN: boolean
+  FETCH_BOT_INFO: boolean
+  BOT_FIRST_NAME: string
+  BOT_USERNAME: string
+  BOT_ID: number
 }
