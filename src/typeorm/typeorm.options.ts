@@ -1,10 +1,11 @@
 import {DataSourceOptions} from 'typeorm'
 import {ConfigService} from '../config/config.service'
 import {User} from '../users/entities/user.entity'
+import {Chat} from '../chats/entities/chat.entity'
 
 function buildTypeormConfig(): DataSourceOptions {
   return {
-    entities: [User],
+    entities: [User, Chat],
     migrations: [],
     subscribers: [],
     type: 'postgres',

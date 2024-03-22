@@ -1,5 +1,6 @@
 import * as Joi from 'joi'
 import {LoggerService} from '../logger/logger.service'
+import {UserFromGetMe} from 'grammy/types'
 
 export class ConfigService {
   private readonly config: Configuration
@@ -99,16 +100,18 @@ export class ConfigService {
     }
   }
 
-  public static get bot(): Pick<
-    Configuration,
-    'BOT_FIRST_NAME' | 'BOT_USERNAME' | 'BOT_ID' | 'FETCH_BOT_INFO'
-  > {
-    return {
-      BOT_FIRST_NAME: process.env.BOT_FIRST_NAME as Configuration['BOT_FIRST_NAME'],
-      BOT_USERNAME: process.env.BOT_USERNAME as Configuration['BOT_USERNAME'],
-      BOT_ID: Number(process.env.BOT_ID),
-      FETCH_BOT_INFO: process.env.FETCH_BOT_INFO === 'true',
-    }
+  public static get botInfo(): UserFromGetMe | undefined {
+    return process.env.FETCH_BOT_INFO !== 'true'
+      ? {
+          id: Number(process.env.BOT_ID),
+          username: process.env.BOT_USERNAME as Configuration['BOT_USERNAME'],
+          first_name: process.env.BOT_FIRST_NAME as Configuration['BOT_FIRST_NAME'],
+          can_join_groups: true,
+          can_read_all_group_messages: false,
+          supports_inline_queries: false,
+          is_bot: true,
+        }
+      : undefined
   }
 
   public get<K extends keyof Configuration>(key: K): Configuration[K] {

@@ -1,28 +1,23 @@
-import {Bot} from 'grammy'
-import {setConfigContext} from './config/config.middleware'
+import {Bot, Composer} from 'grammy'
 import {ConfigService} from './config/config.service'
-import {LoggerService} from './logger/logger.service'
 import {Context} from './context'
+import {startComposer} from './start/start.composer'
+import {i18nComposer} from './i18n/i18n.composer'
+import {configComposer} from './config/config.composer'
+import {chatsComposer} from './chats/chats.composer'
+import {usersComposer} from './users/users.composer'
+import {errorsHandler} from './errors/errors.handler'
 
 export const bot = new Bot<Context>(ConfigService.botToken, {
-  botInfo: ConfigService.bot.FETCH_BOT_INFO
-    ? {
-        can_join_groups: true,
-        can_read_all_group_messages: false,
-        is_bot: true,
-        supports_inline_queries: false,
-        first_name: ConfigService.bot.BOT_FIRST_NAME,
-        username: ConfigService.bot.BOT_USERNAME,
-        id: ConfigService.bot.BOT_ID,
-      }
-    : undefined,
+  botInfo: ConfigService.botInfo,
 })
 
-bot.use(setConfigContext)
-bot.command('start', ctx => {
-  const logger = new LoggerService('Start')
-  ctx.reply('Welcome! Up and running.')
-  logger.debug(ctx.config.get('NODE_ENV'))
-  return
-})
-bot.on('message', ctx => ctx.reply('Got another message!'))
+const composer = new Composer<Context>()
+
+composer.use(configComposer)
+composer.use(chatsComposer)
+composer.use(i18nComposer)
+composer.use(usersComposer)
+composer.use(startComposer)
+
+bot.errorBoundary(errorsHandler).use(composer)
