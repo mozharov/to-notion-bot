@@ -42,5 +42,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn'],
     'no-console': ['warn'],
     'prettier/prettier': ['warn'],
+    '@typescript-eslint/no-floating-promises': 'error',
   },
 }
