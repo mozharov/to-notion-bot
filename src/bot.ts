@@ -21,4 +21,9 @@ composer.use(conversationComposer)
 composer.use(startComposer)
 composer.use(chatsComposer)
 
+composer.chatType('private').on('callback_query', async ctx => {
+  await ctx.answerCallbackQuery({text: ctx.t('unknown-callback-query')})
+  return ctx.deleteMessage().catch(() => true)
+})
+
 bot.errorBoundary(errorsHandler).use(composer)
