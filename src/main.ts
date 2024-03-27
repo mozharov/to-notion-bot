@@ -29,11 +29,11 @@ async function bootstrap(): Promise<void> {
           message: 'Webhook timeout',
         })
       },
-      timeoutMilliseconds: 30000,
+      timeoutMilliseconds: ConfigService.webhookTimeout,
     }),
   )
   app.listen(ConfigService.port, () => {
-    logger.info(`Listening on port ${ConfigService.port}`)
+    logger.debug(`Listening on port ${ConfigService.port}`)
   })
 }
 

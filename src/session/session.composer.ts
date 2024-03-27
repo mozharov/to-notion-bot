@@ -1,16 +1,10 @@
 import {Composer, session} from 'grammy'
 import {Context} from '../context'
 import {SessionData} from './session.context'
-import {SessionService} from './session.service'
 import {Session} from './entities/session.entity'
 import {DataSource} from '../typeorm/typeorm.data-source'
 
 export const sessionComposer = new Composer<Context>()
-
-sessionComposer.use((ctx, next) => {
-  ctx.sessionService = new SessionService()
-  return next()
-})
 
 sessionComposer.use(
   session({

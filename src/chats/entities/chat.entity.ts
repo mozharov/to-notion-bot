@@ -17,8 +17,11 @@ export class Chat {
   @Column({unique: true, type: 'bigint'})
   telegramId: number
 
-  @Column({type: 'enum', enum: ['private', 'group', 'supergroup', 'channel']})
-  type: 'private' | 'group' | 'supergroup' | 'channel'
+  @Column({type: 'varchar', nullable: true, default: null})
+  title: string | null
+
+  @Column({enum: ['active', 'blocked'], default: 'active'})
+  botStatus: 'active' | 'blocked'
 
   @ManyToOne(() => User, {onDelete: 'CASCADE', nullable: false, eager: true})
   @JoinColumn()

@@ -11,9 +11,7 @@ export class SessionService {
 
   public async deleteSesionsByChatId(chatId: number): Promise<void> {
     const sessions = await this.usersRepository.find({
-      where: {
-        id: Like(`%:${chatId}`),
-      },
+      where: {id: Like(`%:${chatId}`)},
     })
     await this.usersRepository.remove(sessions)
   }

@@ -2,13 +2,38 @@ import * as Joi from 'joi'
 import {LoggerService} from '../logger/logger.service'
 import {UserFromGetMe} from 'grammy/types'
 
+export enum LogLevel {
+  Fatal = 0,
+  Error = 1,
+  Warn = 2,
+  Info = 3,
+  Debug = 4,
+  Trace = 5,
+}
+
+type Configuration = {
+  NODE_ENV: 'production' | 'development' | 'test'
+  WEBHOOK_SECRET: string
+  BOT_TOKEN: string
+  PORT: number
+  LOGGER_FORMAT: 'json' | 'pretty'
+  LOGGER_LEVEL: LogLevel
+  DB_HOST: string
+  DB_PORT: number
+  DB_NAME: string
+  DB_USER: string
+  DB_PASSWORD: string
+  DB_SYNCHRONIZE: boolean
+  DB_MIGRATION_RUN: boolean
+  FETCH_BOT_INFO: boolean
+  BOT_FIRST_NAME: string
+  BOT_USERNAME: string
+  BOT_ID: number
+  MAX_CHATS_PER_USER: number
+  WEBHOOK_TIMEOUT: number
+}
+
 export class ConfigService {
-  private readonly config: Configuration
-
-  constructor() {
-    this.config = ConfigService.validateEnv()
-  }
-
   public static validateEnv(): Configuration {
     const logger = new LoggerService('ConfigService')
 
@@ -18,9 +43,7 @@ export class ConfigService {
       BOT_TOKEN: Joi.string().required(),
       PORT: Joi.number().default(8443),
       LOGGER_FORMAT: Joi.string().valid('json', 'pretty').default('json'),
-      LOGGER_LEVEL: Joi.string()
-        .valid('fatal', 'error', 'warn', 'info', 'debug', 'trace')
-        .default('info'),
+      LOGGER_LEVEL: Joi.number().valid(0, 1, 2, 3, 4, 5).default(3),
       DB_HOST: Joi.string().required(),
       DB_PORT: Joi.number().required(),
       DB_NAME: Joi.string().required(),
@@ -32,6 +55,8 @@ export class ConfigService {
       BOT_FIRST_NAME: Joi.string(),
       BOT_USERNAME: Joi.string(),
       BOT_ID: Joi.number(),
+      MAX_CHATS_PER_USER: Joi.number().default(90),
+      WEBHOOK_TIMEOUT: Joi.number().default(30000),
     }).validate(process.env, {
       stripUnknown: true,
     })
@@ -76,7 +101,7 @@ export class ConfigService {
   }
 
   public static get loggerLevel(): Configuration['LOGGER_LEVEL'] {
-    return process.env.LOGGER_LEVEL as Configuration['LOGGER_LEVEL']
+    return Number(process.env.LOGGER_LEVEL) as Configuration['LOGGER_LEVEL']
   }
 
   public static get database(): Pick<
@@ -114,27 +139,11 @@ export class ConfigService {
       : undefined
   }
 
-  public get<K extends keyof Configuration>(key: K): Configuration[K] {
-    return this.config[key]
+  public static get maxChatsPerUser(): Configuration['MAX_CHATS_PER_USER'] {
+    return Number(process.env.MAX_CHATS_PER_USER)
   }
-}
 
-type Configuration = {
-  NODE_ENV: 'production' | 'development' | 'test'
-  WEBHOOK_SECRET: string
-  BOT_TOKEN: string
-  PORT: number
-  LOGGER_FORMAT: 'json' | 'pretty'
-  LOGGER_LEVEL: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
-  DB_HOST: string
-  DB_PORT: number
-  DB_NAME: string
-  DB_USER: string
-  DB_PASSWORD: string
-  DB_SYNCHRONIZE: boolean
-  DB_MIGRATION_RUN: boolean
-  FETCH_BOT_INFO: boolean
-  BOT_FIRST_NAME: string
-  BOT_USERNAME: string
-  BOT_ID: number
+  public static get webhookTimeout(): Configuration['WEBHOOK_TIMEOUT'] {
+    return Number(process.env.WEBHOOK_TIMEOUT)
+  }
 }

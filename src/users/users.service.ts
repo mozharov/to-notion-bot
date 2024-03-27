@@ -9,13 +9,20 @@ export class UsersService {
     this.usersRepository = DataSource.getRepository(User)
   }
 
-  public async getUserByTelegramId(telegramId: number): Promise<User | null> {
+  public async getOrCreateUserByTelegramId(telegramId: number): Promise<User> {
+    return (
+      (await this.getUserByTelegramId(telegramId)) ||
+      (await this.createUserByTelegramId(telegramId))
+    )
+  }
+
+  private async getUserByTelegramId(telegramId: number): Promise<User | null> {
     return this.usersRepository.findOne({
       where: {telegramId},
     })
   }
 
-  public async createUserByTelegramId(telegramId: number): Promise<User> {
+  private async createUserByTelegramId(telegramId: number): Promise<User> {
     const user = new User()
     user.telegramId = telegramId
 

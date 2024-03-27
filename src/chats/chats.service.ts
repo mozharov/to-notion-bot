@@ -1,4 +1,4 @@
-import {Repository} from 'typeorm'
+import {FindOptionsWhere, Repository} from 'typeorm'
 import {Chat} from './entities/chat.entity'
 import {DataSource} from '../typeorm/typeorm.data-source'
 
@@ -9,24 +9,26 @@ export class ChatsService {
     this.chatsRepository = DataSource.getRepository(Chat)
   }
 
+  public async countChatsByOwner(owner: Chat['owner']): Promise<number> {
+    return this.chatsRepository.count({
+      where: {owner},
+    })
+  }
+
   public async getChatByTelegramId(telegramId: Chat['telegramId']): Promise<Chat | null> {
     return this.chatsRepository.findOne({
       where: {telegramId},
     })
   }
 
-  public async createChatByTelegramId(data: {
+  public async createChat(data: {
     telegramId: Chat['telegramId']
     languageCode?: Chat['languageCode']
     owner: Chat['owner']
-    type: Chat['type']
+    botStatus?: Chat['botStatus']
+    title?: Chat['title']
   }): Promise<Chat> {
-    const chat = new Chat()
-    chat.telegramId = data.telegramId
-    chat.languageCode = data.languageCode ?? null
-    chat.owner = data.owner
-    chat.type = data.type
-    return this.chatsRepository.save(chat)
+    return this.chatsRepository.save(data)
   }
 
   public async updateChat(data: Partial<Chat> & {id: Chat['id']}): Promise<Chat> {
@@ -35,5 +37,9 @@ export class ChatsService {
     })
     Object.assign(chat, data)
     return this.chatsRepository.save(chat)
+  }
+
+  public getChatsByCriteria(where: FindOptionsWhere<Chat>): Promise<Chat[]> {
+    return this.chatsRepository.findBy(where)
   }
 }

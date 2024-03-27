@@ -9,6 +9,7 @@ export class LoggerService {
   constructor(context?: string) {
     const loggerFormat = ConfigService.loggerFormat
     const loggerLevel = ConfigService.loggerLevel
+    const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace']
     this.logger = winston.createLogger({
       levels: {
         fatal: 0,
@@ -18,7 +19,7 @@ export class LoggerService {
         debug: 4,
         trace: 5,
       },
-      level: loggerLevel,
+      level: levels[loggerLevel],
       transports: [loggerFormat === 'json' ? jsonConsole : prettyConsole],
     })
     if (context) this.setContext(context)

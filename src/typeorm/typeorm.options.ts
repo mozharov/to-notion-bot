@@ -1,11 +1,12 @@
 import {DataSourceOptions} from 'typeorm'
-import {ConfigService} from '../config/config.service'
+import {ConfigService, LogLevel} from '../config/config.service'
 import {User} from '../users/entities/user.entity'
 import {Chat} from '../chats/entities/chat.entity'
+import {Session} from '../session/entities/session.entity'
 
 function buildTypeormConfig(): DataSourceOptions {
   return {
-    entities: [User, Chat],
+    entities: [User, Chat, Session],
     migrations: [],
     subscribers: [],
     type: 'postgres',
@@ -17,7 +18,7 @@ function buildTypeormConfig(): DataSourceOptions {
     synchronize: ConfigService.database.DB_SYNCHRONIZE,
     migrationsRun: ConfigService.database.DB_MIGRATION_RUN,
     migrationsTableName: 'migrations',
-    logging: ConfigService.loggerLevel === 'trace',
+    logging: ConfigService.loggerLevel >= LogLevel.Trace,
   }
 }
 
