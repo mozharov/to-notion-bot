@@ -20,8 +20,11 @@ export class Chat {
   @Column({type: 'varchar', nullable: true, default: null})
   title: string | null
 
-  @Column({enum: ['active', 'blocked'], default: 'active'})
-  botStatus: 'active' | 'blocked'
+  @Column({enum: ['unblocked', 'blocked'], default: 'unblocked'})
+  botStatus: 'unblocked' | 'blocked'
+
+  @Column({enum: ['active', 'inactive'], default: 'inactive'})
+  status: 'active' | 'inactive'
 
   @ManyToOne(() => User, {onDelete: 'CASCADE', nullable: false, eager: true})
   @JoinColumn()

@@ -1,10 +1,9 @@
-import {LessThan} from 'typeorm'
 import {Context} from '../context'
 import {Conversation} from '../conversation/conversation.composer'
 import {UsersService} from '../users/users.service'
 import {ChatsService} from './chats.service'
-import {getKeyboardWithChats} from './chats.helper'
-import {ChatTypeContext} from 'grammy'
+import {getKeyboardWithChats, getSettingsChatKeyboard} from './chats.helper'
+import {CallbackQueryContext, ChatTypeContext, InlineKeyboard} from 'grammy'
 import {LoggerService} from '../logger/logger.service'
 
 export async function selectChat(
@@ -14,48 +13,43 @@ export async function selectChat(
   const usersService = new UsersService()
   const chatsService = new ChatsService()
 
-  const user = await conversation.external(() => {
-    return usersService.getOrCreateUserByTelegramId(ctx.from.id)
-  })
-  const chats = await conversation.external(() => {
-    return chatsService.getChatsByCriteria({owner: {id: user.id}, telegramId: LessThan(0)})
-  })
-  const keyboard = await conversation.external(() => getKeyboardWithChats(ctx, chats))
+  const user = await conversation.external(() => usersService.getOrCreateUser(ctx.from.id))
+  const chats = await conversation.external(() => chatsService.getChatsByOwner(user))
+  const keyboard = getKeyboardWithChats(ctx, chats)
   await ctx.reply(ctx.t('select-chat'), {reply_markup: keyboard})
 
-  const response = await conversation.waitForCallbackQuery([/^select-chat:(add|private|-?\d+)$/])
+  const response = await conversation.waitForCallbackQuery([/^select-chat:(add|-?\d+)$/])
   const data = response.match[1]
-
-  if (response.message) {
-    await ctx.api.deleteMessage(response.message.chat.id, response.message.message_id)
+  if (!data) {
+    const logger = new LoggerService('SelectChat')
+    logger.warn({message: 'Data is not defined', match: response.match})
+    return
   }
 
   if (data === 'add') {
-    await response.editMessageText(ctx.t('select-chat.new-chat'), {
-      reply_markup: {inline_keyboard: []},
-    })
+    const addChatLink = `https://t.me/${ctx.me.username}?startgroup=true`
+    const keyboard = new InlineKeyboard().add({text: ctx.t('select-chat.link'), url: addChatLink})
+    await response.editMessageText(ctx.t('select-chat.new-chat'), {reply_markup: keyboard})
     return
   }
-
-  if (!data) {
-    const logger = new LoggerService('SelectChat')
-    logger.warn({
-      message: 'Data is not defined',
-      match: response.match,
-    })
-    return
-  }
-
-  await chatOptions(conversation, ctx, data)
+  const chatId = parseInt(data)
+  await chatOptions(conversation, response, chatId)
 }
 
 async function chatOptions(
   conversation: Conversation,
-  ctx: ChatTypeContext<Context, 'private'>,
-  chatId: string,
+  ctx: CallbackQueryContext<Context>,
+  chatId: number,
 ): Promise<void> {
-  if (chatId === 'private') {
-    return
-  }
-  // const message = await ctx.reply(ctx.t('select-chat.settings'))
+  const chatsService = new ChatsService()
+  const chat = await conversation.external(() => chatsService.getChatByTelegramId(chatId))
+  if (!chat) throw new Error('Chat is not found')
+
+  const keyboard = getSettingsChatKeyboard(ctx, chat)
+
+  const status = chat.botStatus === 'blocked' ? chat.botStatus : chat.status
+  await ctx.editMessageText(
+    ctx.t('chat-settings', {title: chat.title || chat.telegramId, status}),
+    {reply_markup: keyboard},
+  )
 }

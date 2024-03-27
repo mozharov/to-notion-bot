@@ -12,16 +12,16 @@ export async function activatePrivateChat(
   const userId = ctx.chat.id
   const chatsService = new ChatsService()
   const usersService = new UsersService()
-  const user = await usersService.getOrCreateUserByTelegramId(userId)
+  const user = await usersService.getOrCreateUser(userId)
   const chat = await chatsService.getChatByTelegramId(userId)
   if (!chat) {
     await chatsService.createChat({
       telegramId: userId,
       owner: user,
-      botStatus: 'active',
+      botStatus: 'unblocked',
     })
   } else if (chat.botStatus === 'blocked') {
-    await chatsService.updateChat({botStatus: 'active', id: chat.id})
+    await chatsService.updateChat({botStatus: 'unblocked', id: chat.id})
   }
   return next()
 }
@@ -37,14 +37,14 @@ export async function updatePrivateChatStatus(
   const chatsService = new ChatsService()
   const chat = await chatsService.getChatByTelegramId(userId)
 
-  const blocked = botStatus === 'kicked' && chat?.botStatus === 'active'
+  const blocked = botStatus === 'kicked' && chat?.botStatus === 'unblocked'
   const unblocked = botStatus === 'member' && chat?.botStatus === 'blocked'
 
   if (blocked) {
     chat.botStatus = 'blocked'
     await chatsService.updateChat(chat)
   } else if (unblocked) {
-    chat.botStatus = 'active'
+    chat.botStatus = 'unblocked'
     await chatsService.updateChat(chat)
   }
 }
@@ -71,10 +71,10 @@ export async function updateGroupStatus(
 
   const chatsService = new ChatsService()
   const usersService = new UsersService()
-  const user = await usersService.getOrCreateUserByTelegramId(userId)
+  const user = await usersService.getOrCreateUser(userId)
   const chat = await chatsService.getChatByTelegramId(chatId)
 
-  const blocked = botStatus !== 'administrator' && chat?.botStatus === 'active'
+  const blocked = botStatus !== 'administrator' && chat?.botStatus === 'unblocked'
   const unblocked = botStatus === 'administrator' && (!chat || chat.botStatus === 'blocked')
 
   if (blocked) {
@@ -86,11 +86,11 @@ export async function updateGroupStatus(
       await chatsService.createChat({
         telegramId: chatId,
         owner: user,
-        botStatus: 'active',
+        botStatus: 'unblocked',
         title: ctx.myChatMember.chat.title,
       })
     } else {
-      chat.botStatus = 'active'
+      chat.botStatus = 'unblocked'
       await chatsService.updateChat(chat)
     }
     await ctx.api.sendMessage(userId, ctx.t('chat-unblocked')).catch(logSendMessageError)

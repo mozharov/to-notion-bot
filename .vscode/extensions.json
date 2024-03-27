@@ -9,6 +9,7 @@
         "esbenp.prettier-vscode",
         "gruntfuggly.todo-tree",
         "postman.postman-for-vscode",
-        "cweijan.vscode-database-client2"
+        "cweijan.vscode-database-client2",
+        "paulys.fluent-syntax-highlighting"
     ]
 }

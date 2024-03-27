@@ -9,24 +9,25 @@ export class ChatsService {
     this.chatsRepository = DataSource.getRepository(Chat)
   }
 
-  public async countChatsByOwner(owner: Chat['owner']): Promise<number> {
+  public countChatsByOwner(owner: Chat['owner']): Promise<number> {
     return this.chatsRepository.count({
       where: {owner},
     })
   }
 
-  public async getChatByTelegramId(telegramId: Chat['telegramId']): Promise<Chat | null> {
+  public getChatByTelegramId(telegramId: Chat['telegramId']): Promise<Chat | null> {
     return this.chatsRepository.findOne({
       where: {telegramId},
     })
   }
 
-  public async createChat(data: {
+  public createChat(data: {
     telegramId: Chat['telegramId']
     languageCode?: Chat['languageCode']
     owner: Chat['owner']
     botStatus?: Chat['botStatus']
     title?: Chat['title']
+    status?: Chat['status']
   }): Promise<Chat> {
     return this.chatsRepository.save(data)
   }
@@ -39,7 +40,14 @@ export class ChatsService {
     return this.chatsRepository.save(chat)
   }
 
-  public getChatsByCriteria(where: FindOptionsWhere<Chat>): Promise<Chat[]> {
-    return this.chatsRepository.findBy(where)
+  public getChatsByOwner(owner: Chat['owner']): Promise<Chat[]> {
+    return this.getChatsByCriteria({owner: {id: owner.id}})
+  }
+
+  private getChatsByCriteria(where: FindOptionsWhere<Chat>): Promise<Chat[]> {
+    return this.chatsRepository.find({
+      where,
+      order: {telegramId: 'DESC'},
+    })
   }
 }

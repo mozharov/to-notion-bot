@@ -9,7 +9,7 @@ export class UsersService {
     this.usersRepository = DataSource.getRepository(User)
   }
 
-  public async getOrCreateUserByTelegramId(telegramId: number): Promise<User> {
+  public async getOrCreateUser(telegramId: number): Promise<User> {
     return (
       (await this.getUserByTelegramId(telegramId)) ||
       (await this.createUserByTelegramId(telegramId))
