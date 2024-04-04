@@ -3,10 +3,12 @@ import {ConfigService, LogLevel} from '../config/config.service'
 import {User} from '../users/entities/user.entity'
 import {Chat} from '../chats/entities/chat.entity'
 import {Session} from '../session/entities/session.entity'
+import {NotionWorkspace} from '../notion/notion-workspaces/entities/notion-workspace.entity'
+import {NotionDatabase} from '../notion/notion-databases/entities/notion-database.entity'
 
 function buildTypeormConfig(): DataSourceOptions {
   return {
-    entities: [User, Chat, Session],
+    entities: [User, Chat, Session, NotionWorkspace, NotionDatabase],
     migrations: [],
     subscribers: [],
     type: 'postgres',

@@ -31,6 +31,7 @@ type Configuration = {
   BOT_ID: number
   MAX_CHATS_PER_USER: number
   WEBHOOK_TIMEOUT: number
+  MAX_NOTION_WORKSPACES_PER_USER: number
 }
 
 export class ConfigService {
@@ -57,6 +58,7 @@ export class ConfigService {
       BOT_ID: Joi.number(),
       MAX_CHATS_PER_USER: Joi.number().default(90),
       WEBHOOK_TIMEOUT: Joi.number().default(30000),
+      MAX_NOTION_WORKSPACES_PER_USER: Joi.number().default(90),
     }).validate(process.env, {
       stripUnknown: true,
     })
@@ -145,5 +147,9 @@ export class ConfigService {
 
   public static get webhookTimeout(): Configuration['WEBHOOK_TIMEOUT'] {
     return Number(process.env.WEBHOOK_TIMEOUT)
+  }
+
+  public static get maxNotionWorkspacesPerUser(): Configuration['MAX_NOTION_WORKSPACES_PER_USER'] {
+    return Number(process.env.MAX_NOTION_WORKSPACES_PER_USER)
   }
 }

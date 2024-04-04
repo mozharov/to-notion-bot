@@ -6,8 +6,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm'
 import {User} from '../../users/entities/user.entity'
+import {NotionWorkspace} from '../../notion/notion-workspaces/entities/notion-workspace.entity'
+import {NotionDatabase} from '../../notion/notion-databases/entities/notion-database.entity'
 
 @Entity()
 export class Chat {
@@ -20,18 +23,29 @@ export class Chat {
   @Column({type: 'varchar', nullable: true, default: null})
   title: string | null
 
-  @Column({enum: ['unblocked', 'blocked'], default: 'unblocked'})
+  @Column({type: 'enum', enum: ['private', 'group', 'channel']})
+  type: 'private' | 'group' | 'channel'
+
+  @Column({type: 'enum', enum: ['unblocked', 'blocked'], default: 'unblocked'})
   botStatus: 'unblocked' | 'blocked'
 
-  @Column({enum: ['active', 'inactive'], default: 'inactive'})
+  @Column({type: 'enum', enum: ['active', 'inactive'], default: 'inactive'})
   status: 'active' | 'inactive'
 
   @ManyToOne(() => User, {onDelete: 'CASCADE', nullable: false, eager: true})
   @JoinColumn()
   owner: User
 
-  @Column({type: 'enum', enum: ['en', 'ru'], nullable: true, default: null})
-  languageCode: 'en' | 'ru' | null
+  @ManyToOne(() => NotionDatabase, {onDelete: 'SET NULL', nullable: true, eager: true})
+  @JoinColumn()
+  notionDatabase: NotionDatabase | null
+
+  @ManyToOne(() => NotionWorkspace, {onDelete: 'SET NULL', nullable: true, eager: true})
+  @JoinColumn()
+  notionWorkspace: NotionWorkspace | null
+
+  @Column({type: 'enum', enum: ['en', 'ru'], default: 'en'})
+  languageCode: 'en' | 'ru'
 
   @CreateDateColumn({type: 'timestamp with time zone'})
   createdAt: Date
