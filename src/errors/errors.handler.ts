@@ -2,10 +2,10 @@ import {ErrorHandler} from 'grammy'
 import {Context} from '../context'
 import {LoggerService} from '../logger/logger.service'
 import {ConfigService} from '../config/config.service'
-
+// TODO: сделать "известные" ошибки, текст которых будет переведен и отправлен пользователю
 export const errorsHandler: ErrorHandler<Context> = async error => {
   const logger = new LoggerService('ErrorsComposer')
-  logger.fatal({
+  logger.error({
     error: {
       name: error.name,
       message: error.message,
@@ -16,11 +16,15 @@ export const errorsHandler: ErrorHandler<Context> = async error => {
   })
 
   try {
-    await error.ctx.reply(
-      '⚠️ Unknown error occurred.\nPlease try again later or contact the support.',
-    )
+    const text = '⚠️ Unknown error occurred.\nPlease try again later or contact the support.'
+    if (error.ctx.callbackQuery) {
+      await error.ctx.answerCallbackQuery({
+        text,
+      })
+      await error.ctx.deleteMessage().catch(() => true)
+    } else await error.ctx.reply(text)
   } catch (error) {
-    logger.fatal({
+    logger.error({
       error,
       message: 'Failed to send error message',
     })
