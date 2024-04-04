@@ -85,25 +85,27 @@ export async function updateGroupStatus(
   const chatsService = new ChatsService()
   const usersService = new UsersService()
   const user = await usersService.getOrCreateUser(userId)
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  let chat = await chatsService.getChatByTelegramId(chatId)
   const privateChat = await chatsService.getChatByTelegramId(userId)
 
   const blocked = botStatus !== 'administrator' && chat?.botStatus === 'unblocked'
   const unblocked = botStatus === 'administrator' && (!chat || chat.botStatus === 'blocked')
 
-  if (blocked) {
+  if (blocked && chat) {
     chat.botStatus = 'blocked'
     await chatsService.updateChat(chat)
     if (privateChat) {
-      const text = translate('chat-blocked', privateChat.languageCode ?? 'en')
-      await ctx.api.sendMessage(userId, text).catch(logSendMessageError)
+      const text = translate('chat-blocked', privateChat.languageCode ?? 'en', {
+        title: chat.title ?? chatId,
+      })
+      await ctx.api.sendMessage(userId, text, {parse_mode: 'Markdown'}).catch(logSendMessageError)
     }
     return
   }
   if (unblocked) {
     if (!chat) {
       const type = ctx.myChatMember.chat.type === 'channel' ? 'channel' : 'group'
-      await chatsService.createChat({
+      chat = await chatsService.createChat({
         telegramId: chatId,
         owner: user,
         botStatus: 'unblocked',
@@ -116,8 +118,10 @@ export async function updateGroupStatus(
       await chatsService.updateChat(chat)
     }
     if (privateChat) {
-      const text = translate('chat-unblocked', privateChat.languageCode ?? 'en')
-      await ctx.api.sendMessage(userId, text).catch(logSendMessageError)
+      const text = translate('chat-unblocked', privateChat.languageCode ?? 'en', {
+        title: chat.title ?? chatId,
+      })
+      await ctx.api.sendMessage(userId, text, {parse_mode: 'Markdown'}).catch(logSendMessageError)
     }
   }
 }
@@ -128,7 +132,10 @@ export async function replyWithChats(ctx: ChatTypeContext<Context, 'private'>): 
 
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const chats = await chatsService.getChatsByOwner(user)
-  await ctx.reply(ctx.t('select-chat'), {reply_markup: getKeyboardWithChats(ctx, chats)})
+  await ctx.reply(ctx.t('select-chat'), {
+    reply_markup: getKeyboardWithChats(ctx, chats),
+    parse_mode: 'Markdown',
+  })
 }
 
 export async function showChats(ctx: CallbackQueryContext<Context>): Promise<void> {
@@ -136,7 +143,10 @@ export async function showChats(ctx: CallbackQueryContext<Context>): Promise<voi
   const chatsService = new ChatsService()
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const chats = await chatsService.getChatsByOwner(user)
-  await ctx.editMessageText(ctx.t('select-chat'), {reply_markup: getKeyboardWithChats(ctx, chats)})
+  await ctx.editMessageText(ctx.t('select-chat'), {
+    reply_markup: getKeyboardWithChats(ctx, chats),
+    parse_mode: 'Markdown',
+  })
 }
 
 export async function showChatSettings(ctx: CallbackQueryContext<Context>): Promise<void> {
@@ -146,14 +156,19 @@ export async function showChatSettings(ctx: CallbackQueryContext<Context>): Prom
   const chat = await chatsService.getChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat is not found')
 
-  const keyboard = getSettingsChatKeyboard(ctx, chat)
   const status = chat.botStatus === 'blocked' ? chat.botStatus : chat.status
   const title = chat.title || chat.telegramId
   const type = chat.type
   const language = chat.languageCode
-  const notion = chat.notionDatabase ? chat.notionDatabase.title ?? '<unknown>' : 'null'
-  await ctx.editMessageText(ctx.t('chat-settings', {title, status, type, language, notion}), {
+  const database = chat.notionDatabase
+    ? chat.notionWorkspace?.status === 'active'
+      ? chat.notionDatabase.title ?? '<unknown>'
+      : 'inactive'
+    : 'null'
+  const keyboard = getSettingsChatKeyboard(ctx, chat, database)
+  await ctx.editMessageText(ctx.t('chat-settings', {title, status, type, language, database}), {
     reply_markup: keyboard,
+    parse_mode: 'HTML',
   })
 }
 
@@ -212,7 +227,7 @@ export async function showNotionSettings(ctx: CallbackQueryContext<Context>): Pr
   const workspaces = await workspacesService.getWorkspacesByOwner(chat.owner)
   await ctx.editMessageText(
     ctx.t('chat-notion-settings', {title: chat.title ?? chat.telegramId, type: chat.type}),
-    {reply_markup: getChatNotionSettingsKeyboard(ctx, chat, workspaces)},
+    {reply_markup: getChatNotionSettingsKeyboard(ctx, chat, workspaces), parse_mode: 'Markdown'},
   )
   return
 }
@@ -236,6 +251,7 @@ export async function selectNotionWorkspaceForChat(
 
   await ctx.editMessageText(ctx.t('chat-notion-settings.pages'), {
     reply_markup: getChatNotionWorkspacePagesKeyboard(ctx, chat, databases),
+    parse_mode: 'Markdown',
   })
   return
 }

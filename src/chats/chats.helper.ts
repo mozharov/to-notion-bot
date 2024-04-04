@@ -8,7 +8,10 @@ export function getKeyboardWithChats(ctx: Context, chats: Chat[]): InlineKeyboar
   const keyboard = new InlineKeyboard()
   for (const chat of chats) {
     const botStatusIcon = chat.botStatus === 'blocked' ? '🚫 ' : null
-    const statusIcon = chat.status === 'active' ? '🟢 ' : '🔴 '
+    const statusIcon =
+      chat.status === 'active' && chat.notionDatabase && chat.notionWorkspace?.status === 'active'
+        ? '🟢 '
+        : '🔴 '
     const title = `${botStatusIcon ?? statusIcon}${chat.title || chat.telegramId}`
     const text = chat.type === 'private' ? ctx.t('select-chat.private-chat') : title
     keyboard.row().add({text, callback_data: `chat:${chat.telegramId}`})
@@ -18,7 +21,11 @@ export function getKeyboardWithChats(ctx: Context, chats: Chat[]): InlineKeyboar
   return keyboard
 }
 
-export function getSettingsChatKeyboard(ctx: Context, chat: Chat): InlineKeyboard {
+export function getSettingsChatKeyboard(
+  ctx: Context,
+  chat: Chat,
+  database: string,
+): InlineKeyboard {
   const keyboard = new InlineKeyboard()
   if (chat.status === 'active') {
     keyboard.add({
@@ -38,7 +45,7 @@ export function getSettingsChatKeyboard(ctx: Context, chat: Chat): InlineKeyboar
   })
 
   keyboard.row().add({
-    text: ctx.t('chat-settings.notion'),
+    text: ctx.t('chat-settings.notion', {database}),
     callback_data: `chat:${chat.telegramId}:notion`,
   })
 
