@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
-  OneToOne,
 } from 'typeorm'
 import {User} from '../../users/entities/user.entity'
 import {NotionWorkspace} from '../../notion/notion-workspaces/entities/notion-workspace.entity'
@@ -52,4 +51,14 @@ export class Chat {
 
   @UpdateDateColumn({type: 'timestamp with time zone'})
   updatedAt: Date
+
+  public isActive(): this is Chat & {
+    status: 'active'
+    notionWorkspace: NotionWorkspace
+    notionDatabase: NotionDatabase
+  } {
+    return (
+      this.status === 'active' && !!this.notionDatabase && this.notionWorkspace?.status === 'active'
+    )
+  }
 }

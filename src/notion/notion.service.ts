@@ -1,23 +1,31 @@
 import {Client} from '@notionhq/client'
-import {DatabaseObjectResponse} from '@notionhq/client/build/src/api-endpoints'
+import {
+  BlockObjectRequest,
+  DatabaseObjectResponse,
+  PageObjectResponse,
+} from '@notionhq/client/build/src/api-endpoints'
 import {LoggerService} from '../logger/logger.service'
+import {notionApiLimitter} from '../limitter/limitter.service'
 
 export class NotionService {
   private readonly client: Client
   private readonly logger = new LoggerService(NotionService.name)
+  private readonly limitter = notionApiLimitter
 
   constructor(secretToken: string) {
     this.client = new Client({auth: secretToken})
   }
 
   public async getDatabases(): Promise<NotionDatabaseResponse[]> {
-    const response = await this.client.search({
-      page_size: 90,
-      filter: {
-        property: 'object',
-        value: 'database',
-      },
-    })
+    const response = await this.limitter.schedule(() =>
+      this.client.search({
+        page_size: 90,
+        filter: {
+          property: 'object',
+          value: 'database',
+        },
+      }),
+    )
 
     this.logger.debug({
       message: 'Fetched databases',
@@ -27,9 +35,8 @@ export class NotionService {
   }
 
   public async getDatabase(databaseId: string): Promise<DatabaseObjectResponse> {
-    const response = await this.client.databases
-      .retrieve({database_id: databaseId})
-      .catch(error => {
+    const response = await this.limitter.schedule(() =>
+      this.client.databases.retrieve({database_id: databaseId}).catch(error => {
         if (error.status === 404) {
           // TODO: заменить на известную ошибку после реализации известных ошибок, чтобы текст ошибки выдавался пользователю
           throw new Error('Database not found')
@@ -39,12 +46,59 @@ export class NotionService {
           error,
         })
         throw error
-      })
+      }),
+    )
     this.logger.debug({
       message: 'Fetched database',
       response,
     })
     return response as DatabaseObjectResponse
+  }
+
+  // Соблюдать лимит в 100 блоков в одном запросе нет смысла,
+  //  т.к. в Telegram есть лимит на количество Entity в одном сообщении, а значит 100 блоков никогда не будет достигнуто
+  public async createPage(
+    databaseId: string,
+    title: string,
+    blocks: BlockObjectRequest[],
+  ): Promise<PageObjectResponse> {
+    const response = this.limitter.schedule(() => {
+      return this.client.pages.create({
+        parent: {database_id: databaseId},
+        properties: {
+          title: [{text: {content: title}}],
+        },
+        ...(blocks.length && {children: blocks}),
+      })
+    })
+
+    this.logger.debug({
+      message: 'Created page in Notion',
+      title,
+      blocks,
+    })
+    return response as Promise<PageObjectResponse>
+  }
+
+  public async appendBlockToPage(
+    pageId: string,
+    title: string,
+    blocks: BlockObjectRequest[],
+  ): Promise<void> {
+    await this.limitter.schedule(() =>
+      this.client.blocks.children.append({
+        block_id: pageId,
+        children: blocks.length
+          ? blocks
+          : [
+              {
+                object: 'block',
+                type: 'paragraph',
+                paragraph: {rich_text: [{text: {content: title}}]},
+              },
+            ],
+      }),
+    )
   }
 }
 

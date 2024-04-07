@@ -8,6 +8,7 @@ import {sessionComposer} from './session/session.composer'
 import {conversationComposer} from './conversation/conversation.composer'
 import {chatsComposer} from './chats/chats.composer'
 import {notionWorkspacesComposer} from './notion/notion-workspaces/notion-workspaces.composer'
+import {messageComposer} from './messages/messages.composer'
 
 export const bot = new Bot<Context>(ConfigService.botToken, {
   botInfo: ConfigService.botInfo,
@@ -22,6 +23,7 @@ composer.use(conversationComposer)
 composer.use(startComposer)
 composer.use(chatsComposer)
 composer.use(notionWorkspacesComposer)
+composer.use(messageComposer)
 
 composer.chatType('private').on('callback_query', async ctx => {
   await ctx.answerCallbackQuery({text: ctx.t('unknown-callback-query')})

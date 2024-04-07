@@ -90,3 +90,8 @@ workspace-settings = Интеграция с <b>Workspace</b> в Notion
     .delete = Удалить
     .deleted = Интеграция с Workspace "{$name}" удалена
     .back = Назад
+
+new-message = {$isUpdate -> 
+        [false] <b>Создана <a href="{$url}">новая страница</a> в базе данных Notion</b>
+       *[other] <b>Обновлена <a href="{$url}">страница</a> в базе данных Notion</b>
+    }
