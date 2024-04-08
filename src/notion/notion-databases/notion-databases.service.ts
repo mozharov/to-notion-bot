@@ -17,4 +17,8 @@ export class NotionDatabasesService {
   }): Promise<NotionDatabase> {
     return this.repository.save(data)
   }
+
+  public async deleteDatabase(database: NotionDatabase): Promise<void> {
+    await this.repository.remove(database)
+  }
 }

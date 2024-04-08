@@ -2,7 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
   JoinColumn,
   Column,
@@ -26,9 +25,12 @@ export class Message {
   @Column({type: 'varchar'})
   notionPageId: string
 
+  @Column({type: 'bigint'})
+  sentAt: number
+
+  @Column({type: 'bigint'})
+  senderId: number
+
   @CreateDateColumn({type: 'timestamp with time zone'})
   createdAt: Date
-
-  @UpdateDateColumn({type: 'timestamp with time zone'})
-  updatedAt: Date
 }

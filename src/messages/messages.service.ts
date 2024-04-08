@@ -1,7 +1,6 @@
-import {Repository} from 'typeorm'
+import {Equal, Or, Repository} from 'typeorm'
 import {DataSource} from '../typeorm/typeorm.data-source'
 import {Message} from './entities/message.entity'
-import {Chat} from '../chats/entities/chat.entity'
 
 export class MessagesService {
   private readonly repository: Repository<Message>
@@ -10,10 +9,22 @@ export class MessagesService {
     this.repository = DataSource.getRepository(Message)
   }
 
-  public findOne(telegramMessageId: number, chat: Chat): Promise<Message | null> {
+  public findOne(where: Partial<Message>): Promise<Message | null> {
     return this.repository.findOneBy({
-      telegramMessageId,
+      ...where,
+      ...(where.chat && {chat: {id: where.chat.id}}),
+    })
+  }
+
+  public findSameTimeMessage(
+    chat: Message['chat'],
+    senderId: Message['senderId'],
+    sentAt: Message['sentAt'],
+  ): Promise<Message | null> {
+    return this.repository.findOneBy({
       chat: {id: chat.id},
+      senderId,
+      sentAt: Or(Equal(sentAt), Equal(sentAt - 1)),
     })
   }
 
@@ -22,6 +33,8 @@ export class MessagesService {
       chat: Message['chat']
       telegramMessageId: Message['telegramMessageId']
       notionPageId: Message['notionPageId']
+      sentAt: Message['sentAt']
+      senderId: Message['senderId']
     },
   ): Promise<Message> {
     return this.repository.save(data)

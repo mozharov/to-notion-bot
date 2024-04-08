@@ -276,6 +276,7 @@ export async function selectNotionDatabaseForChat(
   const database = await notionService.getDatabase(notionDatabaseId)
 
   const notionDatabasesService = new NotionDatabasesService()
+  if (chat.notionDatabase) await notionDatabasesService.deleteDatabase(chat.notionDatabase)
   const notionDatabase = await notionDatabasesService.createDatabase({
     databaseId: database.id,
     title: database.title[0]?.plain_text ?? null,

@@ -23,16 +23,10 @@ export async function sendTextMessageToNotion(ctx: Context): Promise<void> {
   const messageEntities = ctx.message.entities
   const title = getTitleFromMessageText(messageText)
   const blocks = getBlocksFromMessage(messageText, messageEntities)
-  logger.debug({
-    message: 'Parsed message',
-    title,
-    blocks,
-  })
 
   const notionService = new NotionService(chat.notionWorkspace.secretToken)
-  const messagesService = new MessagesService()
-
   const targetMessage = await shouldUpdateNotionPage(ctx.message, chat)
+  const silentUpdate = !ctx.message.reply_to_message && targetMessage
   let isUpdateMessage = false
   let notionPageId: string
   if (targetMessage) {
@@ -48,21 +42,36 @@ export async function sendTextMessageToNotion(ctx: Context): Promise<void> {
     notionPageId = createPageResponse.id
   }
 
+  const senderId = ctx.message.from.id
+  const sentAt = ctx.message.date
+  const messagesService = new MessagesService()
   await messagesService.create({
     telegramMessageId: ctx.message.message_id,
     notionPageId,
     chat,
+    senderId,
+    sentAt,
   })
+  if (silentUpdate) {
+    await ctx.react('⚡').catch(error => logger.error(error))
+    return
+  }
   const botMessageText = translate('new-message', chat.languageCode, {
     url: buildLinkToNotionPage(notionPageId),
     isUpdate: isUpdateMessage.toString(),
   })
-  // TODO: в настройках чата можно включить опцию "показывать функции под сообщением после отправки в Notion, типа удалить, отменить изменения"
-  // TODO: настройка тихого режима (в каналах включен по-умолчанию)
-  const botMessage = await ctx.reply(botMessageText, {parse_mode: 'HTML'})
+  const botMessage = await ctx.reply(botMessageText, {
+    parse_mode: 'HTML',
+    reply_parameters: {
+      allow_sending_without_reply: true,
+      message_id: ctx.message.message_id,
+    },
+  })
   await messagesService.create({
     telegramMessageId: botMessage.message_id,
     notionPageId,
     chat,
+    senderId: ctx.me.id,
+    sentAt: botMessage.date,
   })
 }
