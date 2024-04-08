@@ -2,21 +2,29 @@ import {ErrorHandler} from 'grammy'
 import {Context} from '../context'
 import {LoggerService} from '../logger/logger.service'
 import {ConfigService} from '../config/config.service'
-// TODO: сделать "известные" ошибки, текст которых будет переведен и отправлен пользователю
+import {KnownError} from './known.error'
+
 export const errorsHandler: ErrorHandler<Context> = async error => {
-  const logger = new LoggerService('ErrorsComposer')
-  logger.error({
-    error: {
-      name: error.name,
-      message: error.message,
-      stack: ConfigService.isDevelopment ? error.stack : undefined,
-      instance: error.error,
-    },
-    message: `Unhandled error: ${error.message}`,
-  })
+  const logger = new LoggerService('ErrorsHandler')
+
+  const isKnownError = error.error instanceof KnownError
+
+  if (!isKnownError) {
+    logger.fatal({
+      error: {
+        name: error.name,
+        message: error.message,
+        stack: ConfigService.isDevelopment ? error.stack : undefined,
+        instance: error.error,
+      },
+      message: `Unhandled error: ${error.message}`,
+    })
+  } else logger.debug(`Known error: ${error.error.message}`)
 
   try {
-    const text = '⚠️ Unknown error occurred.\nPlease try again later or contact the support.'
+    const text = isKnownError
+      ? error.error.message
+      : '⚠️ Unknown error occurred.\nPlease try again later or contact the support.'
     if (error.ctx.callbackQuery) {
       await error.ctx.answerCallbackQuery({
         text,

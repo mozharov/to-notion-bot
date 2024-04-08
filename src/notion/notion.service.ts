@@ -6,6 +6,7 @@ import {
 } from '@notionhq/client/build/src/api-endpoints'
 import {LoggerService} from '../logger/logger.service'
 import {notionApiLimitter} from '../limitter/limitter.service'
+import {NotFoundError} from '../errors/not-found.error'
 
 export class NotionService {
   private readonly client: Client
@@ -32,10 +33,7 @@ export class NotionService {
   public async getDatabase(databaseId: string): Promise<DatabaseObjectResponse> {
     const response = await this.limitter.schedule(() =>
       this.client.databases.retrieve({database_id: databaseId}).catch(error => {
-        if (error.status === 404) {
-          // TODO: заменить на известную ошибку после реализации известных ошибок, чтобы текст ошибки выдавался пользователю
-          throw new Error('Database not found')
-        }
+        if (error.status === 404) throw new NotFoundError()
         this.logger.error({
           message: 'Failed to fetch database',
           error,
@@ -54,13 +52,22 @@ export class NotionService {
     blocks: BlockObjectRequest[],
   ): Promise<PageObjectResponse> {
     const response = this.limitter.schedule(() => {
-      return this.client.pages.create({
-        parent: {database_id: databaseId},
-        properties: {
-          title: [{text: {content: title}}],
-        },
-        ...(blocks.length && {children: blocks}),
-      })
+      return this.client.pages
+        .create({
+          parent: {database_id: databaseId},
+          properties: {
+            title: [{text: {content: title}}],
+          },
+          ...(blocks.length && {children: blocks}),
+        })
+        .catch(error => {
+          if (error.status === 404) throw new NotFoundError()
+          this.logger.error({
+            message: 'Failed to create page',
+            error,
+          })
+          throw error
+        })
     })
     return response as Promise<PageObjectResponse>
   }
@@ -71,18 +78,27 @@ export class NotionService {
     blocks: BlockObjectRequest[],
   ): Promise<void> {
     await this.limitter.schedule(() =>
-      this.client.blocks.children.append({
-        block_id: pageId,
-        children: blocks.length
-          ? blocks
-          : [
-              {
-                object: 'block',
-                type: 'paragraph',
-                paragraph: {rich_text: [{text: {content: title}}]},
-              },
-            ],
-      }),
+      this.client.blocks.children
+        .append({
+          block_id: pageId,
+          children: blocks.length
+            ? blocks
+            : [
+                {
+                  object: 'block',
+                  type: 'paragraph',
+                  paragraph: {rich_text: [{text: {content: title}}]},
+                },
+              ],
+        })
+        .catch(error => {
+          if (error.status === 404) throw new NotFoundError()
+          this.logger.error({
+            message: 'Failed to append block to page',
+            error,
+          })
+          throw error
+        }),
     )
   }
 }
