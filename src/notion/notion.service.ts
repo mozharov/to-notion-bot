@@ -26,11 +26,6 @@ export class NotionService {
         },
       }),
     )
-
-    this.logger.debug({
-      message: 'Fetched databases',
-      response,
-    })
     return response.results as NotionDatabaseResponse[]
   }
 
@@ -48,10 +43,6 @@ export class NotionService {
         throw error
       }),
     )
-    this.logger.debug({
-      message: 'Fetched database',
-      response,
-    })
     return response as DatabaseObjectResponse
   }
 
@@ -70,12 +61,6 @@ export class NotionService {
         },
         ...(blocks.length && {children: blocks}),
       })
-    })
-
-    this.logger.debug({
-      message: 'Created page in Notion',
-      title,
-      blocks,
     })
     return response as Promise<PageObjectResponse>
   }

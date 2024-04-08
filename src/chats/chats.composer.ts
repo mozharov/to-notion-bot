@@ -14,7 +14,7 @@ import {
   showNotionSettings,
   updateGroupStatus,
   updatePrivateChatStatus,
-} from './chats.handler'
+} from './chats.actions'
 
 export const chatsComposer = new Composer<Context>()
 

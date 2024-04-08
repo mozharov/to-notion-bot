@@ -1,27 +1,22 @@
-import {Chat} from '../chats/entities/chat.entity'
 import {Message} from './entities/message.entity'
-import {Message as GrammyMessage} from 'grammy/types'
 import {MessagesService} from './messages.service'
+import {MessageData} from './messages.composer'
+import {Chat} from '../chats/entities/chat.entity'
 
 export async function shouldUpdateNotionPage(
-  grammyMessage: GrammyMessage,
+  data: MessageData,
   chat: Chat,
 ): Promise<Message | false> {
-  const replyToMessageId = grammyMessage.reply_to_message?.message_id
   const messagesService = new MessagesService()
-  if (replyToMessageId) {
+  if (data.replyToMessage) {
     const message = await messagesService.findOne({
-      telegramMessageId: replyToMessageId,
+      telegramMessageId: data.replyToMessage,
       chat,
     })
     return message ?? false
   }
-  if (grammyMessage.from?.id) {
-    const sameTimeMessage = await messagesService.findSameTimeMessage(
-      chat,
-      grammyMessage.from.id,
-      grammyMessage.date,
-    )
+  if (data.from) {
+    const sameTimeMessage = await messagesService.findSameTimeMessage(chat, data.from, data.time)
     return sameTimeMessage ?? false
   }
   return false
