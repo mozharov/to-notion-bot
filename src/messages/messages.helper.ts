@@ -1,27 +1,74 @@
 import {Message} from './entities/message.entity'
-import {MessagesService} from './messages.service'
-import {MessageData} from './messages.composer'
+import {messagesService} from './messages.service'
 import {Chat} from '../chats/entities/chat.entity'
+import {Chat as GrammyChat, Update} from 'grammy/types'
+import {Context} from '../context'
+import {Message as GrammyMessage} from 'grammy/types'
+import {chatsService} from '../chats/chats.service'
+import {File as GrammyFile} from 'grammy/types'
+import {LoggerService} from '../logger/logger.service'
+import {TooBigFileError} from '../errors/too-big-file.error'
+import {File} from '../files/entities/file.entity'
 
-export async function shouldUpdateNotionPage(
-  data: MessageData,
-  chat: Chat,
-): Promise<Message | false> {
-  const messagesService = new MessagesService()
-  if (data.replyToMessage) {
-    const message = await messagesService.findOne({
-      telegramMessageId: data.replyToMessage,
-      chat,
+const logger = new LoggerService('MessagesHelper')
+
+export async function getTelegramFile(
+  ctx: Context & {chat: GrammyChat},
+): Promise<GrammyFile | null> {
+  const message = ctx.message ?? ctx.channelPost
+  if (
+    !message ||
+    (!message.audio &&
+      !message.video &&
+      !message.photo &&
+      !message.document &&
+      !message.voice &&
+      !message.video_note)
+  ) {
+    return null
+  }
+  return ctx.getFile().catch(async error => {
+    const chat = await chatsService.findChatByTelegramId(ctx.chat.id)
+    if (error.error_code === 400) {
+      logger.warn('File is too big')
+      throw new TooBigFileError(chat?.languageCode)
+    }
+    logger.error({
+      error,
+      message: 'Error while getting file',
     })
-    return message ?? false
-  }
-  if (data.from) {
-    const sameTimeMessage = await messagesService.findSameTimeMessage(chat, data.from, data.time)
-    return sameTimeMessage ?? false
-  }
-  return false
+    throw error
+  })
 }
 
-export function buildLinkToNotionPage(pageId: string): string {
-  return `https://www.notion.so/${pageId.replace(/-/g, '')}`
+export function getFileType(message: GrammyMessage): File['type'] {
+  if (message.audio || message.voice) return 'audio'
+  if (message.video || message.video_note) return 'video'
+  if (message.photo) return 'image'
+  return 'file'
+}
+
+export function getSentAt(ctx: Context): number {
+  const sentAt = ctx.message?.date ?? ctx.channelPost?.date
+  if (!sentAt) throw new Error('No sentAt found in the context')
+  return sentAt
+}
+
+export function getSenderId(ctx: Context & {chat: GrammyChat}): number {
+  return ctx.from?.id ?? ctx.message?.sender_chat?.id ?? ctx.chat.id
+}
+
+export async function getPrevMessage(
+  message: GrammyMessage & (Update.NonChannel | Update.Channel),
+  chat: Chat,
+): Promise<Message | null> {
+  const senderId = message.from?.id ?? message.sender_chat?.id ?? message.chat.id
+  const sameTimeMessage = await messagesService.findSameTimeMessage(chat, senderId, message.date)
+  const replyToMessage = message.reply_to_message
+    ? await messagesService.findOne({
+        telegramMessageId: message.reply_to_message.message_id,
+        chat,
+      })
+    : null
+  return sameTimeMessage ?? replyToMessage
 }

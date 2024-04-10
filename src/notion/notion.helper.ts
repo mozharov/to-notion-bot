@@ -1,11 +1,13 @@
 import {MessageEntity} from 'grammy/types'
 import {Annotations, TextBlock, RichText} from './notion.types'
+import {BlockObjectRequest} from '@notionhq/client/build/src/api-endpoints'
+import {File} from '../files/entities/file.entity'
 
-const MAX_TITLE_LENGTH = 120
-const MAX_TEXT_CONTENT_LENGTH = 2000
-const MAX_ARRAY_LENGTH = 100
+const MAX_TITLE_LENGTH = 120 // Custom limitation
+const MAX_TEXT_CONTENT_LENGTH = 2000 // Notion API limitation
+const MAX_ARRAY_LENGTH = 100 // Notion API limitation
 
-export function getTitleFromMessageText(text: string): string {
+export function truncateTextForTitle(text: string): string {
   if (!hasInnerContent(text)) return text
   const indexOfNewLine = text.indexOf('\n')
   if (indexOfNewLine !== -1) {
@@ -17,7 +19,10 @@ export function getTitleFromMessageText(text: string): string {
   return text.slice(0, MAX_TITLE_LENGTH).trim() + '...'
 }
 
-export function getBlocksFromMessage(text: string, entities?: MessageEntity[]): TextBlock[] {
+export function convertMessageToNotionBlocks(
+  text: string,
+  entities?: MessageEntity[],
+): BlockObjectRequest[] {
   if (!hasInnerContent(text, entities)) return []
   if (!entities || !entities.length) {
     const block: TextBlock = {
@@ -29,6 +34,30 @@ export function getBlocksFromMessage(text: string, entities?: MessageEntity[]): 
   const richTexts = transformTelegramMessageToNotionRichText(text, entities)
   const block: TextBlock = {object: 'block', paragraph: {rich_text: splitLargeRickTexts(richTexts)}}
   return splitLargeBlock(block)
+}
+
+export function convertFileToNotionBlock(file: File): BlockObjectRequest {
+  if (file.type === 'image') {
+    return {
+      object: 'block',
+      image: {type: 'external', external: {url: file.url}},
+    }
+  } else if (file.type === 'video') {
+    return {
+      object: 'block',
+      video: {type: 'external', external: {url: file.url}},
+    }
+  } else if (file.type === 'audio') {
+    return {
+      object: 'block',
+      file: {type: 'external', external: {url: file.url}},
+    }
+  } else {
+    return {
+      object: 'block',
+      file: {type: 'external', external: {url: file.url}},
+    }
+  }
 }
 
 function hasInnerContent(messageText: string, entities?: MessageEntity[]): boolean {
@@ -144,4 +173,8 @@ function annotationsAreEqual(a: Annotations, b: Annotations): boolean {
     if (a[key] !== b[key]) return false
   }
   return true
+}
+
+export function buildLinkToNotionPage(pageId: string): string {
+  return `https://www.notion.so/${pageId.replace(/-/g, '')}`
 }

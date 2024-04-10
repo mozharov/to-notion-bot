@@ -1,13 +1,13 @@
 import {FindOptionsWhere, Repository} from 'typeorm'
-import {Chat} from './entities/chat.entity'
+import {ActiveChat, Chat} from './entities/chat.entity'
 import {DataSource} from '../typeorm/typeorm.data-source'
 import {NotionWorkspace} from '../notion/notion-workspaces/entities/notion-workspace.entity'
 
-export class ChatsService {
-  private readonly chatsRepository: Repository<Chat>
+class ChatsService {
+  private readonly repository: Repository<Chat>
 
   constructor() {
-    this.chatsRepository = DataSource.getRepository(Chat)
+    this.repository = DataSource.getRepository(Chat)
   }
 
   public async activateChat(chat: Chat): Promise<void> {
@@ -19,18 +19,36 @@ export class ChatsService {
   }
 
   public async deleteChat(chat: Chat): Promise<void> {
-    await this.chatsRepository.remove(chat)
+    await this.repository.remove(chat)
   }
 
   public countChatsByOwner(owner: Chat['owner']): Promise<number> {
-    return this.chatsRepository.count({
+    return this.repository.count({
       where: {owner},
     })
   }
 
-  public getChatByTelegramId(telegramId: Chat['telegramId']): Promise<Chat | null> {
-    return this.chatsRepository.findOne({
+  public findChatByTelegramId(telegramId: Chat['telegramId']): Promise<Chat | null> {
+    return this.repository.findOne({
       where: {telegramId},
+    })
+  }
+
+  public getActiveChatByTelegramId(telegramId: Chat['telegramId']): Promise<ActiveChat> {
+    return this.repository.findOneByOrFail({
+      telegramId,
+      status: 'active',
+      notionDatabase: true,
+      notionWorkspace: true,
+    }) as Promise<ActiveChat>
+  }
+
+  public isActiveByTelegramId(telegramId: Chat['telegramId']): Promise<boolean> {
+    return this.repository.existsBy({
+      telegramId,
+      status: 'active',
+      notionDatabase: true,
+      notionWorkspace: true,
     })
   }
 
@@ -43,15 +61,15 @@ export class ChatsService {
     status?: Chat['status']
     type: Chat['type']
   }): Promise<Chat> {
-    return this.chatsRepository.save(data)
+    return this.repository.save(data)
   }
 
   public async updateChat(data: Partial<Chat> & {id: Chat['id']}): Promise<Chat> {
-    const chat = await this.chatsRepository.findOneOrFail({
+    const chat = await this.repository.findOneOrFail({
       where: {id: data.id},
     })
     Object.assign(chat, data)
-    return this.chatsRepository.save(chat)
+    return this.repository.save(chat)
   }
 
   public getChatsByOwner(owner: Chat['owner']): Promise<Chat[]> {
@@ -59,16 +77,18 @@ export class ChatsService {
   }
 
   public countChatsByWorkspace(workspace: NotionWorkspace, owner: Chat['owner']): Promise<number> {
-    return this.chatsRepository.countBy({
+    return this.repository.countBy({
       notionWorkspace: {id: workspace.id},
       owner: {id: owner.id},
     })
   }
 
   private getChatsByCriteria(where: FindOptionsWhere<Chat>): Promise<Chat[]> {
-    return this.chatsRepository.find({
+    return this.repository.find({
       where,
       order: {telegramId: 'DESC'},
     })
   }
 }
+
+export const chatsService = new ChatsService()

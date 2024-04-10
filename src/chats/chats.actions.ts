@@ -1,7 +1,7 @@
 import {CallbackQueryContext, ChatTypeContext, NextFunction} from 'grammy'
 import {Context} from '../context'
-import {ChatsService} from './chats.service'
-import {UsersService} from '../users/users.service'
+import {chatsService} from './chats.service'
+import {usersService} from '../users/users.service'
 import {LoggerService} from '../logger/logger.service'
 import {ChatMemberUpdated} from 'grammy/types'
 import {
@@ -21,10 +21,8 @@ export async function activatePrivateChat(
   next: NextFunction,
 ): Promise<void> {
   const userId = ctx.chat.id
-  const chatsService = new ChatsService()
-  const usersService = new UsersService()
   const user = await usersService.getOrCreateUser(userId)
-  const chat = await chatsService.getChatByTelegramId(userId)
+  const chat = await chatsService.findChatByTelegramId(userId)
   if (!chat) {
     const languageCode = ctx.from.language_code === 'ru' ? 'ru' : 'en'
     await chatsService.createChat({
@@ -48,8 +46,7 @@ export async function updatePrivateChatStatus(
   const userId = ctx.myChatMember.chat.id
   const botStatus = ctx.myChatMember.new_chat_member.status
 
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(userId)
+  const chat = await chatsService.findChatByTelegramId(userId)
 
   const blocked = botStatus === 'kicked' && chat?.botStatus === 'unblocked'
   const unblocked = botStatus === 'member' && chat?.botStatus === 'blocked'
@@ -83,11 +80,9 @@ export async function updateGroupStatus(
     })
   }
 
-  const chatsService = new ChatsService()
-  const usersService = new UsersService()
   const user = await usersService.getOrCreateUser(userId)
-  let chat = await chatsService.getChatByTelegramId(chatId)
-  const privateChat = await chatsService.getChatByTelegramId(userId)
+  let chat = await chatsService.findChatByTelegramId(chatId)
+  const privateChat = await chatsService.findChatByTelegramId(userId)
 
   const blocked = botStatus !== 'administrator' && chat?.botStatus === 'unblocked'
   const unblocked = botStatus === 'administrator' && (!chat || chat.botStatus === 'blocked')
@@ -134,9 +129,6 @@ export async function updateGroupStatus(
 }
 
 export async function replyWithChats(ctx: ChatTypeContext<Context, 'private'>): Promise<void> {
-  const usersService = new UsersService()
-  const chatsService = new ChatsService()
-
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const chats = await chatsService.getChatsByOwner(user)
   await ctx.reply(ctx.t('select-chat'), {
@@ -146,8 +138,6 @@ export async function replyWithChats(ctx: ChatTypeContext<Context, 'private'>): 
 }
 
 export async function showChats(ctx: CallbackQueryContext<Context>): Promise<void> {
-  const usersService = new UsersService()
-  const chatsService = new ChatsService()
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const chats = await chatsService.getChatsByOwner(user)
   await ctx.editMessageText(ctx.t('select-chat'), {
@@ -159,8 +149,7 @@ export async function showChats(ctx: CallbackQueryContext<Context>): Promise<voi
 export async function showChatSettings(ctx: CallbackQueryContext<Context>): Promise<void> {
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
 
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat is not found')
 
   const status = chat.botStatus === 'blocked' ? chat.botStatus : chat.status
@@ -181,8 +170,7 @@ export async function showChatSettings(ctx: CallbackQueryContext<Context>): Prom
 
 export async function deleteChat(ctx: CallbackQueryContext<Context>): Promise<void> {
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   if (chat.type === 'private') throw new Error('Cannot delete private chat')
   await chatsService.deleteChat(chat)
@@ -195,8 +183,7 @@ export async function deleteChat(ctx: CallbackQueryContext<Context>): Promise<vo
 
 export async function activateChat(ctx: CallbackQueryContext<Context>): Promise<void> {
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   await chatsService.activateChat(chat)
   await showChatSettings(ctx)
@@ -205,8 +192,7 @@ export async function activateChat(ctx: CallbackQueryContext<Context>): Promise<
 
 export async function deactivateChat(ctx: CallbackQueryContext<Context>): Promise<void> {
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   await chatsService.deactivateChat(chat)
   await showChatSettings(ctx)
@@ -215,8 +201,7 @@ export async function deactivateChat(ctx: CallbackQueryContext<Context>): Promis
 
 export async function changeChatLanguage(ctx: CallbackQueryContext<Context>): Promise<void> {
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   const language = chat.languageCode === 'en' ? 'ru' : 'en'
   await chatsService.updateChat({id: chat.id, languageCode: language})
@@ -227,8 +212,7 @@ export async function changeChatLanguage(ctx: CallbackQueryContext<Context>): Pr
 
 export async function showNotionSettings(ctx: CallbackQueryContext<Context>): Promise<void> {
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   const workspacesService = new NotionWorkspacesService()
   const workspaces = await workspacesService.getWorkspacesByOwner(chat.owner)
@@ -244,8 +228,7 @@ export async function selectNotionWorkspaceForChat(
 ): Promise<void> {
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
   const workspaceId = String(ctx.callbackQuery.data.split(':')[3])
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   const workspacesService = new NotionWorkspacesService()
   const workspace = await workspacesService.getWorkspaceById(workspaceId)
@@ -268,8 +251,7 @@ export async function selectNotionDatabaseForChat(
 ): Promise<void> {
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
   const notionDatabaseId = String(ctx.callbackQuery.data.split(':')[3])
-  const chatsService = new ChatsService()
-  const chat = await chatsService.getChatByTelegramId(chatId)
+  const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   if (!chat.notionWorkspace) throw new Error('Chat has no notion workspace')
   const notionService = new NotionService(chat.notionWorkspace.secretToken)

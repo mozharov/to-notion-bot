@@ -2,7 +2,7 @@ import {Equal, Or, Repository} from 'typeorm'
 import {DataSource} from '../typeorm/typeorm.data-source'
 import {Message} from './entities/message.entity'
 
-export class MessagesService {
+class MessagesService {
   private readonly repository: Repository<Message>
 
   constructor() {
@@ -28,7 +28,7 @@ export class MessagesService {
     })
   }
 
-  public create(
+  public saveMessage(
     data: Partial<Message> & {
       chat: Message['chat']
       telegramMessageId: Message['telegramMessageId']
@@ -48,3 +48,5 @@ export class MessagesService {
     return this.repository.save(content)
   }
 }
+
+export const messagesService = new MessagesService()

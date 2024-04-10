@@ -1,12 +1,11 @@
 import {CallbackQueryContext, ChatTypeContext} from 'grammy'
-import {UsersService} from '../../users/users.service'
+import {usersService} from '../../users/users.service'
+import {chatsService} from '../../chats/chats.service'
 import {NotionWorkspacesService} from './notion-workspaces.service'
 import {Context} from '../../context'
 import {getKeyboardWithWorkspaces, getWorkspaceSettingsKeyboard} from './notion-workspaces.helper'
-import {ChatsService} from '../../chats/chats.service'
 
 export async function replyWithWorkspaces(ctx: ChatTypeContext<Context, 'private'>): Promise<void> {
-  const usersService = new UsersService()
   const notionWorkspacesService = new NotionWorkspacesService()
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const workspaces = await notionWorkspacesService.getWorkspacesByOwner(user)
@@ -17,7 +16,6 @@ export async function replyWithWorkspaces(ctx: ChatTypeContext<Context, 'private
 }
 
 export async function showWorkspaces(ctx: CallbackQueryContext<Context>): Promise<void> {
-  const usersService = new UsersService()
   const notionWorkspacesService = new NotionWorkspacesService()
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const workspaces = await notionWorkspacesService.getWorkspacesByOwner(user)
@@ -34,10 +32,8 @@ export async function showWorkspaceSettings(ctx: CallbackQueryContext<Context>):
   const workspace = await notionWorkspacesService.getWorkspaceById(workspaceId)
   if (!workspace) throw new Error('Workspace not found')
 
-  const usersService = new UsersService()
   const user = await usersService.getOrCreateUser(ctx.from.id)
-  const chatsServices = new ChatsService()
-  const chats = await chatsServices.countChatsByWorkspace(workspace, user)
+  const chats = await chatsService.countChatsByWorkspace(workspace, user)
 
   await ctx.editMessageText(
     ctx.t('workspace-settings', {name: workspace.name, status: workspace.status, chats}),

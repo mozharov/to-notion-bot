@@ -44,9 +44,32 @@ export class NotionService {
     return response as DatabaseObjectResponse
   }
 
-  // Соблюдать лимит в 100 блоков в одном запросе нет смысла,
-  //  т.к. в Telegram есть лимит на количество Entity в одном сообщении, а значит 100 блоков никогда не будет достигнуто
-  public async createPage(
+  /**
+   * Saves the provided data to Notion.
+   *
+   * Соблюдать лимит в 100 блоков в одном запросе нет смысла,
+   *  т.к. в Telegram есть лимит на количество Entity в одном сообщении, а значит 100 блоков никогда не будет достигнуто
+   *
+   * @returns A Promise that resolves to the id of the created page or the provided pageId.
+   */
+  public async saveToNotion(
+    target: {
+      databaseId?: string
+      pageId?: string
+    },
+    title: string,
+    blocks: BlockObjectRequest[],
+  ): Promise<string> {
+    if (target.databaseId) {
+      const createPageResponse = await this.createPage(target.databaseId, title, blocks)
+      return createPageResponse.id
+    }
+    if (!target.pageId) throw new Error('DatabaseId or PageId should be provided')
+    await this.appendBlockToPage(target.pageId, title, blocks)
+    return target.pageId
+  }
+
+  private async createPage(
     databaseId: string,
     title: string,
     blocks: BlockObjectRequest[],
@@ -72,7 +95,7 @@ export class NotionService {
     return response as Promise<PageObjectResponse>
   }
 
-  public async appendBlockToPage(
+  private async appendBlockToPage(
     pageId: string,
     title: string,
     blocks: BlockObjectRequest[],

@@ -2,7 +2,7 @@ import {Repository} from 'typeorm'
 import {User} from './entities/user.entity'
 import {DataSource} from '../typeorm/typeorm.data-source'
 
-export class UsersService {
+class UsersService {
   private readonly usersRepository: Repository<User>
 
   constructor() {
@@ -29,3 +29,5 @@ export class UsersService {
     return this.usersRepository.save(user)
   }
 }
+
+export const usersService = new UsersService()

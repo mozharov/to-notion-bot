@@ -6,10 +6,11 @@ import {Session} from '../session/entities/session.entity'
 import {NotionWorkspace} from '../notion/notion-workspaces/entities/notion-workspace.entity'
 import {NotionDatabase} from '../notion/notion-databases/entities/notion-database.entity'
 import {Message} from '../messages/entities/message.entity'
+import {File} from '../files/entities/file.entity'
 
 function buildTypeormConfig(): DataSourceOptions {
   return {
-    entities: [User, Chat, Session, NotionWorkspace, NotionDatabase, Message],
+    entities: [User, Chat, Session, NotionWorkspace, NotionDatabase, Message, File],
     migrations: [],
     subscribers: [],
     type: 'postgres',

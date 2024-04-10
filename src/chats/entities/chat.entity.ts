@@ -51,14 +51,10 @@ export class Chat {
 
   @UpdateDateColumn({type: 'timestamp with time zone'})
   updatedAt: Date
+}
 
-  public isActive(): this is Chat & {
-    status: 'active'
-    notionWorkspace: NotionWorkspace
-    notionDatabase: NotionDatabase
-  } {
-    return (
-      this.status === 'active' && !!this.notionDatabase && this.notionWorkspace?.status === 'active'
-    )
-  }
+export type ActiveChat = Chat & {
+  notionDatabase: NotionDatabase
+  notionWorkspace: NotionWorkspace
+  status: 'active'
 }
