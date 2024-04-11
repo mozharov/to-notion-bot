@@ -8,7 +8,6 @@ const MAX_TEXT_CONTENT_LENGTH = 2000 // Notion API limitation
 const MAX_ARRAY_LENGTH = 100 // Notion API limitation
 
 export function truncateTextForTitle(text: string): string {
-  if (!hasInnerContent(text)) return text
   const indexOfNewLine = text.indexOf('\n')
   if (indexOfNewLine !== -1) {
     if (indexOfNewLine > MAX_TITLE_LENGTH) {
@@ -16,6 +15,7 @@ export function truncateTextForTitle(text: string): string {
     }
     return text.slice(0, indexOfNewLine).trim()
   }
+  if (text.length <= MAX_TITLE_LENGTH) return text.slice(0, MAX_TITLE_LENGTH).trim()
   return text.slice(0, MAX_TITLE_LENGTH).trim() + '...'
 }
 
@@ -23,7 +23,6 @@ export function convertMessageToNotionBlocks(
   text: string,
   entities?: MessageEntity[],
 ): BlockObjectRequest[] {
-  if (!hasInnerContent(text, entities)) return []
   if (!entities || !entities.length) {
     const block: TextBlock = {
       object: 'block',
@@ -60,7 +59,7 @@ export function convertFileToNotionBlock(file: File): BlockObjectRequest {
   }
 }
 
-function hasInnerContent(messageText: string, entities?: MessageEntity[]): boolean {
+export function hasInnerContent(messageText: string, entities?: MessageEntity[]): boolean {
   return messageText.includes('\n') || messageText.length > MAX_TITLE_LENGTH || !!entities?.length
 }
 

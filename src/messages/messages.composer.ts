@@ -16,6 +16,7 @@ import {chatsService} from '../chats/chats.service'
 import {
   convertFileToNotionBlock,
   convertMessageToNotionBlocks,
+  hasInnerContent,
   truncateTextForTitle,
 } from '../notion/notion.helper'
 import {filesService} from '../files/files.service'
@@ -42,19 +43,18 @@ messageComposer
     const message = ctx.message ?? ctx.channelPost
     const prevMessage = await getPrevMessage(message, chat)
 
-    const title = truncateTextForTitle(message.text ?? message.caption ?? ctx.t('new-file'))
-    const blocks = convertMessageToNotionBlocks(title, message.entities)
+    const text = message.text ?? message.caption
+    const title = truncateTextForTitle(text ?? ctx.t('new-file'))
+    const blocks =
+      text && (hasInnerContent(text, message.entities) || !!prevMessage)
+        ? convertMessageToNotionBlocks(text, message.entities)
+        : []
 
     const tgFile = await getTelegramFile(ctx)
     if (tgFile) {
       const fileType = getFileType(message)
       const file = await filesService.saveFile(tgFile, fileType)
       const fileBlock = convertFileToNotionBlock(file)
-      logger.debug({
-        message: 'File saved',
-        file,
-        block: fileBlock,
-      })
       blocks.push(fileBlock)
     }
 

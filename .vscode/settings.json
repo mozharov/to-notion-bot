@@ -1,3 +1,4 @@
 {
-    "postman.telemetry.enabled": false
+    "postman.telemetry.enabled": false,
+    "typescript.tsdk": "node_modules/typescript/lib"
 }
