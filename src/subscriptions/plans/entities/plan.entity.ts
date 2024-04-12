@@ -1,18 +1,22 @@
-import {Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, UpdateDateColumn} from 'typeorm'
+import {
+  Entity,
+  CreateDateColumn,
+  Column,
+  UpdateDateColumn,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+} from 'typeorm'
 
 @Entity()
-export class Plan {
+export class Plan extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Column({default: true})
-  isActive: boolean
+  @Column({type: 'enum', enum: ['month', 'year'], unique: true})
+  name: 'month' | 'year'
 
-  @Column({type: 'int'})
-  price: number // in cents
-
-  @Column({type: 'int'})
-  durationInDays: number // 1 month = 30 days
+  @Column({type: 'int', unique: true})
+  cents: number
 
   @CreateDateColumn({type: 'timestamp with time zone'})
   createdAt: Date
@@ -20,11 +24,7 @@ export class Plan {
   @UpdateDateColumn({type: 'timestamp with time zone'})
   updatedAt: Date
 
-  public get months(): number {
-    return this.durationInDays / 30
-  }
-
   public get dollars(): number {
-    return this.price / 100
+    return this.cents / 100
   }
 }

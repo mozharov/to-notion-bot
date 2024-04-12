@@ -9,20 +9,24 @@ class PlansService {
     this.repository = DataSource.getRepository(Plan)
   }
 
-  public async getActivePlans(): Promise<Plan[]> {
-    return this.repository.find({
-      where: {
-        isActive: true,
-      },
-      order: {
-        durationInDays: 'DESC',
-        price: 'DESC',
-      },
-    })
+  public async getPlans(): Promise<Plan[]> {
+    return this.repository.find({order: {cents: 'DESC'}})
   }
 
-  public async findPlanById(id: string): Promise<Plan | null> {
-    return this.repository.findOneBy({id})
+  public async getPlanByName(name: Plan['name']): Promise<Plan> {
+    return this.repository.findOneByOrFail({name})
+  }
+
+  public async setPriceForMonthlyPlan(cents: number): Promise<void> {
+    const plan = await this.repository.findOneByOrFail({name: 'month'})
+    plan.cents = cents
+    await plan.save()
+  }
+
+  public async setPriceForYearlyPlan(cents: number): Promise<void> {
+    const plan = await this.repository.findOneByOrFail({name: 'year'})
+    plan.cents = cents
+    await plan.save()
   }
 }
 

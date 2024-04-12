@@ -13,6 +13,7 @@ import {helpComposer} from './help/help.composer'
 import {subscriptionsComposer} from './subscriptions/subscriptions.composer'
 import {autoRetry} from '@grammyjs/auto-retry'
 import {broadcasterComposer} from './broadcaster/broadcaster.composer'
+import {plansComposer} from './subscriptions/plans/plans.composer'
 
 export const bot = new Bot<Context>(ConfigService.botToken, {
   botInfo: ConfigService.botInfo,
@@ -31,6 +32,7 @@ composer.use(subscriptionsComposer)
 composer.use(chatsComposer)
 composer.use(notionWorkspacesComposer)
 composer.use(broadcasterComposer)
+composer.use(plansComposer)
 composer.use(messageComposer)
 
 composer.chatType('private').on('callback_query', async ctx => {
