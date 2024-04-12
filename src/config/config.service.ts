@@ -34,6 +34,7 @@ type Configuration = {
   MAX_NOTION_WORKSPACES_PER_USER: number
   BOT_API_URL: string
   WALLET_API_KEY: string
+  ADMIN_TELEGRAM_ID: number
 }
 
 export class ConfigService {
@@ -63,6 +64,7 @@ export class ConfigService {
       MAX_NOTION_WORKSPACES_PER_USER: Joi.number().default(90),
       BOT_API_URL: Joi.string().default('http://localhost:8443/'),
       WALLET_API_KEY: Joi.string().required(),
+      ADMIN_TELEGRAM_ID: Joi.number().required(),
     }).validate(process.env, {
       stripUnknown: true,
     })
@@ -163,5 +165,9 @@ export class ConfigService {
 
   public static get walletApiKey(): Configuration['WALLET_API_KEY'] {
     return process.env.WALLET_API_KEY as Configuration['WALLET_API_KEY']
+  }
+
+  public static get adminTelegramId(): Configuration['ADMIN_TELEGRAM_ID'] {
+    return Number(process.env.ADMIN_TELEGRAM_ID)
   }
 }

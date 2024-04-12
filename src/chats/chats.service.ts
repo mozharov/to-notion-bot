@@ -83,6 +83,23 @@ class ChatsService {
     })
   }
 
+  public async getActivePrivateChatsIdsByLanguageCode(
+    languageCode: Chat['languageCode'],
+  ): Promise<number[]> {
+    const chats = await this.repository.find({
+      where: {
+        botStatus: 'unblocked',
+        type: 'private',
+        languageCode,
+      },
+      select: {
+        telegramId: true,
+      },
+      loadEagerRelations: false,
+    })
+    return chats.map(chat => chat.telegramId)
+  }
+
   private getChatsByCriteria(where: FindOptionsWhere<Chat>): Promise<Chat[]> {
     return this.repository.find({
       where,

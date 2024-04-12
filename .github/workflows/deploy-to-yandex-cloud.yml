@@ -55,6 +55,7 @@ jobs:
             NODE_ENV=production
             DB_SYNCHRONIZE=true
             FILE_PATH=https://bot.notion-inbox.online/file/
+            ADMIN_TELEGRAM_ID=1033924450
           revision-secrets: |
             BOT_TOKEN=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/to_notion_robot_token
             WEBHOOK_SECRET=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/webhook_secret

@@ -39,6 +39,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
+    "@grammyjs/auto-retry": "^1.1.1",
     "@grammyjs/conversations": "^1.2.0",
     "@grammyjs/i18n": "^1.0.2",
     "@notionhq/client": "^2.2.14",

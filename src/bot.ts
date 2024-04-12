@@ -11,10 +11,13 @@ import {notionWorkspacesComposer} from './notion/notion-workspaces/notion-worksp
 import {messageComposer} from './messages/messages.composer'
 import {helpComposer} from './help/help.composer'
 import {subscriptionsComposer} from './subscriptions/subscriptions.composer'
+import {autoRetry} from '@grammyjs/auto-retry'
+import {broadcasterComposer} from './broadcaster/broadcaster.composer'
 
 export const bot = new Bot<Context>(ConfigService.botToken, {
   botInfo: ConfigService.botInfo,
 })
+bot.api.config.use(autoRetry({retryOnInternalServerErrors: true}))
 
 const composer = new Composer<Context>()
 
@@ -27,6 +30,7 @@ composer.use(startComposer)
 composer.use(subscriptionsComposer)
 composer.use(chatsComposer)
 composer.use(notionWorkspacesComposer)
+composer.use(broadcasterComposer)
 composer.use(messageComposer)
 
 composer.chatType('private').on('callback_query', async ctx => {
