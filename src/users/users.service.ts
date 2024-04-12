@@ -11,12 +11,12 @@ class UsersService {
 
   public async getOrCreateUser(telegramId: number): Promise<User> {
     return (
-      (await this.getUserByTelegramId(telegramId)) ||
+      (await this.findUserByTelegramId(telegramId)) ||
       (await this.createUserByTelegramId(telegramId))
     )
   }
 
-  private async getUserByTelegramId(telegramId: number): Promise<User | null> {
+  public async findUserByTelegramId(telegramId: number): Promise<User | null> {
     return this.usersRepository.findOne({
       where: {telegramId},
     })

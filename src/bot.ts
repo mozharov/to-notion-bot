@@ -10,6 +10,7 @@ import {chatsComposer} from './chats/chats.composer'
 import {notionWorkspacesComposer} from './notion/notion-workspaces/notion-workspaces.composer'
 import {messageComposer} from './messages/messages.composer'
 import {helpComposer} from './help/help.composer'
+import {subscriptionsComposer} from './subscriptions/subscriptions.composer'
 
 export const bot = new Bot<Context>(ConfigService.botToken, {
   botInfo: ConfigService.botInfo,
@@ -23,6 +24,7 @@ composer.use(conversationComposer)
 
 composer.use(helpComposer)
 composer.use(startComposer)
+composer.use(subscriptionsComposer)
 composer.use(chatsComposer)
 composer.use(notionWorkspacesComposer)
 composer.use(messageComposer)

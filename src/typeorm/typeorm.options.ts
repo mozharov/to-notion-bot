@@ -7,10 +7,24 @@ import {NotionWorkspace} from '../notion/notion-workspaces/entities/notion-works
 import {NotionDatabase} from '../notion/notion-databases/entities/notion-database.entity'
 import {Message} from '../messages/entities/message.entity'
 import {File} from '../files/entities/file.entity'
+import {Subscription} from '../subscriptions/entities/subscription.entity'
+import {Plan} from '../subscriptions/plans/entities/plan.entity'
+import {Payment} from '../payments/entities/payment.entity'
 
 function buildTypeormConfig(): DataSourceOptions {
   return {
-    entities: [User, Chat, Session, NotionWorkspace, NotionDatabase, Message, File],
+    entities: [
+      User,
+      Chat,
+      Session,
+      NotionWorkspace,
+      NotionDatabase,
+      Message,
+      File,
+      Subscription,
+      Plan,
+      Payment,
+    ],
     migrations: [],
     subscribers: [],
     type: 'postgres',

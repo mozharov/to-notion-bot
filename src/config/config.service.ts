@@ -32,7 +32,8 @@ type Configuration = {
   MAX_CHATS_PER_USER: number
   WEBHOOK_TIMEOUT: number
   MAX_NOTION_WORKSPACES_PER_USER: number
-  FILE_PATH: string
+  BOT_API_URL: string
+  WALLET_API_KEY: string
 }
 
 export class ConfigService {
@@ -60,7 +61,8 @@ export class ConfigService {
       MAX_CHATS_PER_USER: Joi.number().default(90),
       WEBHOOK_TIMEOUT: Joi.number().default(30000),
       MAX_NOTION_WORKSPACES_PER_USER: Joi.number().default(90),
-      FILE_PATH: Joi.string().default('http://localhost:8443/file/'),
+      BOT_API_URL: Joi.string().default('http://localhost:8443/'),
+      WALLET_API_KEY: Joi.string().required(),
     }).validate(process.env, {
       stripUnknown: true,
     })
@@ -155,7 +157,11 @@ export class ConfigService {
     return Number(process.env.MAX_NOTION_WORKSPACES_PER_USER)
   }
 
-  public static get filePath(): Configuration['FILE_PATH'] {
-    return process.env.FILE_PATH as Configuration['FILE_PATH']
+  public static get botApiUrl(): Configuration['BOT_API_URL'] {
+    return process.env.BOT_API_URL as Configuration['BOT_API_URL']
+  }
+
+  public static get walletApiKey(): Configuration['WALLET_API_KEY'] {
+    return process.env.WALLET_API_KEY as Configuration['WALLET_API_KEY']
   }
 }
