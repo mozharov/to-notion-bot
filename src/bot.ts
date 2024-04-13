@@ -16,6 +16,7 @@ import {broadcasterComposer} from './broadcaster/broadcaster.composer'
 import {plansComposer} from './subscriptions/plans/plans.composer'
 import {referralComposer} from './referral/referral.composer'
 import {usersService} from './users/users.service'
+import {promocodesComposer} from './promocodes/promocodes.composer'
 
 export const bot = new Bot<Context>(ConfigService.botToken, {
   botInfo: ConfigService.botInfo,
@@ -46,6 +47,7 @@ composer.use(chatsComposer)
 composer.use(notionWorkspacesComposer)
 composer.use(broadcasterComposer)
 composer.use(plansComposer)
+composer.use(promocodesComposer)
 
 composer.use(messageComposer)
 

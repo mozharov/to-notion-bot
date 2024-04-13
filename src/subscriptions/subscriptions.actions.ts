@@ -14,11 +14,10 @@ export async function showSubscriptionStatus(
     text: ctx.t(`subscription.${subscription?.isActive ? 'renew' : 'subscribe'}`),
   })
 
-  const locale = await ctx.i18n.getLocale()
   await ctx.reply(
     ctx.t('subscription', {
       status: String(subscription?.isActive),
-      endsAt: subscription?.endsAt.toLocaleDateString(locale) ?? 'N/A',
+      endsAt: subscription?.endsAt ?? 'N/A',
       daysLeft: subscription?.daysLeft ?? 'N/A',
     }),
     {reply_markup: keyboard, parse_mode: 'HTML'},

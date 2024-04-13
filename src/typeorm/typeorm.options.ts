@@ -12,6 +12,8 @@ import {Plan} from '../subscriptions/plans/entities/plan.entity'
 import {Payment} from '../payments/entities/payment.entity'
 import {Broadcasting} from '../broadcaster/entities/broadcasting.entity'
 import {Referral} from '../referral/entities/referral.entity'
+import {Promocode} from '../promocodes/entities/promocode.entity'
+import {PromocodeActivation} from '../promocodes/entities/promocode-activation.entity'
 
 function buildTypeormConfig(): DataSourceOptions {
   return {
@@ -28,6 +30,8 @@ function buildTypeormConfig(): DataSourceOptions {
       Payment,
       Broadcasting,
       Referral,
+      Promocode,
+      PromocodeActivation,
     ],
     migrations: [],
     subscribers: [],
