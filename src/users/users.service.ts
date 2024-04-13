@@ -3,10 +3,10 @@ import {User} from './entities/user.entity'
 import {DataSource} from '../typeorm/typeorm.data-source'
 
 class UsersService {
-  private readonly usersRepository: Repository<User>
+  private readonly repository: Repository<User>
 
   constructor() {
-    this.usersRepository = DataSource.getRepository(User)
+    this.repository = DataSource.getRepository(User)
   }
 
   public async getOrCreateUser(telegramId: number): Promise<User> {
@@ -17,16 +17,26 @@ class UsersService {
   }
 
   public async findUserByTelegramId(telegramId: number): Promise<User | null> {
-    return this.usersRepository.findOne({
+    return this.repository.findOne({
       where: {telegramId},
     })
+  }
+
+  public existsUserByTelegramId(telegramId: number): Promise<boolean> {
+    return this.repository.existsBy({telegramId})
+  }
+
+  public async deleteUserByTelegramId(telegramId: number): Promise<void> {
+    const user = await this.findUserByTelegramId(telegramId)
+    if (!user) return
+    await user.remove()
   }
 
   private async createUserByTelegramId(telegramId: number): Promise<User> {
     const user = new User()
     user.telegramId = telegramId
 
-    return this.usersRepository.save(user)
+    return this.repository.save(user)
   }
 }
 

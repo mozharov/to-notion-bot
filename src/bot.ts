@@ -14,6 +14,8 @@ import {subscriptionsComposer} from './subscriptions/subscriptions.composer'
 import {autoRetry} from '@grammyjs/auto-retry'
 import {broadcasterComposer} from './broadcaster/broadcaster.composer'
 import {plansComposer} from './subscriptions/plans/plans.composer'
+import {referralComposer} from './referral/referral.composer'
+import {usersService} from './users/users.service'
 
 export const bot = new Bot<Context>(ConfigService.botToken, {
   botInfo: ConfigService.botInfo,
@@ -26,13 +28,25 @@ composer.use(sessionComposer)
 composer.use(i18nComposer)
 composer.use(conversationComposer)
 
-composer.use(helpComposer)
 composer.use(startComposer)
+composer.use(helpComposer)
+composer
+  .chatType('private')
+  .command('drop')
+  .filter(() => ConfigService.isDevelopment)
+  .use(async ctx => {
+    await usersService.deleteUserByTelegramId(ctx.from.id)
+    await ctx.reply('User was deleted')
+  })
+
 composer.use(subscriptionsComposer)
+composer.use(referralComposer)
+
 composer.use(chatsComposer)
 composer.use(notionWorkspacesComposer)
 composer.use(broadcasterComposer)
 composer.use(plansComposer)
+
 composer.use(messageComposer)
 
 composer.chatType('private').on('callback_query', async ctx => {

@@ -11,6 +11,7 @@ import {Subscription} from '../subscriptions/entities/subscription.entity'
 import {Plan} from '../subscriptions/plans/entities/plan.entity'
 import {Payment} from '../payments/entities/payment.entity'
 import {Broadcasting} from '../broadcaster/entities/broadcasting.entity'
+import {Referral} from '../referral/entities/referral.entity'
 
 function buildTypeormConfig(): DataSourceOptions {
   return {
@@ -26,6 +27,7 @@ function buildTypeormConfig(): DataSourceOptions {
       Plan,
       Payment,
       Broadcasting,
+      Referral,
     ],
     migrations: [],
     subscribers: [],

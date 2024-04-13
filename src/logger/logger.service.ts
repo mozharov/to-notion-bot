@@ -4,9 +4,9 @@ import {jsonConsole, prettyConsole} from './logger.transports'
 
 export class LoggerService {
   private readonly logger: winston.Logger
-  private context?: string
+  private context?: Context
 
-  constructor(context?: string) {
+  constructor(context?: Context) {
     const loggerFormat = ConfigService.loggerFormat
     const loggerLevel = ConfigService.loggerLevel
     const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace']
@@ -25,50 +25,55 @@ export class LoggerService {
     if (context) this.setContext(context)
   }
 
-  public setContext(context: string): void {
+  public setContext(context: Context): void {
     this.context = context
   }
 
-  public trace(value: Message, context?: string): void {
-    this.logMessage('trace', value, context)
+  public trace(value: Message, context?: Context): void {
+    this.logMessage('trace', value ?? 'trace', context)
   }
 
-  public debug(value: Message, context?: string): void {
-    this.logMessage('debug', value, context)
+  public debug(value?: Message, context?: Context): void {
+    this.logMessage('debug', value ?? 'debug', context)
   }
 
-  public info(value: Message, context?: string): void {
-    this.logMessage('info', value, context)
+  public info(value?: Message, context?: Context): void {
+    this.logMessage('info', value ?? 'info', context)
   }
 
-  public warn(value: Message, context?: string): void {
-    this.logMessage('warn', value, context)
+  public warn(value?: Message, context?: Context): void {
+    this.logMessage('warn', value ?? 'warn', context)
   }
 
-  public error(value: Message, context?: string): void {
-    this.logMessage('error', value, context)
+  public error(value?: Message, context?: Context): void {
+    this.logMessage('error', value ?? 'error', context)
   }
 
-  public fatal(value: Message, context?: string): void {
-    this.logMessage('fatal', value, context)
+  public fatal(value?: Message, context?: Context): void {
+    this.logMessage('fatal', value ?? 'fatal', context)
   }
 
-  public log(value: Message, context?: string): void {
+  public log(value?: Message, context?: Context): void {
     this.info(value, context)
   }
 
-  private logMessage(level: Level, value: Message, context?: string): void {
+  private logMessage(level: Level, value?: Message, context?: Context): void {
     if (typeof value === 'string') {
-      this.logger.log(level, value, {context: context || this.context})
+      this.logger.log(
+        level,
+        value,
+        typeof context === 'string' ? {context} : {context: this.context, ...context},
+      )
     } else {
-      const {message, ...meta} = value
-      this.logger.log(level, message || 'UNDEFINED_MESSAGE', {
-        context: context || this.context,
+      const {message, ...meta} = value ?? {}
+      this.logger.log(level, message ?? '', {
+        ...(typeof context === 'string' ? {context} : {context: this.context, ...context}),
         ...meta,
       })
     }
   }
 }
 
+type Context = string | Record<string, unknown>
 type Message = string | (Record<string, unknown> & {message?: string; error?: unknown})
 type Level = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
