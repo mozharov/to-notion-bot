@@ -2,6 +2,8 @@ import {ChatTypeContext, NextFunction} from 'grammy'
 import {chatsService} from '../chats/chats.service'
 import {Context} from '../context'
 import {LoggerService} from '../logger/logger.service'
+import {getSenderId} from './messages.helper'
+import {messagesService} from './messages.service'
 
 const logger = new LoggerService('MessagesMiddlewares')
 
@@ -27,6 +29,17 @@ export async function checkMentionMode(
 ): Promise<void> {
   const chat = await chatsService.findChatByTelegramId(ctx.chat.id)
   if (chat?.onlyMentionMode && ctx.message?.text) {
+    const senderId = getSenderId(ctx)
+    const sameTimeMessage = await messagesService.findSameTimeMessage(
+      chat,
+      senderId,
+      ctx.message.date,
+    )
+    if (sameTimeMessage) {
+      logger.debug('It is update message')
+      return next()
+    }
+
     const mention = ctx.message?.entities?.find(entity => {
       return (
         entity.type === 'mention' &&
