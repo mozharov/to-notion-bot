@@ -9,6 +9,10 @@ class PaymentsService {
     this.repository = DataSource.getRepository(Payment)
   }
 
+  public async findById(id: Payment['id']): Promise<Payment | null> {
+    return this.repository.findOneBy({id})
+  }
+
   public async createPayment(data: {
     amount: Payment['amount']
     type: Payment['type']
