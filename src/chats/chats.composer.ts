@@ -12,6 +12,7 @@ import {
   showChatSettings,
   showChats,
   showNotionSettings,
+  toggleSilentMode,
   toggleWatchMode,
   updateGroupStatus,
   updatePrivateChatStatus,
@@ -46,3 +47,4 @@ privateChats
   )
   .use(selectNotionDatabaseForChat)
 privateChats.callbackQuery(/^chat:(-\d+):watch-mode$/).use(toggleWatchMode)
+privateChats.callbackQuery(/^chat:(-?\d+):silent-mode$/).use(toggleSilentMode)

@@ -49,6 +49,9 @@ export class Chat {
   @Column({default: false})
   onlyMentionMode: boolean
 
+  @Column({default: false})
+  silentMode: boolean
+
   @CreateDateColumn({type: 'timestamp with time zone'})
   createdAt: Date
 

@@ -114,6 +114,8 @@ export async function updateGroupStatus(
         title: ctx.myChatMember.chat.title,
         type,
         languageCode: privateChat?.languageCode,
+        watchMode: type === 'group' ? true : false,
+        silentMode: type === 'channel' ? true : false,
       })
     } else {
       chat.botStatus = 'unblocked'
@@ -171,6 +173,7 @@ export async function showChatSettings(ctx: CallbackQueryContext<Context>): Prom
       database,
       onlyMentionMode: chat.onlyMentionMode.toString(),
       botUsername: ctx.me.username,
+      silentMode: chat.silentMode.toString(),
     }),
     {
       reply_markup: keyboard,
@@ -287,5 +290,12 @@ export async function toggleWatchMode(ctx: CallbackQueryContext<Context>): Promi
   if (chat.type !== 'group') throw new Error('Chat is not a group')
   await chatsService.updateChat({id: chat.id, onlyMentionMode: !chat.onlyMentionMode})
   await showChatSettings(ctx)
-  return
+}
+
+export async function toggleSilentMode(ctx: CallbackQueryContext<Context>): Promise<void> {
+  const chatId = Number(ctx.callbackQuery.data.split(':')[1])
+  const chat = await chatsService.findChatByTelegramId(chatId)
+  if (!chat) throw new Error('Chat not found')
+  await chatsService.updateChat({id: chat.id, silentMode: !chat.silentMode})
+  await showChatSettings(ctx)
 }

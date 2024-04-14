@@ -78,6 +78,6 @@ messageContent.use(onlyActiveChat).use(async ctx => {
   })
 
   const isUpdate = !!prevMessage
-  const silentMode = (!message.reply_to_message && isUpdate) || ctx.chat.type === 'channel'
+  const silentMode = (!message.reply_to_message && isUpdate) || chat.silentMode
   return notifyUser(ctx, message.message_id, chat, isUpdate, silentMode, notionPageId)
 })

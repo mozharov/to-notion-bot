@@ -61,6 +61,7 @@ class ChatsService {
     status?: Chat['status']
     type: Chat['type']
     watchMode?: Chat['onlyMentionMode']
+    silentMode?: Chat['silentMode']
   }): Promise<Chat> {
     return this.repository.save(data)
   }

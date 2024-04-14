@@ -18,15 +18,20 @@ chat-settings = {$type ->
             <b>Название</b>: {$title}
 
             <b>Тип</b>: {$type -> 
-            [private] Приватный
-            [channel] Канал
-            *[other] Групповой
+                [private] Приватный
+                [channel] Канал
+                *[other] Групповой
 
-            <b>Режим отправки сообщений</b>: {$onlyMentionMode ->
-                [true] только сообщения с упоминанием бота (@{$botUsername})
-                *[other] все сообщения
+                <b>Режим отправки сообщений</b>: {$onlyMentionMode ->
+                    [true] Только сообщения с упоминанием бота (@{$botUsername})
+                    *[other] Все сообщения
+                }
             }
-        }
+    }
+
+    <b>Тихий режим:</b> {$silentMode -> 
+        [true] Ставить реакцию ⚡️ на сообщения
+        *[other] Отвечать ссылкой на сохраненный контент
     }
     
     <b>Статус</b>: {$status ->
@@ -58,6 +63,10 @@ chat-settings = {$type ->
     }
     .back = Назад
     .watch-mode = Переключить режим отправки сообщений
+    .silent-mode = Тихий режим: {$silentMode -> 
+        [true] Включен
+        *[other] Отключен
+    }
 
 chat-notion-settings = Выбери *Workspace* Notion для интеграции с {$type -> 
         [private] текущим чатом

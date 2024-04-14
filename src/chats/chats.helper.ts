@@ -56,6 +56,11 @@ export function getSettingsChatKeyboard(
     })
   }
 
+  keyboard.row().add({
+    text: ctx.t('chat-settings.silent-mode', {silentMode: chat.silentMode.toString()}),
+    callback_data: `chat:${chat.telegramId}:silent-mode`,
+  })
+
   if (chat.type !== 'private') {
     keyboard.row().add({
       text: ctx.t('chat-settings.delete'),

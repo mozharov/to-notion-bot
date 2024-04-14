@@ -45,5 +45,8 @@ function initial(): SessionData {
 }
 
 function getSessionKey(ctx: Omit<Context, 'session'>): string | undefined {
-  return !ctx.from || !ctx.chat ? undefined : `${ctx.from.id}:${ctx.chat.id}`
+  const senderId = ctx.from?.id ?? ctx.senderChat?.id ?? ctx.chat?.id
+  const chatId = ctx.chat?.id ?? ctx.senderChat?.id
+  if (!senderId || !chatId) return undefined
+  return `${senderId}:${chatId}`
 }
