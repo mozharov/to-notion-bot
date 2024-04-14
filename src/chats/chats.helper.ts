@@ -49,6 +49,13 @@ export function getSettingsChatKeyboard(
     callback_data: `chat:${chat.telegramId}:notion`,
   })
 
+  if (chat.type === 'group') {
+    keyboard.row().add({
+      text: ctx.t('chat-settings.watch-mode'),
+      callback_data: `chat:${chat.telegramId}:watch-mode`,
+    })
+  }
+
   if (chat.type !== 'private') {
     keyboard.row().add({
       text: ctx.t('chat-settings.delete'),

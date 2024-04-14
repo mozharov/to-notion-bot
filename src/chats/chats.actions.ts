@@ -162,10 +162,21 @@ export async function showChatSettings(ctx: CallbackQueryContext<Context>): Prom
       : 'inactive'
     : 'null'
   const keyboard = getSettingsChatKeyboard(ctx, chat, database)
-  await ctx.editMessageText(ctx.t('chat-settings', {title, status, type, language, database}), {
-    reply_markup: keyboard,
-    parse_mode: 'HTML',
-  })
+  await ctx.editMessageText(
+    ctx.t('chat-settings', {
+      title,
+      status,
+      type,
+      language,
+      database,
+      onlyMentionMode: chat.onlyMentionMode.toString(),
+      botUsername: ctx.me.username,
+    }),
+    {
+      reply_markup: keyboard,
+      parse_mode: 'HTML',
+    },
+  )
 }
 
 export async function deleteChat(ctx: CallbackQueryContext<Context>): Promise<void> {
@@ -267,4 +278,14 @@ export async function selectNotionDatabaseForChat(
   })
   await chatsService.updateChat({id: chat.id, notionDatabase})
   await showChatSettings(ctx)
+}
+
+export async function toggleWatchMode(ctx: CallbackQueryContext<Context>): Promise<void> {
+  const chatId = Number(ctx.callbackQuery.data.split(':')[1])
+  const chat = await chatsService.findChatByTelegramId(chatId)
+  if (!chat) throw new Error('Chat not found')
+  if (chat.type !== 'group') throw new Error('Chat is not a group')
+  await chatsService.updateChat({id: chat.id, onlyMentionMode: !chat.onlyMentionMode})
+  await showChatSettings(ctx)
+  return
 }

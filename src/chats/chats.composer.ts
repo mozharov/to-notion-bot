@@ -12,6 +12,7 @@ import {
   showChatSettings,
   showChats,
   showNotionSettings,
+  toggleWatchMode,
   updateGroupStatus,
   updatePrivateChatStatus,
 } from './chats.actions'
@@ -44,3 +45,4 @@ privateChats
     /^chat:(-?\d+):n-page:([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})$/,
   )
   .use(selectNotionDatabaseForChat)
+privateChats.callbackQuery(/^chat:(-\d+):watch-mode$/).use(toggleWatchMode)

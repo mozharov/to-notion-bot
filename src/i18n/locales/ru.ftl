@@ -21,6 +21,11 @@ chat-settings = {$type ->
             [private] Приватный
             [channel] Канал
             *[other] Групповой
+
+            <b>Режим отправки сообщений</b>: {$onlyMentionMode ->
+                [true] только сообщения с упоминанием бота (@{$botUsername})
+                *[other] все сообщения
+            }
         }
     }
     
@@ -52,6 +57,7 @@ chat-settings = {$type ->
         *[other] Изменить базу данных Notion
     }
     .back = Назад
+    .watch-mode = Переключить режим отправки сообщений
 
 chat-notion-settings = Выбери *Workspace* Notion для интеграции с {$type -> 
         [private] текущим чатом
@@ -167,6 +173,10 @@ plan = <b>Выбери тариф для оформления подписки</
 chat-is-not-active = ⚠️ <b>Чат не активирован</b>
     
     Активируй текущий чат с помощью команды /chats, чтобы отправлять сообщения в Notion
+
+notion-is-not-active = ⚠️ <b>База данных Notion не подключена</b>
+    
+    Необходимо подключить базу данных Notion в настройках чата
 
 broadcast = <b>Создание новой рассылки</b>
 

@@ -60,6 +60,7 @@ class ChatsService {
     title?: Chat['title']
     status?: Chat['status']
     type: Chat['type']
+    watchMode?: Chat['onlyMentionMode']
   }): Promise<Chat> {
     return this.repository.save(data)
   }

@@ -46,6 +46,9 @@ export class Chat {
   @Column({type: 'enum', enum: ['en', 'ru'], default: 'en'})
   languageCode: 'en' | 'ru'
 
+  @Column({default: false})
+  onlyMentionMode: boolean
+
   @CreateDateColumn({type: 'timestamp with time zone'})
   createdAt: Date
 
