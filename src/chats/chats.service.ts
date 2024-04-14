@@ -43,6 +43,13 @@ class ChatsService {
     }) as Promise<ActiveChat>
   }
 
+  public findActiveChatByTelegramId(telegramId: Chat['telegramId']): Promise<Chat | null> {
+    return this.repository.findOneBy({
+      telegramId,
+      status: 'active',
+    })
+  }
+
   public isActiveByTelegramId(telegramId: Chat['telegramId']): Promise<boolean> {
     return this.repository.existsBy({
       telegramId,

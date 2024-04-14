@@ -251,3 +251,5 @@ promocode = <b>Промокод активирован</b>
     .generating = Генерация кода...
     .list = <b>Список промокодов</b>
     .deleted = Промокод <code>{$code}</code> удален
+
+link-to-original = Переслано из Telegram

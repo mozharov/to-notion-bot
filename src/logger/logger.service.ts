@@ -75,5 +75,5 @@ export class LoggerService {
 }
 
 type Context = string | Record<string, unknown>
-type Message = string | (Record<string, unknown> & {message?: string; error?: unknown})
+type Message = string | (Record<string, unknown> & {message?: string; error?: unknown}) | null
 type Level = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'

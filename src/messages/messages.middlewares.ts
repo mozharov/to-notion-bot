@@ -9,7 +9,7 @@ const logger = new LoggerService('MessagesMiddlewares')
 
 export async function onlyActiveChat(ctx: Context, next: NextFunction): Promise<void> {
   if (!ctx.chat) return
-  const chat = await chatsService.getActiveChatByTelegramId(ctx.chat.id)
+  const chat = await chatsService.findActiveChatByTelegramId(ctx.chat.id)
   if (!chat) {
     if (ctx.chat.type === 'private') {
       await ctx.reply(ctx.t('chat-is-not-active'), {parse_mode: 'HTML'})

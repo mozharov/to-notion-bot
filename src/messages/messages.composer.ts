@@ -7,6 +7,7 @@ import {
   getSenderId,
   getSentAt,
   getFileType,
+  getLinkToOriginal,
 } from './messages.helper'
 import {LoggerService} from '../logger/logger.service'
 import {messagesService} from './messages.service'
@@ -57,6 +58,21 @@ messageContent.use(onlyActiveChat).use(async ctx => {
     const file = await filesService.saveFile(tgFile, fileType)
     const fileBlock = convertFileToNotionBlock(file)
     blocks.push(fileBlock)
+  }
+
+  const linkToOriginal = getLinkToOriginal(message)
+  if (linkToOriginal) {
+    blocks.push({
+      object: 'block',
+      paragraph: {
+        rich_text: [
+          {
+            text: {content: ctx.t('link-to-original'), link: {url: linkToOriginal}},
+            annotations: {italic: true},
+          },
+        ],
+      },
+    })
   }
 
   const notionService = new NotionService(chat.notionWorkspace.secretToken)
