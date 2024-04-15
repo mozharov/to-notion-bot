@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import NalogAPI from 'moy-nalog'
 import _ from 'lodash'
-import {ConfigService} from '../../config/config.service'
+import {config} from '../../config/config.service'
 import crypto from 'crypto'
 import {LoggerService} from '../../logger/logger.service'
 import {subscriptionsService} from '../../subscriptions/subscriptions.service'
@@ -35,7 +35,13 @@ tinkoffRouter.post('/tinkoff', async (req, res) => {
   // Check Notification Token
   const filteredData = _.omit(data, ['Receipt', 'Data', 'Token'])
   const tokenData = Object.entries(filteredData).map(value => ({[value[0]]: value[1]}))
-  tokenData.push({Password: `${ConfigService.tinkoffTerminalPassword}`})
+  const password = config.get('TINKOFF_TERMINAL_PASSWORD')
+  if (!password) {
+    logger.fatal('Tinkoff terminal password not configured')
+    res.sendStatus(500)
+    return
+  }
+  tokenData.push({Password: password})
   tokenData.sort((a, b) => {
     const keyA = Object.keys(a)[0]
     const keyB = Object.keys(b)[0]
@@ -71,12 +77,13 @@ tinkoffRouter.post('/tinkoff', async (req, res) => {
     if (payment.moyNalogReceiptId) {
       try {
         logger.info('Cancel receipt to Moy Nalog...')
-        if (!ConfigService.moyNalogLogin || !ConfigService.moyNalogPassword) {
-          logger.warn('Moy Nalog credentials not found')
-        } else {
+        const login = config.get('MOY_NALOG_LOGIN')
+        const password = config.get('MOY_NALOG_PASSWORD')
+        if (!login || !password) logger.warn('Moy Nalog credentials not found')
+        else {
           const nalog = new NalogAPI({
-            login: ConfigService.moyNalogLogin,
-            password: ConfigService.moyNalogPassword,
+            login,
+            password,
             autologin: true,
           })
           await nalog.call('cancel', {
@@ -102,13 +109,14 @@ tinkoffRouter.post('/tinkoff', async (req, res) => {
 
     let receiptURL = ''
 
-    if (!ConfigService.moyNalogLogin || !ConfigService.moyNalogPassword) {
-      logger.warn('Moy Nalog credentials not found')
-    } else {
+    const login = config.get('MOY_NALOG_LOGIN')
+    const password = config.get('MOY_NALOG_PASSWORD')
+    if (!login || !password) logger.warn('Moy Nalog credentials not found')
+    else {
       try {
         const nalog = new NalogAPI({
-          login: ConfigService.moyNalogLogin,
-          password: ConfigService.moyNalogPassword,
+          login,
+          password,
           autologin: true,
         })
         const receipt = await nalog.addIncome({

@@ -1,5 +1,5 @@
 import {Bot, Composer} from 'grammy'
-import {ConfigService} from './config/config.service'
+import {config} from './config/config.service'
 import {Context} from './context'
 import {startComposer} from './start/start.composer'
 import {i18nComposer} from './i18n/i18n.composer'
@@ -17,8 +17,18 @@ import {plansComposer} from './subscriptions/plans/plans.composer'
 import {referralComposer} from './referral/referral.composer'
 import {promocodesComposer} from './promocodes/promocodes.composer'
 
-export const bot = new Bot<Context>(ConfigService.botToken, {
-  botInfo: ConfigService.botInfo,
+export const bot = new Bot<Context>(config.get('BOT_TOKEN'), {
+  ...(!config.get('BOT_FETCH_INFO') && {
+    botInfo: {
+      id: config.get('BOT_ID'),
+      first_name: config.get('BOT_FIRST_NAME'),
+      username: config.get('BOT_USERNAME'),
+      is_bot: true,
+      can_join_groups: true,
+      can_read_all_group_messages: true,
+      supports_inline_queries: false,
+    },
+  }),
 })
 bot.api.config.use(autoRetry({retryOnInternalServerErrors: true}))
 

@@ -3,14 +3,14 @@ import {tinkoffRouter} from './tinkoff/router/tinkoff.router'
 import {walletRouter} from './wallet/router/wallet.router'
 import {filesRouter} from './files/router/files.router'
 import {bot} from './bot'
-import {ConfigService} from './config/config.service'
+import {config} from './config/config.service'
 import {LoggerService} from './logger/logger.service'
 import {webhookCallback} from 'grammy'
 
+const logger = new LoggerService('Server')
+
 // TODO: добавить обработчик ошибок и добавить библиотеку исправляющую ассинхронные ошибки
 export function launchServer(): void {
-  const logger = new LoggerService('Server')
-
   const app = express()
   app.use(express.json())
 
@@ -20,20 +20,19 @@ export function launchServer(): void {
 
   app.use(
     webhookCallback(bot, 'express', {
-      secretToken: ConfigService.webhookSecret,
+      secretToken: config.get('BOT_WEBHOOK_SECRET'),
       onTimeout(...args) {
         logger.fatal({
           error: args,
           message: 'Webhook timeout',
         })
       },
-      timeoutMilliseconds: ConfigService.webhookTimeout,
     }),
   )
 
-  app.listen(ConfigService.port, () => {
+  app.listen(config.get('PORT'), () => {
     logger.debug('Server started', {
-      port: ConfigService.port,
+      port: config.get('PORT'),
     })
   })
 }

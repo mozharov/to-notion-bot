@@ -1,4 +1,4 @@
-import {ConfigService} from '../config/config.service'
+import {config} from '../config/config.service'
 import * as winston from 'winston'
 import {jsonConsole, prettyConsole} from './logger.transports'
 
@@ -7,8 +7,8 @@ export class LoggerService {
   private context?: Context
 
   constructor(context?: Context) {
-    const loggerFormat = ConfigService.loggerFormat
-    const loggerLevel = ConfigService.loggerLevel
+    const loggerFormat = config.get('LOGGER_FORMAT')
+    const loggerLevel = config.get('LOGGER_LEVEL')
     const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace']
     this.logger = winston.createLogger({
       levels: {
@@ -77,3 +77,11 @@ export class LoggerService {
 type Context = string | Record<string, unknown>
 type Message = string | (Record<string, unknown> & {message?: string; error?: unknown}) | null
 type Level = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
+export enum LogLevel {
+  Fatal = 0,
+  Error = 1,
+  Warn = 2,
+  Info = 3,
+  Debug = 4,
+  Trace = 5,
+}

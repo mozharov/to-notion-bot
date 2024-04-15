@@ -3,7 +3,7 @@ import {LoggerService} from '../../logger/logger.service'
 import {filesService} from '../files.service'
 import superagent from 'superagent'
 import {bot} from '../../bot'
-import {ConfigService} from '../../config/config.service'
+import {config} from '../../config/config.service'
 
 const logger = new LoggerService('FilesRouter')
 
@@ -28,6 +28,6 @@ filesRouter.route('/file/:id/:fileId.:extension').get(async (req, res) => {
     message: 'File found',
     tgFile,
   })
-  const fileUrl = `https://api.telegram.org/file/bot${ConfigService.botToken}/${tgFile.file_path}`
+  const fileUrl = `https://api.telegram.org/file/bot${config.get('BOT_TOKEN')}/${tgFile.file_path}`
   return superagent(fileUrl).pipe(res)
 })

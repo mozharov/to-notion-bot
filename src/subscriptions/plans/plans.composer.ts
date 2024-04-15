@@ -7,7 +7,7 @@ import {usersService} from '../../users/users.service'
 import {walletService} from '../../wallet/wallet.service'
 import {createConversation} from '@grammyjs/conversations'
 import {tinkoffService} from '../../tinkoff/tinkoff.service'
-import {ConfigService} from '../../config/config.service'
+import {config} from '../../config/config.service'
 
 export const plansComposer = new Composer<Context>()
 
@@ -33,14 +33,14 @@ privateChats.callbackQuery(/^plan:(month|year)$/).use(async ctx => {
   const language = (await ctx.i18n.getLocale()) as 'ru' | 'en'
 
   const keyboard = new InlineKeyboard()
-  if (ConfigService.walletApiKey) {
+  if (config.get('WALLET_API_KEY')) {
     const walletPaymentUrl = await walletService.createOrder(plan.cents, description, user, plan)
     keyboard.row().add({
       url: walletPaymentUrl,
       text: ctx.t('plan.pay-wallet'),
     })
   }
-  if (ConfigService.tinkoffTerminalKey && ConfigService.tinkoffTerminalPassword) {
+  if (config.get('TINKOFF_TERMINAL_KEY') && config.get('TINKOFF_TERMINAL_PASSWORD')) {
     const tinkoffPaymentUrl = await tinkoffService.createOrder(
       plan.kopecks,
       user,

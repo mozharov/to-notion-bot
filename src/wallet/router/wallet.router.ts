@@ -1,7 +1,7 @@
 import {Router, Request, Response, NextFunction} from 'express'
 import crypto from 'crypto'
 import {LoggerService} from '../../logger/logger.service'
-import {ConfigService} from '../../config/config.service'
+import {config} from '../../config/config.service'
 import {paymentsService} from '../../payments/payments.service'
 import {subscriptionsService} from '../../subscriptions/subscriptions.service'
 import {chatsService} from '../../chats/chats.service'
@@ -29,7 +29,11 @@ walletRouter.route('/wallet').post(onlyFromIPs(walletIPs), async (req, res) => {
   const method = 'POST'
   const path = '/wallet'
   const body = JSON.stringify(req.body)
-  const secret = `${ConfigService.walletApiKey}`
+  const secret = config.get('WALLET_API_KEY')
+  if (!secret) {
+    logger.fatal('Wallet API key not configured')
+    return res.sendStatus(500)
+  }
   const message = `${method}.${path}.${timestamp}.${Buffer.from(body).toString('base64')}`
   const hash = crypto.createHmac('sha256', secret).update(message).digest('base64')
 

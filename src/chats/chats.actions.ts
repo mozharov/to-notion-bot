@@ -14,7 +14,7 @@ import {translate} from '../i18n/i18n.helper'
 import {NotionWorkspacesService} from '../notion/notion-workspaces/notion-workspaces.service'
 import {NotionService} from '../notion/notion.service'
 import {NotionDatabasesService} from '../notion/notion-databases/notion-databases.service'
-import {ConfigService} from '../config/config.service'
+import {config} from '../config/config.service'
 
 export async function activatePrivateChat(
   ctx: ChatTypeContext<Context, 'private'>,
@@ -102,7 +102,7 @@ export async function updateGroupStatus(
     if (!chat) {
       const type = ctx.myChatMember.chat.type === 'channel' ? 'channel' : 'group'
       const chats = await chatsService.countChatsByOwner(user)
-      if (chats >= ConfigService.maxChatsPerUser) {
+      if (chats >= config.get('MAX_CHATS_PER_USER')) {
         const text = translate('max-chats-reached', privateChat?.languageCode ?? 'en')
         await ctx.api.sendMessage(userId, text, {parse_mode: 'Markdown'}).catch(logSendMessageError)
         return

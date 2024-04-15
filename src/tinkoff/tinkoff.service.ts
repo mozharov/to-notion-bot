@@ -1,4 +1,4 @@
-import {ConfigService} from '../config/config.service'
+import {config} from '../config/config.service'
 import {LoggerService} from '../logger/logger.service'
 import {paymentsService} from '../payments/payments.service'
 import {Plan} from '../subscriptions/plans/entities/plan.entity'
@@ -34,7 +34,7 @@ class TinkoffService {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        TerminalKey: ConfigService.tinkoffTerminalKey,
+        TerminalKey: config.get('TINKOFF_TERMINAL_KEY'),
         Amount: amount,
         OrderId: payment.id,
         Language: language,

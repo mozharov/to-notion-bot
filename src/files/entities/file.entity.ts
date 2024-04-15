@@ -1,5 +1,5 @@
 import {Entity, PrimaryGeneratedColumn, CreateDateColumn, Column} from 'typeorm'
-import {ConfigService} from '../../config/config.service'
+import {config} from '../../config/config.service'
 
 @Entity()
 export class File {
@@ -19,6 +19,6 @@ export class File {
   createdAt: Date
 
   public get url(): string {
-    return `${ConfigService.botApiUrl}/file/${this.id}/${this.fileId}.${this.extension}`
+    return `${config.get('ORIGIN_DOMAIN')}/file/${this.id}/${this.fileId}.${this.extension}`
   }
 }

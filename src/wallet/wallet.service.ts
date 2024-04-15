@@ -1,5 +1,5 @@
 import {bot} from '../bot'
-import {ConfigService} from '../config/config.service'
+import {config} from '../config/config.service'
 import {LoggerService} from '../logger/logger.service'
 import {Payment} from '../payments/entities/payment.entity'
 import {paymentsService} from '../payments/payments.service'
@@ -13,7 +13,7 @@ class WalletService {
   private readonly apiKey: string
 
   constructor() {
-    this.apiKey = `${ConfigService.walletApiKey}`
+    this.apiKey = config.get('WALLET_API_KEY') ?? ''
   }
 
   /**
