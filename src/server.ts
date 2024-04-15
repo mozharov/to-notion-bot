@@ -9,6 +9,7 @@ import {LoggerService} from './logger/logger.service'
 import {webhookCallback} from 'grammy'
 import {broadcasterRouter} from './broadcaster/router/broadcaster.router'
 import {subscriptionsRouter} from './subscriptions/router/subscriptions.router'
+import {cryptoBotRouter} from './crypto-bot/router/crypto-bot.router'
 
 const logger = new LoggerService('Server')
 
@@ -21,6 +22,7 @@ export function launchServer(): void {
   app.use(filesRouter)
   app.use(broadcasterRouter)
   app.use(subscriptionsRouter)
+  app.use(cryptoBotRouter)
 
   app.use(
     webhookCallback(bot, 'express', {

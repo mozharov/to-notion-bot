@@ -25,8 +25,8 @@ export class Payment extends BaseEntity {
   @Column({type: 'enum', enum: ['pending', 'completed', 'failed'], default: 'pending'})
   status: 'pending' | 'completed' | 'failed'
 
-  @Column({type: 'enum', enum: ['card', 'wallet']})
-  type: 'card' | 'wallet'
+  @Column({type: 'enum', enum: ['card', 'wallet', 'crypto']})
+  type: 'card' | 'wallet' | 'crypto'
 
   @Column({type: 'varchar', nullable: true, default: null})
   walletOrderNumber: string | null

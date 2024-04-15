@@ -8,6 +8,7 @@ import {walletService} from '../../wallet/wallet.service'
 import {createConversation} from '@grammyjs/conversations'
 import {tinkoffService} from '../../tinkoff/tinkoff.service'
 import {config} from '../../config/config.service'
+import {cryptoBotService} from '../../crypto-bot/crypto-bot.service'
 
 export const plansComposer = new Composer<Context>()
 
@@ -34,23 +35,24 @@ privateChats.callbackQuery(/^plan:(month|year)$/).use(async ctx => {
 
   const keyboard = new InlineKeyboard()
   if (config.get('WALLET_API_KEY')) {
-    const walletPaymentUrl = await walletService.createOrder(plan.cents, description, user, plan)
+    const walletPaymentUrl = await walletService.createOrder(description, user, plan)
     keyboard.row().add({
       url: walletPaymentUrl,
       text: ctx.t('plan.pay-wallet'),
     })
   }
   if (config.get('TINKOFF_TERMINAL_KEY') && config.get('TINKOFF_TERMINAL_PASSWORD')) {
-    const tinkoffPaymentUrl = await tinkoffService.createOrder(
-      plan.kopecks,
-      user,
-      plan,
-      description,
-      language,
-    )
+    const tinkoffPaymentUrl = await tinkoffService.createOrder(user, plan, description, language)
     keyboard.row().add({
       url: tinkoffPaymentUrl,
       text: ctx.t('plan.pay-card'),
+    })
+  }
+  if (config.get('CRYPTO_BOT_API_KEY')) {
+    const invoiceUrl = await cryptoBotService.createInvoice(description, user, plan)
+    keyboard.row().add({
+      url: invoiceUrl,
+      text: ctx.t('plan.pay-crypto'),
     })
   }
 

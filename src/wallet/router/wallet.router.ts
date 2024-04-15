@@ -48,7 +48,7 @@ walletRouter.route('/wallet').post(onlyFromIPs(walletIPs), async (req, res) => {
     const payment = await paymentsService.findById(payload.externalId)
     if (!payment) {
       logger.error('Payment not found', {body: req.body})
-      return res.sendStatus(404)
+      return res.sendStatus(200)
     }
     if (type === 'ORDER_PAID') {
       logger.info('Payment success')
@@ -59,7 +59,7 @@ walletRouter.route('/wallet').post(onlyFromIPs(walletIPs), async (req, res) => {
       const chat = await chatsService.findChatByTelegramId(payment.user.telegramId)
       if (!chat) {
         logger.error('Chat not found', {body: req.body})
-        return res.sendStatus(404)
+        return res.sendStatus(200)
       }
       await bot.api
         .sendMessage(chat.telegramId, translate('pay-success', chat.languageCode))

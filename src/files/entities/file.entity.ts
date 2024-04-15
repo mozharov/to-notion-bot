@@ -19,6 +19,6 @@ export class File {
   createdAt: Date
 
   public get url(): string {
-    return `${config.get('ORIGIN_DOMAIN')}/file/${this.id}/${this.fileId}.${this.extension}`
+    return `https://${config.get('ORIGIN_DOMAIN')}/file/${this.id}/${this.fileId}.${this.extension}`
   }
 }

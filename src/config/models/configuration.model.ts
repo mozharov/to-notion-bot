@@ -140,4 +140,10 @@ export class Configuration {
   @IsInt()
   @Transform(({value}) => parseInt(value))
   MAX_SENDS_PER_USER: number
+
+  @Expose()
+  @IsOptional()
+  @IsString()
+  @Transform(({value}) => value || null)
+  CRYPTO_BOT_API_KEY: string | null
 }

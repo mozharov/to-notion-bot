@@ -9,19 +9,17 @@ const logger = new LoggerService('TinkoffService')
 
 class TinkoffService {
   /**
-   * @param amount - The amount of the order in kopecks.
-   * @param description - The description of the order for the user.
-   * @returns The URL of the payment page.
+   * @param description - The description of the order for the user
+   * @returns The URL of the payment page
    */
   public async createOrder(
-    amount: number,
     user: User,
     plan: Plan,
     description: string,
     language: 'ru' | 'en',
   ): Promise<string> {
     const payment = await paymentsService.createPayment({
-      amount,
+      amount: plan.kopecks,
       currency: 'RUB',
       type: 'card',
       user,
@@ -35,7 +33,7 @@ class TinkoffService {
       },
       body: JSON.stringify({
         TerminalKey: config.get('TINKOFF_TERMINAL_KEY'),
-        Amount: amount,
+        Amount: plan.kopecks,
         OrderId: payment.id,
         Language: language,
         Description: description,

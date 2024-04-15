@@ -17,18 +17,12 @@ class WalletService {
   }
 
   /**
-   * @param amount - The amount of the order in cents.
-   * @param description - The description of the order for the user.
-   * @returns The URL of the payment page.
+   * @param description - The description of the order for the user
+   * @returns The URL of the payment page
    */
-  public async createOrder(
-    amount: Payment['amount'],
-    description: string,
-    user: User,
-    plan: Plan,
-  ): Promise<string> {
+  public async createOrder(description: string, user: User, plan: Plan): Promise<string> {
     const payment = await paymentsService.createPayment({
-      amount,
+      amount: plan.cents,
       type: 'wallet',
       user,
       plan,
@@ -44,7 +38,7 @@ class WalletService {
       body: JSON.stringify({
         amount: {
           currencyCode: 'USD',
-          amount: (amount / 100).toFixed(2),
+          amount: plan.dollars.toFixed(2),
         },
         description,
         returnUrl: `https://t.me/${bot.botInfo.username}`,
