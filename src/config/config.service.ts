@@ -1,12 +1,13 @@
 import dotenv from 'dotenv'
+import {Configuration} from './models/configuration.model'
+import {plainToClass} from 'class-transformer'
+import {validateSync} from 'class-validator'
+
 dotenv.config({
   path: ['.env.local', '.env'],
   debug: process.env.NODE_ENV === 'development',
   override: false,
 })
-import {Configuration} from './models/configuration.model'
-import {plainToClass} from 'class-transformer'
-import {validateSync} from 'class-validator'
 
 export class ConfigService {
   private readonly config: Configuration

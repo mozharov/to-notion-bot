@@ -30,3 +30,5 @@ declare module 'moy-nalog' {
 
   export = NalogAPI
 }
+
+declare module 'express-async-errors'

@@ -8,6 +8,7 @@ import {subscriptionsService} from '../../subscriptions/subscriptions.service'
 import {chatsService} from '../../chats/chats.service'
 import {bot} from '../../bot'
 import {paymentsService} from '../../payments/payments.service'
+import {translate} from '../../i18n/i18n.helper'
 
 type TinkoffPaymentNotification = {
   TerminalKey: string
@@ -32,20 +33,15 @@ export const tinkoffRouter = Router()
 tinkoffRouter.post('/tinkoff', async (req, res) => {
   const data = req.body as unknown as TinkoffPaymentNotification
 
-  // Check Notification Token
   const filteredData = _.omit(data, ['Receipt', 'Data', 'Token'])
   const tokenData = Object.entries(filteredData).map(value => ({[value[0]]: value[1]}))
   const password = config.get('TINKOFF_TERMINAL_PASSWORD')
-  if (!password) {
-    logger.fatal('Tinkoff terminal password not configured')
-    res.sendStatus(500)
-    return
-  }
+  if (!password) throw new Error('Terminal password not found')
   tokenData.push({Password: password})
   tokenData.sort((a, b) => {
     const keyA = Object.keys(a)[0]
     const keyB = Object.keys(b)[0]
-    if (!keyA || !keyB) return 0
+    if (!keyA || !keyB) throw new Error('Invalid token')
     if (keyA < keyB) return -1
     if (keyA > keyB) return 1
     return 0
@@ -54,12 +50,6 @@ tinkoffRouter.post('/tinkoff', async (req, res) => {
   const tokenStringData = tokenStringArray.join('')
   const tokenHash = crypto.createHash('sha256').update(tokenStringData).digest('hex')
   if (tokenHash !== data.Token) throw new Error('Invalid token')
-
-  if (!data.Success || data.ErrorCode !== '0') {
-    if (data.ErrorCode === '1051') {
-      logger.info('Payment was not successful. Insufficient balance.')
-    } else logger.error('Payment was not successful', {data})
-  }
 
   const payment = await paymentsService.findById(data.OrderId)
   if (!payment) {
@@ -132,21 +122,16 @@ tinkoffRouter.post('/tinkoff', async (req, res) => {
     }
 
     const chat = await chatsService.findChatByTelegramId(payment.user.telegramId)
-    const receiptText =
-      chat?.languageCode === 'ru'
-        ? `(<a href="${receiptURL}">чек</a>)`
-        : `(<a href="${receiptURL}">receipt</a>)`
-    const successSubscriptionText =
-      chat?.languageCode === 'ru'
-        ? `✅ <b>Платеж прошел успешно!</b> ${
-            receiptURL && receiptText
-          }\n\nСтатус подписки можно отследить по команде /subscription`
-        : `✅ <b>The payment was successful!</b> ${
-            receiptURL && receiptText
-          }\n\nThe subscription status can be tracked by the command /subscription`
 
     await bot.api
-      .sendMessage(payment.user.telegramId, successSubscriptionText, {parse_mode: 'HTML'})
+      .sendMessage(
+        payment.user.telegramId,
+        translate('pay-success', chat?.languageCode ?? 'en', {
+          receiptURL,
+          hasReceipt: (!!receiptURL).toString(),
+        }),
+        {parse_mode: 'HTML'},
+      )
       .catch(logger.error)
     logger.info('Payment was successful')
   }
