@@ -18,12 +18,14 @@ class PaymentsService {
     type: Payment['type']
     user: Payment['user']
     plan: Payment['plan']
+    currency: Payment['currency']
   }): Promise<Payment> {
     const payment = new Payment()
     payment.amount = data.amount
     payment.type = data.type
     payment.user = data.user
     payment.plan = data.plan
+    payment.currency = data.currency
     return this.repository.save(payment)
   }
 }

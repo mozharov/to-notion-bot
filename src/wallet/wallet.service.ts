@@ -13,7 +13,7 @@ class WalletService {
   private readonly apiKey: string
 
   constructor() {
-    this.apiKey = ConfigService.walletApiKey
+    this.apiKey = `${ConfigService.walletApiKey}`
   }
 
   /**
@@ -32,6 +32,7 @@ class WalletService {
       type: 'wallet',
       user,
       plan,
+      currency: 'USD',
     })
     const response = await fetch('https://pay.wallet.tg/wpay/store-api/v1/order', {
       method: 'POST',

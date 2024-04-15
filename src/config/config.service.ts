@@ -33,8 +33,12 @@ type Configuration = {
   WEBHOOK_TIMEOUT: number
   MAX_NOTION_WORKSPACES_PER_USER: number
   BOT_API_URL: string
-  WALLET_API_KEY: string
+  WALLET_API_KEY?: string
   ADMIN_TELEGRAM_ID: number
+  TINKOFF_TERMINAL_KEY?: string
+  TINKOFF_TERMINAL_PASSWORD?: string
+  MOY_NALOG_LOGIN?: string
+  MOY_NALOG_PASSWORD?: string
 }
 
 export class ConfigService {
@@ -63,8 +67,12 @@ export class ConfigService {
       WEBHOOK_TIMEOUT: Joi.number().default(30000),
       MAX_NOTION_WORKSPACES_PER_USER: Joi.number().default(90),
       BOT_API_URL: Joi.string().default('http://localhost:8443/'),
-      WALLET_API_KEY: Joi.string().required(),
+      WALLET_API_KEY: Joi.optional(),
       ADMIN_TELEGRAM_ID: Joi.number().required(),
+      TINKOFF_TERMINAL_KEY: Joi.optional(),
+      TINKOFF_TERMINAL_PASSWORD: Joi.optional(),
+      MOY_NALOG_LOGIN: Joi.optional().not().empty(),
+      MOY_NALOG_PASSWORD: Joi.optional().not().empty(),
     }).validate(process.env, {
       stripUnknown: true,
     })
@@ -164,10 +172,26 @@ export class ConfigService {
   }
 
   public static get walletApiKey(): Configuration['WALLET_API_KEY'] {
-    return process.env.WALLET_API_KEY as Configuration['WALLET_API_KEY']
+    return process.env.WALLET_API_KEY
   }
 
   public static get adminTelegramId(): Configuration['ADMIN_TELEGRAM_ID'] {
     return Number(process.env.ADMIN_TELEGRAM_ID)
+  }
+
+  public static get tinkoffTerminalKey(): Configuration['TINKOFF_TERMINAL_KEY'] {
+    return process.env.TINKOFF_TERMINAL_KEY
+  }
+
+  public static get tinkoffTerminalPassword(): Configuration['TINKOFF_TERMINAL_PASSWORD'] {
+    return process.env.TINKOFF_TERMINAL_PASSWORD
+  }
+
+  public static get moyNalogLogin(): Configuration['MOY_NALOG_LOGIN'] {
+    return process.env.MOY_NALOG_LOGIN
+  }
+
+  public static get moyNalogPassword(): Configuration['MOY_NALOG_PASSWORD'] {
+    return process.env.MOY_NALOG_PASSWORD
   }
 }
