@@ -8,6 +8,7 @@ import {config} from './config/config.service'
 import {LoggerService} from './logger/logger.service'
 import {webhookCallback} from 'grammy'
 import {broadcasterRouter} from './broadcaster/router/broadcaster.router'
+import {subscriptionsRouter} from './subscriptions/router/subscriptions.router'
 
 const logger = new LoggerService('Server')
 
@@ -19,6 +20,7 @@ export function launchServer(): void {
   app.use(walletRouter)
   app.use(filesRouter)
   app.use(broadcasterRouter)
+  app.use(subscriptionsRouter)
 
   app.use(
     webhookCallback(bot, 'express', {

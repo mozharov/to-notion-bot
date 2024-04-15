@@ -1,4 +1,4 @@
-import {MoreThan, Repository} from 'typeorm'
+import {Between, MoreThan, Repository} from 'typeorm'
 import {DataSource} from '../typeorm/typeorm.data-source'
 import {Subscription} from './entities/subscription.entity'
 import {User} from '../users/entities/user.entity'
@@ -8,6 +8,18 @@ class SubscriptionsService {
 
   constructor() {
     this.repository = DataSource.getRepository(Subscription)
+  }
+
+  public async getSubscriptionsByEndsAtDay(endsAt: Date): Promise<Subscription[]> {
+    const startOfDay = new Date(endsAt)
+    startOfDay.setHours(0, 0, 0, 0)
+    const endOfDay = new Date(startOfDay)
+    endOfDay.setDate(endOfDay.getDate() + 1)
+    endOfDay.setMilliseconds(endOfDay.getMilliseconds() - 1)
+    return this.repository.find({
+      where: {endsAt: Between(startOfDay, endOfDay), isActive: true},
+      order: {endsAt: 'ASC'},
+    })
   }
 
   public async findActiveSubscriptionByUser(user: User): Promise<Subscription | null> {
