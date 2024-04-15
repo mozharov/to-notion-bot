@@ -23,12 +23,11 @@ class SubscriptionsService {
   }
 
   public async findActiveSubscriptionByUser(user: User): Promise<Subscription | null> {
-    const result = await this.repository.find({
+    const result = await this.repository.findOne({
       where: {user: {id: user.id}, isActive: true, endsAt: MoreThan(new Date())},
       order: {endsAt: 'DESC'},
-      take: 1,
     })
-    return result[0] ?? null
+    return result
   }
 
   public async giveDaysToUser(user: User, days: number): Promise<Subscription> {

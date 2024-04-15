@@ -1,12 +1,26 @@
-import {Equal, Or, Repository} from 'typeorm'
+import {Between, Equal, Or, Repository} from 'typeorm'
 import {DataSource} from '../typeorm/typeorm.data-source'
 import {Message} from './entities/message.entity'
+import {User} from '../users/entities/user.entity'
 
 class MessagesService {
   private readonly repository: Repository<Message>
 
   constructor() {
     this.repository = DataSource.getRepository(Message)
+  }
+
+  public countMessagesForCurrentMonthByOwner(owner: User): Promise<number> {
+    const startOfMonth = new Date()
+    startOfMonth.setDate(1)
+    startOfMonth.setHours(0, 0, 0, 0)
+    const endOfMonth = new Date(startOfMonth)
+    endOfMonth.setMonth(endOfMonth.getMonth() + 1)
+    endOfMonth.setMilliseconds(endOfMonth.getMilliseconds() - 1)
+    return this.repository.countBy({
+      chat: {owner: {id: owner.id}},
+      createdAt: Between(startOfMonth, endOfMonth),
+    })
   }
 
   public findOne(where: Partial<Message>): Promise<Message | null> {

@@ -135,4 +135,9 @@ export class Configuration {
   @IsString()
   @IsNotEmpty()
   ORIGIN_DOMAIN: string
+
+  @Expose()
+  @IsInt()
+  @Transform(({value}) => parseInt(value))
+  MAX_SENDS_PER_USER: number
 }

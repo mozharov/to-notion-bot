@@ -2,6 +2,7 @@ import {ChatTypeContext, InlineKeyboard} from 'grammy'
 import {Context} from '../context'
 import {usersService} from '../users/users.service'
 import {subscriptionsService} from './subscriptions.service'
+import {config} from '../config/config.service'
 
 export async function showSubscriptionStatus(
   ctx: ChatTypeContext<Context, 'private'>,
@@ -19,6 +20,7 @@ export async function showSubscriptionStatus(
       status: String(subscription?.isActive),
       endsAt: subscription?.endsAt ?? 'N/A',
       daysLeft: subscription?.daysLeft ?? 'N/A',
+      messagesLimit: config.get('MAX_SENDS_PER_USER'),
     }),
     {reply_markup: keyboard, parse_mode: 'HTML'},
   )
