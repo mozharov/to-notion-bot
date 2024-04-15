@@ -7,6 +7,7 @@ import {bot} from './bot'
 import {config} from './config/config.service'
 import {LoggerService} from './logger/logger.service'
 import {webhookCallback} from 'grammy'
+import {broadcasterRouter} from './broadcaster/router/broadcaster.router'
 
 const logger = new LoggerService('Server')
 
@@ -17,6 +18,7 @@ export function launchServer(): void {
   app.use(tinkoffRouter)
   app.use(walletRouter)
   app.use(filesRouter)
+  app.use(broadcasterRouter)
 
   app.use(
     webhookCallback(bot, 'express', {

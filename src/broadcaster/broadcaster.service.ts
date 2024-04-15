@@ -13,6 +13,10 @@ class BroadcasterService {
     return this.repository.count()
   }
 
+  public async getBroadcastings(limit: number): Promise<Broadcasting[]> {
+    return this.repository.find({take: limit, order: {createdAt: 'ASC'}})
+  }
+
   public async createBroadcasting(
     telegramUserIds: number[],
     telegramMessageId: number,
