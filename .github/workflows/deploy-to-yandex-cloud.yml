@@ -65,3 +65,5 @@ jobs:
             DB_PASSWORD=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_PASSWORD
             DB_NAME=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_NAME
             WALLET_API_KEY=e6qhpb3nvbtsaatbbjqf/e6qce5n6s2ovej5rbe80/WALLET_API_KEY
+            TINKOFF_TERMINAL_KEY=e6qibj2l94va1cj0rjl4/e6qj3espk603oe8g048i/TINKOFF_TERMINAL_KEY
+            TINKOFF_TERMINAL_PASSWORD=e6qibj2l94va1cj0rjl4/e6qj3espk603oe8g048i/TINKOFF_TERMINAL_PASSWORD

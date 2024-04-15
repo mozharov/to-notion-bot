@@ -7,6 +7,7 @@ import {usersService} from '../../users/users.service'
 import {walletService} from '../../wallet/wallet.service'
 import {createConversation} from '@grammyjs/conversations'
 import {tinkoffService} from '../../tinkoff/tinkoff.service'
+import {ConfigService} from '../../config/config.service'
 
 export const plansComposer = new Composer<Context>()
 
@@ -24,30 +25,34 @@ onlyAdmin.callbackQuery('set-price:cancel').use(async ctx => {
   await ctx.deleteMessage()
 })
 
-// TODO: если wallet или tinkoff нет в ConfigService, то этот способ оплаты выключаем
 privateChats.callbackQuery(/^plan:(month|year)$/).use(async ctx => {
   const planName = String(ctx.callbackQuery.data.split(':')[1]) as 'month' | 'year'
   const plan = await plansService.getPlanByName(planName)
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const description = ctx.t('plan.description', {months: planName === 'month' ? 1 : 12})
-  const walletPaymentUrl = await walletService.createOrder(plan.cents, description, user, plan)
   const language = (await ctx.i18n.getLocale()) as 'ru' | 'en'
-  const tinkoffPaymentUrl = await tinkoffService.createOrder(
-    plan.kopecks,
-    user,
-    plan,
-    description,
-    language,
-  )
+
   const keyboard = new InlineKeyboard()
-    .add({
+  if (ConfigService.walletApiKey) {
+    const walletPaymentUrl = await walletService.createOrder(plan.cents, description, user, plan)
+    keyboard.row().add({
       url: walletPaymentUrl,
       text: ctx.t('plan.pay-wallet'),
     })
-    .add({
+  }
+  if (ConfigService.tinkoffTerminalKey && ConfigService.tinkoffTerminalPassword) {
+    const tinkoffPaymentUrl = await tinkoffService.createOrder(
+      plan.kopecks,
+      user,
+      plan,
+      description,
+      language,
+    )
+    keyboard.row().add({
       url: tinkoffPaymentUrl,
       text: ctx.t('plan.pay-card'),
     })
+  }
 
   await ctx.editMessageText(ctx.t('plan.pay', {price: plan.dollars}), {
     reply_markup: keyboard,
