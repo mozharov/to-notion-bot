@@ -9,11 +9,14 @@
 
 Domain and SSL certificate are required to set up a webhook.
 
-Use ngrok to create a public URL for the bot in development.
+Use ngrok to create a public URL in development.
 
 ```bash
+# Authenticate
 ngrok config add-authtoken <authtoken>
-ngrok http 8443
+
+# Start ngrok
+ngrok http 8443 --domain <domain_name>
 ```
 
 Send a POST request to Bot API to set a webhook url.

@@ -1,3 +1,9 @@
+import dotenv from 'dotenv'
+dotenv.config({
+  path: ['.env.local', '.env'],
+  debug: process.env.NODE_ENV === 'development',
+  override: false,
+})
 import * as Joi from 'joi'
 import {LoggerService} from '../logger/logger.service'
 import {UserFromGetMe} from 'grammy/types'
