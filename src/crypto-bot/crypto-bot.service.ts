@@ -33,8 +33,8 @@ class CryptoBotService {
       type: 'crypto',
     })
     const body = {
-      currency_type: 'crypto',
-      asset: 'USDT',
+      currency_type: 'fiat',
+      fiat: 'USD',
       amount: plan.dollars.toString(),
       description,
       paid_btn_name: 'openBot',

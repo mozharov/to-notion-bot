@@ -62,7 +62,13 @@ walletRouter.route('/wallet').post(onlyFromIPs(walletIPs), async (req, res) => {
         return res.sendStatus(200)
       }
       await bot.api
-        .sendMessage(chat.telegramId, translate('pay-success', chat.languageCode))
+        .sendMessage(
+          chat.telegramId,
+          translate('pay-success', chat.languageCode, {
+            hasReceipt: 'false',
+          }),
+          {parse_mode: 'HTML'},
+        )
         .catch(logger.error)
     } else if (type === 'ORDER_FAILED') {
       logger.info('Payment failed')
