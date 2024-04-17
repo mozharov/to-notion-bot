@@ -34,21 +34,18 @@ cryptoBotRouter.route('/crypto-bot').post(async (req, res) => {
       res.sendStatus(200)
       return
     }
+    const chat = await chatsService.findChatByTelegramId(payment.user.telegramId)
+    if (!chat) logger.error('Chat not found', {body: req.body})
     if (body.payload.status === 'paid') {
       const days = payment.plan.name === 'month' ? 30 : 360
       payment.status = 'completed'
       await payment.save()
       await subscriptionsService.giveDaysToUser(payment.user, days)
-      const chat = await chatsService.findChatByTelegramId(payment.user.telegramId)
-      if (!chat) {
-        logger.error('Chat not found', {body: req.body})
-        res.sendStatus(200)
-        return
-      }
+
       await bot.api
         .sendMessage(
-          chat.telegramId,
-          translate('pay-success', chat.languageCode, {hasReceipt: 'false'}),
+          payment.user.telegramId,
+          translate('pay-success', chat?.languageCode, {hasReceipt: 'false'}),
           {parse_mode: 'HTML'},
         )
         .catch(logger.error)
@@ -56,8 +53,17 @@ cryptoBotRouter.route('/crypto-bot').post(async (req, res) => {
     } else if (body.payload.status === 'expired') {
       payment.status = 'failed'
       await payment.save()
-    } else logger.error('Invalid status', {body})
-  } else logger.error('Invalid payload', {body})
+    } else {
+      logger.error('Invalid status', {body})
+      await bot.api
+        .sendMessage(payment.user.telegramId, translate('pay-failed', chat?.languageCode), {
+          parse_mode: 'HTML',
+        })
+        .catch(logger.error)
+    }
+  } else {
+    logger.error('Invalid payload', {body})
+  }
 
   res.sendStatus(200)
 })

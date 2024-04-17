@@ -43,11 +43,15 @@ messageContent
   .use(checkSubscription)
   .use(async ctx => {
     logger.debug('Message received')
+    await ctx.replyWithChatAction('typing')
     const senderId = getSenderId(ctx)
     const sentAt = getSentAt(ctx)
     const chat = await chatsService.getActiveChatByTelegramId(ctx.chat.id)
     const message = ctx.message ?? ctx.channelPost
     const prevMessage = await getPrevMessage(message, chat)
+    const isUpdate = !!prevMessage
+    const silentMode = (!message.reply_to_message && isUpdate) || chat.silentMode
+    if (!silentMode) await ctx.replyWithChatAction('typing')
 
     const text = message.text ?? message.caption
     const title = truncateTextForTitle(text ?? ctx.t('new-file'))
@@ -97,7 +101,5 @@ messageContent
       sentAt,
     })
 
-    const isUpdate = !!prevMessage
-    const silentMode = (!message.reply_to_message && isUpdate) || chat.silentMode
     return notifyUser(ctx, message.message_id, chat, isUpdate, silentMode, notionPageId)
   })

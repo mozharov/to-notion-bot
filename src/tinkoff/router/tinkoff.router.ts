@@ -31,7 +31,7 @@ const logger = new LoggerService('TinkoffRouter')
 export const tinkoffRouter = Router()
 
 tinkoffRouter.post('/tinkoff', async (req, res) => {
-  const data = req.body as unknown as TinkoffPaymentNotification
+  const data = req.body as TinkoffPaymentNotification
 
   const filteredData = _.omit(data, ['Receipt', 'Data', 'Token'])
   const tokenData = Object.entries(filteredData).map(value => ({[value[0]]: value[1]}))
@@ -57,10 +57,17 @@ tinkoffRouter.post('/tinkoff', async (req, res) => {
     res.sendStatus(200)
     return
   }
+  const chat = await chatsService.findChatByTelegramId(payment.user.telegramId)
+  if (!chat) logger.error('Chat was not found')
 
   if (data.Status === 'REJECTED') {
     payment.status = 'failed'
     await payment.save()
+    await bot.api
+      .sendMessage(payment.user.telegramId, translate('pay-failed', chat?.languageCode), {
+        parse_mode: 'HTML',
+      })
+      .catch(logger.error)
     logger.info('Payment was rejected')
   } else if (data.Status === 'REFUNDED') {
     // TODO: пока ничего не делаем, но потом надо либо отменять подписку и сообщать пользователю
@@ -121,12 +128,10 @@ tinkoffRouter.post('/tinkoff', async (req, res) => {
       }
     }
 
-    const chat = await chatsService.findChatByTelegramId(payment.user.telegramId)
-
     await bot.api
       .sendMessage(
         payment.user.telegramId,
-        translate('pay-success', chat?.languageCode ?? 'en', {
+        translate('pay-success', chat?.languageCode, {
           receiptURL,
           hasReceipt: (!!receiptURL).toString(),
         }),

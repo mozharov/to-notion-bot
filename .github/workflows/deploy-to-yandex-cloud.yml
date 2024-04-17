@@ -54,8 +54,8 @@ jobs:
           revision-env: |
             NODE_ENV=production
             DB_SYNCHRONIZE=true
-            FILE_PATH=https://bot.notion-inbox.online/file/
             ADMIN_TELEGRAM_ID=1033924450
+            ORIGIN_DOMAIN=bba455u7kka4uvp9ljfh.containers.yandexcloud.net
           revision-secrets: |
             BOT_TOKEN=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/to_notion_robot_token
             WEBHOOK_SECRET=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/webhook_secret
@@ -67,3 +67,4 @@ jobs:
             WALLET_API_KEY=e6qhpb3nvbtsaatbbjqf/e6qce5n6s2ovej5rbe80/WALLET_API_KEY
             TINKOFF_TERMINAL_KEY=e6qibj2l94va1cj0rjl4/e6qj3espk603oe8g048i/TINKOFF_TERMINAL_KEY
             TINKOFF_TERMINAL_PASSWORD=e6qibj2l94va1cj0rjl4/e6qj3espk603oe8g048i/TINKOFF_TERMINAL_PASSWORD
+            CRYPTO_BOT_API_KEY=e6q9s7hv47v9dtlsa5h0/e6q7vhqeamrs1ckoaib3/CRYPTO_BOT_API_KEY

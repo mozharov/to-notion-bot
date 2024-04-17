@@ -1,240 +1,268 @@
 bot-name = To Notion Bot
 
-start = Привет!
-    <b>Я бот для моментальной отправки любого контента из Telegram в Notion.</b>
+start = Hello!
+    <b>I'm a bot for instant content transfer from Telegram to Notion.</b>
     
-    Для начала, давай выберем чат из которого я буду отправлять контент в Notion.
+    Let's select a chat where I will send the content to Notion.
 
-select-chat = *Это твои подключенные чаты*
+select-chat = *These are your connected chats*
     
-    Добавь меня в группу или канал в качестве админа, чтобы чат появился в списке
-    .private-chat = Текущий чат
-    .add-group = Добавить групповой чат
+    Add me to a group or channel as an admin so the chat will appear in the list
+    .private-chat = Current chat
+    .add-group = Add chat
+
 
 chat-settings = {$type ->
-        [private] <b>Настройка текущего чата</b>
-        *[other] <b>Настройка чата</b>
+        [private] <b>Current chat settings</b>
+        *[other] <b>Chat settings</b>
             
-            <b>Название</b>: {$title}
+            <b>Name</b>: {$title}
 
-            <b>Тип</b>: {$type -> 
-            [private] Приватный
-            [channel] Канал
-            *[other] Групповой
-        }
+            <b>Type</b>: {$type -> 
+                [private] Private
+                [channel] Channel
+                *[other] Group
+
+                <b>Message sending mode</b>: {$onlyMentionMode ->
+                    [true] Only messages with a mention to the bot (@{$botUsername})
+                    *[other] All messages
+                }
+            }
+    }
+
+    <b>Silent mode:</b> {$silentMode -> 
+        [true] Set reaction ⚡️ to messages
+        *[other] Answer with a link to the saved content
     }
     
-    <b>Статус</b>: {$status ->
-        [blocked] 🚫 Недоступен
+    <b>Status</b>: {$status ->
+        [blocked] 🚫 Unavailable
             
-            ⚠️  Добавь меня в чат в качестве админа, чтобы он снова стал доступен
-        [active] 🟢 Активирован
-       *[other] 🔴 Деактивирован
+            ⚠️  Add me to a chat as an admin so it becomes available again
+        [active] 🟢 Activated
+       *[other] 🔴 Deactivated
     }
-
-    <b>База данных Notion</b>: {$database -> 
-        [null] 🔴 Не подключена
-        [inactive] 🔴 Проблема с подключением
+    
+    <b>Notion Database</b>: {$database -> 
+        [null] 🔴 Not connected
+        [inactive] 🔴 Connection problem
             
-            ⚠️  Попробуй обновить подключение к базе данных Notion
+            ⚠️  Try to update the Notion integration with the command /workspaces
         *[other] 🟢 {$database}
     }
-    .activate = Активировать
-    .deactivate = Деактивировать
-    .delete = Удалить
-    .deleted = Чат "{$title}" удален
-    .language = Язык: {$language -> 
-        [ru] Русский
+    .activate = Activate
+    .deactivate = Deactivate
+    .delete = Delete
+    .deleted = Chat "{$title}" deleted
+    .language = Language: {$language -> 
+        [ru] Russian
         *[other] English
     }
     .notion = {$database ->
-        [null] Подключить базу данных Notion
-        *[other] Изменить базу данных Notion
+        [null] Connect Notion database
+        *[other] Change Notion database
     }
-    .back = Назад
-
-chat-notion-settings = Выбери *Workspace* Notion для интеграции с {$type -> 
-        [private] текущим чатом
-        *[other] чатом "*{$title}*"
+    .back = Back
+    .watch-mode = Toggle message sending mode
+    .silent-mode = Silent mode: {$silentMode -> 
+        [true] Enabled
+        *[other] Disabled
     }
-    .add = Добавить новый Workspace Notion
-    .back = Назад
-    .pages = *Выбери базу данных Notion в которую я буду отправлять контент*
 
-        Если ты не видишь в этом списке необходимую базу данных, то попробуй обновить интеграцию с Notion с помощью команды /workspaces
-
-max-chats-reached = *Ты достиг лимита по количеству подключенных чатов*
-    Удали один из подключенных чатов, чтобы добавить новый
-
-chat-blocked = *Чат "{$title}" более недоступен*
-    Добавь меня в чат в качестве админа, чтобы он снова стал доступен
-
-chat-unblocked = *Добавлен чат "{$title}"*
-    Используй команду /chats, чтобы настроить его
-
-unknown-callback-query = Устаревшая кнопка
-
-workspaces = *Это твои Workspaces в Notion*
-
-    Ты можешь добавить интеграцию с новым *Workspace* или обновить доступные базы данных в уже активных интеграциях
-    .add = Добавить или обновить интеграцию
-
-workspace-settings = Интеграция с <b>Workspace</b> в Notion
-
-    <b>Название</b>: {$name}
-
-    <b>Подключено чатов</b>: {$chats}
-
-    <b>Статус</b>: {$status ->
-        [active] 🟢 активна
-       *[other] 🔴 проблема с подключением
+chat-notion-settings = Select a *Workspace* in Notion for integration with {$type -> 
+        [private] current chat
+        *[other] chat "*{$title}"
     }
-    .delete = Удалить
-    .deleted = Интеграция с Workspace "{$name}" удалена
-    .back = Назад
+    .add = Add new Workspace
+    .back = Back
+    .pages = *Select a Notion database where I will send the content*
+
+        If you do not see the necessary database in this list, try to update the Notion integration with the command /workspaces
+
+max-chats-reached = *You have reached the limit of connected chats*
+    Delete one of the connected chats to add a new one
+
+chat-blocked = *The chat "{$title}" is no longer available*
+    Add me to a chat as an admin so it becomes available again
+
+chat-unblocked = *The chat "{$title}" has been added*
+    Use the command /chats to configure it
+
+unknown-callback-query = Outdated button
+
+workspaces = *These are your Workspaces in Notion*
+
+    You can add integration with a new *Workspace* or update available databases in already active integrations
+    .add = Add or update integration
+
+workspace-settings = Integration with a *Workspace* in Notion
+
+    <b>Name</b>: {$name}
+
+    <b>Connected chats</b>: {$chats}
+
+    <b>Status</b>: {$status ->
+        [active] 🟢 Active
+       *[other] 🔴 Connection problem
+    }
+    .delete = Delete
+    .deleted = Workspace integration "{$name}" deleted
+    .back = Back
 
 new-message = {$isUpdate -> 
-        [false] <b>Создана <a href="{$url}">новая страница</a> в базе данных Notion</b>
-       *[other] <b>Обновлена <a href="{$url}">страница</a> в базе данных Notion</b>
+        [false] <b>A new page <a href="{$url}">has been created</a> in Notion database</b>
+       *[other] <b>The page <a href="{$url}">has been updated</a> in Notion database</b>
     }
 
-help = <b>Как использовать бота</b>
+help = <b>How to use the bot</b>
 
-    <b>1.</b> Добавь бота в группу или канал в качестве админа
-    <b>2.</b> Используй команду /chats и выбери нужный чат, чтобы открыть его настройки
-    <b>3.</b> Подключи базу данных Notion в настройках чата
-    <b>4.</b> Нажми "{chat-settings.activate}" в настройках чата
-    <b>5.</b> Отправь сообщение в настроенный чат, чтобы отправить содержимое сообщения в Notion
+    <b>1.</b> Add the bot to a group or channel as an admin
+    <b>2.</b> Use the /chats command and select a chat to open its settings
+    <b>3.</b> Connect the Notion database in the chat settings
+    <b>4.</b> Press "{chat-settings.activate}" in the chat settings
+    <b>5.</b> Send a message to the selected chat to send its content to Notion
 
-    <b>Чат по боту:</b> @to_notion_chat
-    <b>Автор бота:</b> @vmozharov
+    <b>Chat bot:</b> @to_notion_chat
+    <b>Author:</b> @vmozharov
 
-    Если у тебя возникли вопросы или проблемы, то напиши их в наш чат или напрямую автору бота.
+    If you have any questions or problems, you can write them in our chat or directly to the bot author.
 
-error-not-found = ⚠️ Не удалось найти необходимую базу данных или страницу Notion
+error-not-found = ⚠️ Failed to find the necessary Notion database or page
 
-    Попробуйте обновить интеграцию с Notion в настройках чата
+    Try to update the Notion integration with the command /workspaces
 
-error-too-big-file = ⚠️ Размер файла превышает максимально допустимый размер
+error-too-big-file = ⚠️ The file size exceeds the maximum allowed size
 
-    Попробуй отправить файл меньшего размера
+    Try to send a file of a smaller size
 
-new-file = Какой-то файл
+new-file = Some file
 
-new-user = 🎁 Кстати, даю тебе <b>{$months -> 
-    [1] 1 месяц
-    *[2] {$months} месяца
-    } премиум подписки бесплатно</b>, чтобы ты мог полноценно опробовать мои возможности
-    .status = Посмотреть статус подписки
+new-user = 🎁 By the way, I give you <b>{$months -> 
+    [1] 1 month
+    *[2] {$months} months
+    } premium subscription for free</b>, to fully explore my capabilities
+    .status = Check your subscription status
 
-subscription = <b>Статус твоей подписки:</b> {$status -> 
-        [true] 🟢 Активна
-       *[other] 🔴 Не активна
+subscription = <b>Your subscription status:</b> {$status -> 
+        [true] 🟢 Active
+       *[other] 🔴 Not active
     }
 
-    <b>Твои возможности:</b> 
+    <b>Your capabilities:</b> 
     {$status -> 
         [true] 
-            • неограниченное количество любых подключенных чатов
-            • неограниченное количество отправок сообщений в Notion
+            • unlimited number of connected chats
+            • unlimited number of messages in Notion
 
-            <b>Дата окончания:</b> {DATETIME($endsAt)} <i>(осталось {$daysLeft} дней)</i>
+            <b>Expiration date:</b> {DATETIME($endsAt)} <i>(remaining {$daysLeft} days)</i>
         *[other] 
-            • 1 подключенный приватный чат
-            • 30 отправок сообщений в Notion в месяц
+            • {$messagesLimit} messages in Notion per month
 
-            
-            ⚠️ Оформи подписку, чтобы снять лимиты на количество отправляемых сообщений и получить возможность добавлять неограниченное количество любых чатов.
+            ⚠️ To remove message count limits, renew your subscription.
     }
-    .renew = Продлить подписку
-    .subscribe = Оформить подписку
+    .renew = Renew subscription
+    .subscribe = Subscribe
 
-plan = <b>Выбери тариф для оформления подписки</b>
+plan = <b>Choose a subscription plan</b>
     .months = {$months -> 
-        [12] ${$price} / год
-        [1] ${$price} / месяц
-        *[other] ${$price} / {$months} мес.
+        [12] ${$price} / year
+        [1] ${$price} / month
+        *[other] ${$price} / {$months} months.
     }
-    .pay-wallet = 👛 Оплатить через Wallet
-    .pay-card = 🇷🇺 Оплатить картой РФ
+    .pay-wallet = 👛 Pay with Wallet
+    .pay-card = 🇷🇺 Pay with a Russian card
+    .pay-crypto = 💱 Pay with Crypto Bot
     .description = {$months -> 
-        [12] Полный доступ к {bot-name} на 12 месяцев
-        [1] Полный доступ к {bot-name} на 1 месяц
-        *[other] Полный доступ к {bot-name} на {$months} мес.
+        [12] Full access to {bot-name} for 12 months
+        [1] Full access to {bot-name} for 1 month
+        *[other] Full access to {bot-name} for {$months} months.
     }
-    .pay = <b>Выбери способ оплаты</b>
+    .pay = <b>Choose a payment method</b>
     
-chat-is-not-active = ⚠️ <b>Чат не активирован</b>
-    
-    Активируй текущий чат с помощью команды /chats, чтобы отправлять сообщения в Notion
+broadcast = <b>Creating a new broadcast</b>
 
-broadcast = <b>Создание новой рассылки</b>
-
-    Выбери пользователям с каким языком отправить сообщение
-    .wait-message = <b>{$languageCode ->
-        [ru] Ожидание сообщения на русском
-        *[other] Ожидание сообщения на английском
+    Select the language for the users to send a message
+    .wait-message = <b>Waiting for a message in {$languageCode ->
+        [ru] Russian
+        *[other] English
         }</b>
 
-        Отправь сообщение которое будет отправлено всем пользователям с выбранным языком
-    .check = <b>Проверь сообщение рассылки выше и подтверди отправку</b>
-    .send = Отправить
-    .cancel = Отменить
-    .all-languages = Все языки
-    .cancelled = <b>Рассылка отменена</b>
-    .sending = <b>Рассылка начата</b>
-        Отслеживать статус рассылки можно через команду /broadcast_status
-    .status = <b>Статус рассылки</b>
-        Сообщений в очереди: {$count}
-
-set-price = <b>Установка цены подписки на {$period ->
-        [month] 1 месяц
-        *[year] 1 год
-    }</b>
-
-    Отправь новую цену в центах
-    .cancel = Отменить установку цены
-    .int-invalid = ⚠️ Неверное значение
-    .success = Цены установлены
-
-referral = <b>Реферальная система</b>
-
-    • Каждый новый пользователь запустивший бота по твоей ссылке получит 2 месяца подписки бесплатно.
-    • Ты получаешь столько же месяцев бесплатной подписки, сколько оформят твои рефералы за все время.
-    • Пользователь становится твоим рефералом когда впервые запускает бота по твоей реферальной ссылке.
-    • Рефералом могут стать только те пользователи, которые впервые запустили бота (не зарегистрированы в системе).
-
-    <b>Запусков бота по ссылке:</b> {$launchesCount}
-    <b>Приведено рефералов:</b> {$newUsers}
-    <b>Оформлено месяцев:</b> {$months}
-    <b>Твоя реферальная ссылка:</b> https://t.me/{$bot}?start={$code}
-    
-promocode = <b>Промокод активирован</b>
-
-    Твоя подписка продлена на {$days} дней
-    .status = Посмотреть статус подписки
-    .new = Пришли текст промокода не более 100 символов, без пробелов. Любой текст будет приведён к верхнему регистру.
-    .generate = Сгенерировать случайный код
-    .invalid = ⚠️ Слишком длинный код
-    .invalid-days = ⚠️ Неверное количество дней
-    .days = Введи количество дней, которые даст промокод
-    .max-uses = Введи максимальное количество использований.
-        0 = Без ограничений
-    .ivalid-max-uses = ⚠️ Неверное количество использований
-    .exists = Такой код уже существует
-    .created = <b>Промокод создан</b>
-
-        <b>Код:</b> <code>{$code}</code>
-        <b>Максимальное количество использований:</b> {$maxUses}
-        <b>Бесплатный дней:</b> {$freeDays}
-    .cancel = Отменить создание промокода
-    .canceled = Создание промокода отменено
-    .generating = Генерация кода...
-    .list = <b>Список промокодов</b>
+        Send the message that will be sent to all users with the selected language
+    .check = <b>Check the broadcast message above and confirm sending</b>
+    .send = Send
+    .cancel = Cancel
+    .all-languages = All languages
+    .cancelled = <b>Broadcast cancelled</b>
+    .sending = <b>Broadcast started</b>
+         Track the broadcast status using the /broadcast_status command
         
-        {{#each codes}}
-            <b>Код:</b> <code>{$code}</code>
-            <b>Максимальное количество использований:</b> {$maxUses}
-            <b>Текущее количество использований:</b> {$used}
-            <b>Бесплатных дней:</b> {$freeDays}
-        {{/each}}
+        ⚠️ Do not delete the message above until the broadcast is finished, otherwise the broadcast will not be executed
+    .status = <b>Broadcast status</b>
+        Messages in queue: {$count}
+
+referral = <b>Referral system</b>
+
+    • Every new user launching the bot through your referral link will get 2 free months of subscription.
+    • You will get as many free months of subscription as many of your referrals sign up in total.
+    • A user becomes your referral when they launch the bot (not registered in the system) for the first time.
+    • Referrals can only be those users who launch the bot for the first time.
+
+    <b>Launching the bot through a link:</b> {$launchesCount}
+    <b>Number of referrals brought:</b> {$newUsers}
+    <b>Months granted:</b> {$months}
+    <b>Your referral link:</b> https://t.me/{$bot}?start={$code}
+    
+promocode = <b>Promo code activated</b>
+
+    Your subscription has been renewed for {$days} days
+    .status = Check subscription status
+    .new = Send promo code (no more than 100 characters, no spaces). Any text will be converted to uppercase.
+    .generate = Generate random code
+    .invalid = ⚠️ Invalid code length
+    .invalid-days = ⚠️ Invalid number of days
+    .days = Enter the number of days the promo code will grant
+    .max-uses = Enter the maximum number of uses.
+        0 = No limits
+    .ivalid-max-uses = ⚠️ Invalid maximum number of uses
+    .exists = Such a code already exists
+    .created = <b>Promo code created</b>
+
+        <b>Code:</b> <code>{$code}</code>
+        <b>Maximum number of uses:</b> {$maxUses}
+        <b>Free days:</b> {$freeDays}
+    .cancel = Cancel promo code creation
+    .canceled = Promo code creation canceled
+    .generating = Generating code...
+    .list = <b>List of promo codes</b>
+    .deleted = Promo code <code>{$code}</code> deleted
+
+link-to-original = Forwarded from Telegram
+
+pay-success = 🎉 <b>Payment successful!</b>
+    {$hasReceipt -> 
+        [true] <b>Here's your receipt:</b> <a href="{$receiptURL}">link</a>
+        *[false] ⠀
+    }
+    Check subscription status through the /subscription command
+
+pay-failed = ⚠️ <b>Payment failed!</b>
+
+    Try paying again using the /subscription command
+
+subscription-expires = <b>Your subscription expires tomorrow!</b>
+
+    Renew your subscription to keep access to functionality
+    .renew = Renew subscription
+
+limit-exceeded = <b>The number of sent messages has exceeded the monthly limit</b>
+
+    You need to renew your subscription to remove limits and continue sending content to Notion {$fromChat ->
+        [true] ⠀
+            
+            ⚠️ <i>This message was sent because one of your chats exceeded the limit</i>
+        *[false] ⠀
+    }
+    .renew = Renew subscription
+
+about-author = By the way, I was created by <a href="https://t.me/mozharovv">Vladislav Mozharov</a>, I recommend subscribing to his <a href="https://t.me/mozharovv">Telegram channel</a>
+

@@ -13,9 +13,10 @@ const logger = new LoggerService('WalletRouter')
 export const walletRouter = Router()
 
 const onlyFromIPs = (allowedIPs: string[]) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
-    const clientIP = req.ip
-    if (!allowedIPs.includes(`${clientIP}`)) {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+    if (!ip || !allowedIPs.includes(Array.isArray(ip) ? ip[0] ?? '' : ip)) {
+      logger.debug('Invalid IP', ip)
       res.sendStatus(403)
       return
     }
@@ -38,42 +39,49 @@ walletRouter.route('/wallet').post(onlyFromIPs(walletIPs), async (req, res) => {
   const hash = crypto.createHmac('sha256', secret).update(message).digest('base64')
 
   if (hash === signature) {
-    logger.debug('Valid signature')
-    const type = req.body.type as 'ORDER_FAILED' | 'ORDER_PAID'
-    const payload = req.body.payload as {
-      status?: 'ACTIVE' | 'EXPIRED' | 'PAID' | 'CANCELLED'
-      id: number
-      externalId: string
+    logger.debug('Valid signature', {body: req.body})
+    const data = req.body[0] as {
+      eventId: number
+      evendDateTime: string
+      type: 'ORDER_FAILED' | 'ORDER_PAID'
+      payload: {
+        status?: 'ACTIVE' | 'EXPIRED' | 'PAID' | 'CANCELLED'
+        id: number
+        number: string
+        externalId: string
+      }
     }
-    const payment = await paymentsService.findById(payload.externalId)
+    const payment = await paymentsService.findById(data.payload.externalId)
     if (!payment) {
-      logger.error('Payment not found', {body: req.body})
+      logger.error('Payment not found')
       return res.sendStatus(200)
     }
-    if (type === 'ORDER_PAID') {
+    const chat = await chatsService.findChatByTelegramId(payment.user.telegramId)
+    if (!chat) logger.error('Chat not found')
+    if (data.type === 'ORDER_PAID') {
       logger.info('Payment success')
       payment.status = 'completed'
       await payment.save()
       const days = payment.plan.name === 'month' ? 30 : 360
       await subscriptionsService.giveDaysToUser(payment.user, days)
-      const chat = await chatsService.findChatByTelegramId(payment.user.telegramId)
-      if (!chat) {
-        logger.error('Chat not found', {body: req.body})
-        return res.sendStatus(200)
-      }
       await bot.api
         .sendMessage(
-          chat.telegramId,
-          translate('pay-success', chat.languageCode, {
+          payment.user.telegramId,
+          translate('pay-success', chat?.languageCode, {
             hasReceipt: 'false',
           }),
           {parse_mode: 'HTML'},
         )
         .catch(logger.error)
-    } else if (type === 'ORDER_FAILED') {
+    } else if (data.type === 'ORDER_FAILED') {
       logger.info('Payment failed')
       payment.status = 'failed'
       await payment.save()
+      await bot.api
+        .sendMessage(payment.user.telegramId, translate('pay-failed', chat?.languageCode), {
+          parse_mode: 'HTML',
+        })
+        .catch(logger.error)
     }
     return res.sendStatus(200)
   }

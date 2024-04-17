@@ -29,39 +29,41 @@ export class LoggerService {
     this.context = context
   }
 
-  public trace(text?: string, meta?: unknown): void {
-    this.logMessage('trace', text, meta)
+  public trace(value?: unknown, meta?: unknown): void {
+    this.logMessage('trace', value, meta)
   }
 
-  public debug(text?: string, meta?: unknown): void {
-    this.logMessage('debug', text, meta)
+  public debug(value?: unknown, meta?: unknown): void {
+    this.logMessage('debug', value, meta)
   }
 
-  public info(text?: string, meta?: unknown): void {
-    this.logMessage('info', text, meta)
+  public info(value?: unknown, meta?: unknown): void {
+    this.logMessage('info', value, meta)
   }
 
-  public warn(text?: string, meta?: unknown): void {
-    this.logMessage('warn', text, meta)
+  public warn(value?: unknown, meta?: unknown): void {
+    this.logMessage('warn', value, meta)
   }
 
-  public error(text?: string, meta?: unknown): void {
-    this.logMessage('error', text, meta)
+  public error(value?: unknown, meta?: unknown): void {
+    this.logMessage('error', value, meta)
   }
 
-  public fatal(text?: string, meta?: unknown): void {
-    this.logMessage('fatal', text, meta)
+  public fatal(value?: unknown, meta?: unknown): void {
+    this.logMessage('fatal', value, meta)
   }
 
-  private logMessage(level: Level, text?: string, meta?: unknown): void {
-    const formattedMeta = typeof meta === 'undefined' ? meta : {meta: this.formatUnknownMeta(meta)}
-    this.logger.log(level, text ?? '', {
-      context: this.context,
-      ...formattedMeta,
-    })
+  private logMessage(level: Level, value?: unknown, meta?: unknown): void {
+    const data: [string, unknown, Record<string, unknown>] = ['', meta, {context: this.context}]
+    if (typeof value === 'string') data[0] = value
+    else data[2].value = this.formatUnknownMeta(data[1])
+    if (typeof meta !== 'undefined') data[2].meta = this.formatUnknownMeta(data[1])
+
+    this.logger.log(level, data[0], data[2])
   }
 
   private formatUnknownMeta(meta: unknown): unknown {
+    if (typeof meta === 'undefined') return undefined
     if (meta instanceof Error) {
       return {
         error: {
@@ -72,7 +74,11 @@ export class LoggerService {
         },
       }
     }
-    return meta
+    try {
+      return JSON.parse(JSON.stringify(meta))
+    } catch (error) {
+      return {errorWhileLogging: error instanceof Error ? error.message : 'Unknown error'}
+    }
   }
 }
 
