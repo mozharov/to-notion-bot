@@ -72,8 +72,7 @@ export async function updateGroupStatus(
   const botStatus = ctx.myChatMember.new_chat_member.status
 
   const logSendMessageError = (error: unknown): void => {
-    logger.warn({
-      message: 'Failed to send message to user',
+    logger.warn('Failed to send message to user', {
       error,
       userId,
       chatId,

@@ -33,10 +33,7 @@ export async function getTelegramFile(
       logger.warn('File is too big')
       throw new TooBigFileError(chat?.languageCode)
     }
-    logger.error({
-      error,
-      message: 'Error while getting file',
-    })
+    logger.error('Error while getting file', error)
     throw error
   })
 }

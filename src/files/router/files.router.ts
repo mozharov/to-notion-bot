@@ -24,10 +24,7 @@ filesRouter.route('/file/:id/:fileId.:extension').get(async (req, res) => {
     return res.status(404).send('File not found')
   }
   const tgFile = await bot.api.getFile(file.fileId)
-  logger.debug({
-    message: 'File found',
-    tgFile,
-  })
+  logger.debug('File found', tgFile)
   const fileUrl = `https://api.telegram.org/file/bot${config.get('BOT_TOKEN')}/${tgFile.file_path}`
   return superagent(fileUrl).pipe(res)
 })

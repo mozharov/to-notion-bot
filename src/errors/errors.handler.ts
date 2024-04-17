@@ -1,7 +1,6 @@
 import {ErrorHandler} from 'grammy'
 import {Context} from '../context'
 import {LoggerService} from '../logger/logger.service'
-import {config} from '../config/config.service'
 import {KnownError} from './known.error'
 
 export const errorsHandler: ErrorHandler<Context> = async error => {
@@ -9,17 +8,8 @@ export const errorsHandler: ErrorHandler<Context> = async error => {
 
   const isKnownError = error.error instanceof KnownError
 
-  if (!isKnownError) {
-    logger.fatal({
-      error: {
-        name: error.name,
-        message: error.message,
-        stack: config.get('NODE_ENV') === 'development' ? error.stack : undefined,
-        instance: error.error,
-      },
-      message: `Unhandled error: ${error.message}`,
-    })
-  } else logger.debug(`Known error: ${error.error.message}`)
+  if (!isKnownError) logger.fatal('Unhandled error', error)
+  else logger.debug('Known error', error)
 
   try {
     const text = isKnownError
@@ -32,9 +22,6 @@ export const errorsHandler: ErrorHandler<Context> = async error => {
       await error.ctx.deleteMessage().catch(() => true)
     } else await error.ctx.reply(text)
   } catch (error) {
-    logger.error({
-      error,
-      message: 'Failed to send error message',
-    })
+    logger.error('Failed to send error message', error)
   }
 }

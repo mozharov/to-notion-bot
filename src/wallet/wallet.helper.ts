@@ -14,10 +14,7 @@ export async function validateCreateOrderResponseData(data: unknown): Promise<Cr
   const order = plainToClass(CreateOrderResponse, result)
   const errors = await validate(order)
   if (errors.length) {
-    logger.error({
-      message: 'Validation failed',
-      errors,
-    })
+    logger.error('Validation failed', errors)
     throw new Error('Validation failed')
   }
   return order

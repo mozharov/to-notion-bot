@@ -34,10 +34,7 @@ export class NotionService {
     const response = await this.limitter.schedule(() =>
       this.client.databases.retrieve({database_id: databaseId}).catch(error => {
         if (error.status === 404) throw new NotFoundError()
-        this.logger.error({
-          message: 'Failed to fetch database',
-          error,
-        })
+        this.logger.error('Failed to fetch database', error)
         throw error
       }),
     )
@@ -85,10 +82,7 @@ export class NotionService {
         })
         .catch(error => {
           if (error.status === 404) throw new NotFoundError()
-          this.logger.error({
-            message: 'Failed to create page',
-            error,
-          })
+          this.logger.error('Failed to create page', error)
           throw error
         })
     })
@@ -116,10 +110,7 @@ export class NotionService {
         })
         .catch(error => {
           if (error.status === 404) throw new NotFoundError()
-          this.logger.error({
-            message: 'Failed to append block to page',
-            error,
-          })
+          this.logger.error('Failed to append block to page', error)
           throw error
         }),
     )

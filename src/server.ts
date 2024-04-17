@@ -28,16 +28,13 @@ export function launchServer(): void {
     webhookCallback(bot, 'express', {
       secretToken: config.get('BOT_WEBHOOK_SECRET'),
       onTimeout(...args) {
-        logger.fatal({
-          error: args,
-          message: 'Webhook timeout',
-        })
+        logger.fatal('Webhook timeout', args)
       },
     }),
   )
 
   app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
-    logger.fatal('Unhandled error occurred', {error})
+    logger.fatal('Unhandled error occurred', error)
     res.status(500).send('Internal Server Error')
     return next()
   })
