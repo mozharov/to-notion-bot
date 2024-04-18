@@ -3,6 +3,7 @@ import {Context} from '../context'
 import {Chat} from './entities/chat.entity'
 import {NotionWorkspace} from '../notion/notion-workspaces/entities/notion-workspace.entity'
 import {NotionDatabaseResponse} from '../notion/notion.service'
+import {getAuthorizeURI} from '../notion/notion-workspaces/notion-workspaces.helper'
 
 export function getKeyboardWithChats(ctx: Context, chats: Chat[]): InlineKeyboard {
   const keyboard = new InlineKeyboard()
@@ -92,10 +93,7 @@ export function getChatNotionSettingsKeyboard(
 
   keyboard
     .row()
-    .add({
-      text: ctx.t('chat-notion-settings.add'),
-      callback_data: `workspaces`,
-    })
+    .add({text: ctx.t('workspaces.add'), url: getAuthorizeURI(chat.owner)})
     .row()
     .add({
       text: ctx.t('chat-notion-settings.back'),

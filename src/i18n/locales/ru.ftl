@@ -74,7 +74,6 @@ chat-notion-settings = Выбери *Workspace* Notion для интеграци
         [private] текущим чатом
         *[other] чатом "*{$title}*"
     }
-    .add = Добавить новый Workspace Notion
     .back = Назад
     .pages = *Выбери базу данных Notion в которую я буду отправлять контент*
 
