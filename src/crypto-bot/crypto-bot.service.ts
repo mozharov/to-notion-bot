@@ -1,7 +1,6 @@
 import {bot} from '../bot'
 import {config} from '../config/config.service'
 import {LoggerService} from '../logger/logger.service'
-import {Payment} from '../payments/entities/payment.entity'
 import {paymentsService} from '../payments/payments.service'
 import {Plan} from '../subscriptions/plans/entities/plan.entity'
 import {User} from '../users/entities/user.entity'
