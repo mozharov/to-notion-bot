@@ -88,3 +88,12 @@ export function getLinkToOriginal(
   }
   return null
 }
+
+export function getLinkToSender(
+  message: GrammyMessage & (Update.NonChannel | Update.Channel),
+): string | null {
+  if (message.from?.username) {
+    return `https://t.me/${message.from?.username}`
+  }
+  return null
+}

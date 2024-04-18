@@ -28,9 +28,7 @@ export const botInfo: UserFromGetMe = {
   supports_inline_queries: false,
 }
 
-export const bot = new Bot<Context>(config.get('BOT_TOKEN'), {
-  ...(!config.get('BOT_FETCH_INFO') && {botInfo}),
-})
+export const bot = new Bot<Context>(config.get('BOT_TOKEN'), {botInfo})
 bot.api.config.use(autoRetry({retryOnInternalServerErrors: true}))
 
 const composer = new Composer<Context>()

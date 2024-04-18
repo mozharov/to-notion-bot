@@ -8,6 +8,7 @@ import {
   getSentAt,
   getFileType,
   getLinkToOriginal,
+  getLinkToSender,
 } from './messages.helper'
 import {LoggerService} from '../logger/logger.service'
 import {messagesService} from './messages.service'
@@ -43,7 +44,6 @@ messageContent
   .use(checkSubscription)
   .use(async ctx => {
     logger.debug('Message received')
-    await ctx.replyWithChatAction('typing')
     const senderId = getSenderId(ctx)
     const sentAt = getSentAt(ctx)
     const chat = await chatsService.getActiveChatByTelegramId(ctx.chat.id)
@@ -51,7 +51,9 @@ messageContent
     const prevMessage = await getPrevMessage(message, chat)
     const isUpdate = !!prevMessage
     const silentMode = (!message.reply_to_message && isUpdate) || chat.silentMode
-    if (!silentMode) await ctx.replyWithChatAction('typing')
+
+    if (silentMode) await ctx.replyWithChatAction('upload_document')
+    else await ctx.replyWithChatAction('typing')
 
     const text = message.text ?? message.caption
     const title = truncateTextForTitle(text ?? ctx.t('new-file'))
@@ -75,7 +77,21 @@ messageContent
         paragraph: {
           rich_text: [
             {
-              text: {content: ctx.t('link-to-original'), link: {url: linkToOriginal}},
+              text: {content: ctx.t('link-to-author'), link: {url: linkToOriginal}},
+              annotations: {italic: true},
+            },
+          ],
+        },
+      })
+    }
+    const linkToSender = getLinkToSender(message)
+    if (linkToSender) {
+      blocks.push({
+        object: 'block',
+        paragraph: {
+          rich_text: [
+            {
+              text: {content: ctx.t('link-to-sender'), link: {url: linkToSender}},
               annotations: {italic: true},
             },
           ],

@@ -53,7 +53,6 @@ jobs:
           revision-network-id: enpgh2pcpfc87k6pd85i
           revision-env: |
             NODE_ENV=production
-            BOT_FETCH_INFO=false
             BOT_FIRST_NAME="To Notion Bot"
             BOT_ID=7107363808
             BOT_USERNAME=to_notion_robot

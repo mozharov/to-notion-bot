@@ -1,6 +1,6 @@
 bot-name = To Notion Bot
 
-start = ⚠️<b>The BOT IS CURRENTLY IN DEVELOPMENT, ALL DATA WILL BE DELETED</b>
+start = ⚠️<b>The BOT IS CURRENTLY IN DEVELOPMENT, ALL DATA WILL BE DELETED</b>⚠️
 
     Hello!
     <b>I'm a bot for instant content transfer from Telegram to Notion.</b>
@@ -261,7 +261,9 @@ promocode = <b>Promo code activated</b>
     .list = <b>List of promo codes</b>
     .deleted = Promo code <code>{$code}</code> deleted
 
-link-to-original = Forwarded from Telegram
+link-to-author = Author
+
+link-to-sender = Sender
 
 pay-success = 🎉 <b>Payment successful!</b>
     {$hasReceipt -> 

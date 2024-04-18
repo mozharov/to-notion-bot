@@ -18,11 +18,6 @@ export class Configuration {
   BOT_TOKEN: string
 
   @Expose()
-  @IsBoolean()
-  @Transform(({value}) => Boolean(value))
-  BOT_FETCH_INFO: boolean
-
-  @Expose()
   @IsInt()
   @Transform(({value}) => parseInt(value))
   BOT_ID: number
