@@ -200,6 +200,20 @@ broadcast = <b>Creating a new broadcast</b>
     .status = <b>Broadcast status</b>
         Messages in queue: {$count}
 
+set-price = <b>Setting subscription price on {$period ->
+        [month] 1 month
+        *[year] 1 year
+    }</b>
+
+    Please enter a new price in <b>{$currency -> 
+        [RUB] kopecks
+        *[other] cents
+    }</b>
+    .cancel = Cancel price setting
+    .int-invalid = ⚠️ Invalid value
+    .success = Price set
+    .cancelled = Price setting cancelled
+
 referral = <b>Referral system</b>
 
     • Every new user launching the bot through your referral link will get 2 free months of subscription.

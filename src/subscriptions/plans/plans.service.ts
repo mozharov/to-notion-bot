@@ -17,15 +17,19 @@ class PlansService {
     return this.repository.findOneByOrFail({name})
   }
 
-  public async setPriceForMonthlyPlan(cents: number): Promise<void> {
-    const plan = await this.repository.findOneByOrFail({name: 'month'})
+  public async setPriceForMonthlyPlan(cents: number, kopecks: number): Promise<void> {
+    const plan = new Plan()
+    plan.name = 'month'
     plan.cents = cents
+    plan.kopecks = kopecks
     await plan.save()
   }
 
-  public async setPriceForYearlyPlan(cents: number): Promise<void> {
-    const plan = await this.repository.findOneByOrFail({name: 'year'})
+  public async setPriceForYearlyPlan(cents: number, kopecks: number): Promise<void> {
+    const plan = new Plan()
+    plan.name = 'year'
     plan.cents = cents
+    plan.kopecks = kopecks
     await plan.save()
   }
 }

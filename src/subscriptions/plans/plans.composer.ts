@@ -9,11 +9,18 @@ import {createConversation} from '@grammyjs/conversations'
 import {tinkoffService} from '../../tinkoff/tinkoff.service'
 import {config} from '../../config/config.service'
 import {cryptoBotService} from '../../crypto-bot/crypto-bot.service'
-import {LoggerService} from '../../logger/logger.service'
-
-const logger = new LoggerService('PlansComposer')
 
 export const plansComposer = new Composer<Context>()
+
+plansComposer
+  .chatType('private')
+  .callbackQuery('set-price:cancel')
+  .filter(isAdmin)
+  .use(async ctx => {
+    await ctx.conversation.exit()
+    await ctx.deleteMessage()
+    await ctx.reply(ctx.t('set-price.cancelled'))
+  })
 
 plansComposer.use(createConversation(settingPrice))
 
@@ -22,11 +29,6 @@ const onlyAdmin = privateChats.filter(isAdmin)
 
 onlyAdmin.command('set_price').use(async ctx => {
   await ctx.conversation.enter(settingPrice.name, {overwrite: true})
-})
-
-onlyAdmin.callbackQuery('set-price:cancel').use(async ctx => {
-  await ctx.conversation.exit()
-  await ctx.deleteMessage()
 })
 
 privateChats.callbackQuery(/^plan:(month|year)$/).use(async ctx => {
