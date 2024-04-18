@@ -7,6 +7,7 @@ import {bot} from '../../bot'
 import {subscriptionsService} from '../../subscriptions/subscriptions.service'
 import {chatsService} from '../../chats/chats.service'
 import {translate} from '../../i18n/i18n.helper'
+import {referralService} from '../../referral/referral.service'
 
 const logger = new LoggerService('WalletRouter')
 
@@ -49,6 +50,16 @@ cryptoBotRouter.route('/crypto-bot').post(async (req, res) => {
           {parse_mode: 'HTML'},
         )
         .catch(logger.error)
+
+      const referral = await referralService.getOrCreateReferral(payment.user)
+      if (referral.referrerCode) {
+        const referrer = await referralService.findReferrerByCode(referral.referrerCode)
+        if (referrer) {
+          await subscriptionsService.giveDaysToUser(referrer.owner, days)
+          referrer.monthsCount += payment.plan.name === 'month' ? 1 : 12
+          await referrer.save()
+        }
+      }
       logger.info('Payment success')
     } else if (body.payload.status === 'expired') {
       payment.status = 'failed'

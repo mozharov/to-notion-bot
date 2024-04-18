@@ -9,6 +9,9 @@ import {createConversation} from '@grammyjs/conversations'
 import {tinkoffService} from '../../tinkoff/tinkoff.service'
 import {config} from '../../config/config.service'
 import {cryptoBotService} from '../../crypto-bot/crypto-bot.service'
+import {LoggerService} from '../../logger/logger.service'
+
+const logger = new LoggerService('PlansComposer')
 
 export const plansComposer = new Composer<Context>()
 

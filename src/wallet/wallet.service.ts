@@ -51,6 +51,10 @@ class WalletService {
     const data = await response.json()
 
     const order = await utils.transformData(data, CreateOrderResponse)
+    if (order.status !== 'SUCCESS') {
+      logger.error('Failed to create order', order)
+      throw new Error('Failed to create order')
+    }
 
     logger.debug('Order created', order)
     payment.walletOrderId = order.data.id

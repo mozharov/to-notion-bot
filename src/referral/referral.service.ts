@@ -25,7 +25,7 @@ class ReferralService {
     return this.repository.save(referral)
   }
 
-  public async fingReferrerByCode(code: string): Promise<Referral | null> {
+  public async findReferrerByCode(code: string): Promise<Referral | null> {
     return this.repository.findOneBy({code})
   }
 

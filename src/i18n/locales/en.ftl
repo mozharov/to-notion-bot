@@ -137,7 +137,7 @@ error-too-big-file = ⚠️ The file size exceeds the maximum allowed size
 
 new-file = Some file
 
-new-user = 🎁 By the way, I give you <b>{$months -> 
+new-user = 🎁 Here is <b>{$months -> 
     [1] 1 month
     *[2] {$months} months
     } premium subscription for free</b>, to fully explore my capabilities
@@ -204,8 +204,8 @@ referral = <b>Referral system</b>
 
     • Every new user launching the bot through your referral link will get 2 free months of subscription.
     • You will get as many free months of subscription as many of your referrals sign up in total.
-    • A user becomes your referral when they launch the bot (not registered in the system) for the first time.
-    • Referrals can only be those users who launch the bot for the first time.
+    • The user becomes your referral when they first launch the bot using your referral link.
+    • Only those users who launched the bot for the first time (not registered in the system) can become a referral.
 
     <b>Launching the bot through a link:</b> {$launchesCount}
     <b>Number of referrals brought:</b> {$newUsers}

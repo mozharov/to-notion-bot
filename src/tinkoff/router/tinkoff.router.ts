@@ -9,6 +9,7 @@ import {chatsService} from '../../chats/chats.service'
 import {bot} from '../../bot'
 import {paymentsService} from '../../payments/payments.service'
 import {translate} from '../../i18n/i18n.helper'
+import {referralService} from '../../referral/referral.service'
 
 type TinkoffPaymentNotification = {
   TerminalKey: string
@@ -138,6 +139,16 @@ tinkoffRouter.post('/tinkoff', async (req, res) => {
         {parse_mode: 'HTML'},
       )
       .catch(logger.error)
+
+    const referral = await referralService.getOrCreateReferral(payment.user)
+    if (referral.referrerCode) {
+      const referrer = await referralService.findReferrerByCode(referral.referrerCode)
+      if (referrer) {
+        await subscriptionsService.giveDaysToUser(referrer.owner, days)
+        referrer.monthsCount += payment.plan.name === 'month' ? 1 : 12
+        await referrer.save()
+      }
+    }
     logger.info('Payment was successful')
   }
   res.sendStatus(200)

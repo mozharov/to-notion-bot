@@ -7,6 +7,7 @@ import {subscriptionsService} from '../../subscriptions/subscriptions.service'
 import {chatsService} from '../../chats/chats.service'
 import {translate} from '../../i18n/i18n.helper'
 import {bot} from '../../bot'
+import {referralService} from '../../referral/referral.service'
 
 const logger = new LoggerService('WalletRouter')
 
@@ -62,6 +63,7 @@ walletRouter.route('/wallet').post(onlyFromIPs(walletIPs), async (req, res) => {
       logger.info('Payment success')
       payment.status = 'completed'
       await payment.save()
+
       const days = payment.plan.name === 'month' ? 30 : 360
       await subscriptionsService.giveDaysToUser(payment.user, days)
       await bot.api
@@ -73,6 +75,15 @@ walletRouter.route('/wallet').post(onlyFromIPs(walletIPs), async (req, res) => {
           {parse_mode: 'HTML'},
         )
         .catch(logger.error)
+      const referral = await referralService.getOrCreateReferral(payment.user)
+      if (referral.referrerCode) {
+        const referrer = await referralService.findReferrerByCode(referral.referrerCode)
+        if (referrer) {
+          await subscriptionsService.giveDaysToUser(referrer.owner, days)
+          referrer.monthsCount += payment.plan.name === 'month' ? 1 : 12
+          await referrer.save()
+        }
+      }
     } else if (data.type === 'ORDER_FAILED') {
       logger.info('Payment failed')
       payment.status = 'failed'

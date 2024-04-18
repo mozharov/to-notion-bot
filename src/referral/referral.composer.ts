@@ -23,14 +23,14 @@ privateChat.command('referral').use(async ctx => {
       launchesCount: referral.launchesCount,
       months: referral.monthsCount,
     }),
-    {parse_mode: 'HTML'},
+    {parse_mode: 'HTML', link_preview_options: {is_disabled: true}},
   )
 })
 
 privateChat.command('start').use(async (ctx, next) => {
   const code = ctx.message.text?.split(' ')[1]
-  const referrer = code ? await referralService.fingReferrerByCode(code) : null
-  if (referrer) {
+  const referrer = code ? await referralService.findReferrerByCode(code) : null
+  if (referrer && referrer.owner.telegramId !== ctx.from.id) {
     referrer.launchesCount += 1
     await referrer.save()
   }
