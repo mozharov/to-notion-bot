@@ -1,4 +1,4 @@
-import {bot} from '../bot'
+import {botInfo} from '../bot'
 import {config} from '../config/config.service'
 import {LoggerService} from '../logger/logger.service'
 import {paymentsService} from '../payments/payments.service'
@@ -41,8 +41,8 @@ class WalletService {
           amount: plan.dollars.toFixed(2),
         },
         description,
-        returnUrl: `https://t.me/${bot.botInfo.username}`,
-        failReturnUrl: `https://t.me/${bot.botInfo.username}`,
+        returnUrl: `https://t.me/${botInfo.username}`,
+        failReturnUrl: `https://t.me/${botInfo.username}`,
         externalId: payment.id,
         timeoutSeconds: 10800,
         customerTelegramUserId: user.telegramId,

@@ -16,19 +16,20 @@ import {broadcasterComposer} from './broadcaster/broadcaster.composer'
 import {plansComposer} from './subscriptions/plans/plans.composer'
 import {referralComposer} from './referral/referral.composer'
 import {promocodesComposer} from './promocodes/promocodes.composer'
+import {UserFromGetMe} from 'grammy/types'
+
+export const botInfo: UserFromGetMe = {
+  id: config.get('BOT_ID'),
+  first_name: config.get('BOT_FIRST_NAME'),
+  username: config.get('BOT_USERNAME'),
+  is_bot: true,
+  can_join_groups: true,
+  can_read_all_group_messages: true,
+  supports_inline_queries: false,
+}
 
 export const bot = new Bot<Context>(config.get('BOT_TOKEN'), {
-  ...(!config.get('BOT_FETCH_INFO') && {
-    botInfo: {
-      id: config.get('BOT_ID'),
-      first_name: config.get('BOT_FIRST_NAME'),
-      username: config.get('BOT_USERNAME'),
-      is_bot: true,
-      can_join_groups: true,
-      can_read_all_group_messages: true,
-      supports_inline_queries: false,
-    },
-  }),
+  ...(!config.get('BOT_FETCH_INFO') && {botInfo}),
 })
 bot.api.config.use(autoRetry({retryOnInternalServerErrors: true}))
 

@@ -2,7 +2,7 @@ import {Router} from 'express'
 import {LoggerService} from '../../../logger/logger.service'
 import {usersService} from '../../../users/users.service'
 import {config} from '../../../config/config.service'
-import {bot} from '../../../bot'
+import {bot, botInfo} from '../../../bot'
 import {utils} from '../../../utils/utils.service'
 import {NotionAuthResponse} from '../models/notion-auth-response.model'
 import {notionWorkspacesService} from '../notion-workspaces.service'
@@ -107,5 +107,5 @@ notionWorkspacesRouter.route('/notion').get(async (req, res) => {
       .catch(logger.error)
   } else logger.warn('Chat not found')
 
-  res.redirect(`https://t.me/${bot.botInfo.username}`)
+  res.redirect(`https://t.me/${botInfo.username}`)
 })

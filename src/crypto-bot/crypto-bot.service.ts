@@ -1,4 +1,4 @@
-import {bot} from '../bot'
+import {botInfo} from '../bot'
 import {config} from '../config/config.service'
 import {LoggerService} from '../logger/logger.service'
 import {paymentsService} from '../payments/payments.service'
@@ -37,7 +37,7 @@ class CryptoBotService {
       amount: plan.dollars.toString(),
       description,
       paid_btn_name: 'openBot',
-      paid_btn_url: `https://t.me/${bot.botInfo.username}`,
+      paid_btn_url: `https://t.me/${botInfo.username}`,
       payload: payment.id,
       allow_comments: true,
       allow_anonymous: true,
