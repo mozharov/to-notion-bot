@@ -122,7 +122,7 @@ help = <b>How to use the bot</b>
     <b>4.</b> Press "{chat-settings.activate}" in the chat settings
     <b>5.</b> Send a message to the selected chat to send its content to Notion
 
-    <b>Chat bot:</b> @to_notion_chat
+    <b>Our chat:</b> @to_notion_chat
     <b>Author:</b> @vmozharov
 
     If you have any questions or problems, you can write them in our chat or directly to the bot author.
