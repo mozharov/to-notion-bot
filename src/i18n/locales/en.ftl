@@ -163,6 +163,15 @@ subscription = <b>Your subscription status:</b> {$status ->
     .renew = Renew subscription
     .subscribe = Subscribe
 
+
+chat-is-not-active = ⚠️ <b>Chat is not activated</b>
+
+    Activate the current chat using the /chats command to send messages to Notion
+
+notion-is-not-active = ⚠️ <b>Notion database is not connected</b>
+
+    Connect the Notion database in the chat settings
+
 plan = <b>Choose a subscription plan</b>
     .months = {$months -> 
         [12] ${$price} / year
