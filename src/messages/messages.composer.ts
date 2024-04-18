@@ -83,7 +83,7 @@ messageContent
       })
     }
 
-    const notionService = new NotionService(chat.notionWorkspace.secretToken)
+    const notionService = new NotionService(chat.notionWorkspace.accessToken)
     const notionPageId = await notionService.saveToNotion(
       {
         ...(prevMessage

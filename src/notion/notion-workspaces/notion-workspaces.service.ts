@@ -22,6 +22,17 @@ class NotionWorkspacesService {
     await this.repository.remove(workspace)
   }
 
+  public async findOneByOwnerAndWorkspaceId(
+    owner: NotionWorkspace['owner'],
+    workspaceId: NotionWorkspace['workspaceId'],
+  ): Promise<NotionWorkspace | null> {
+    return this.repository.findOneBy({owner: {id: owner.id}, workspaceId})
+  }
+
+  public countByOwner(owner: NotionWorkspace['owner']): Promise<number> {
+    return this.repository.countBy({owner: {id: owner.id}})
+  }
+
   public async updateWorkspace(
     data: Partial<NotionWorkspace> & {id: NotionWorkspace['id']},
   ): Promise<NotionWorkspace> {
@@ -35,7 +46,9 @@ class NotionWorkspacesService {
   public async createWorkspace(data: {
     owner: NotionWorkspace['owner']
     name: NotionWorkspace['name']
-    secretToken: NotionWorkspace['secretToken']
+    workspaceId: NotionWorkspace['workspaceId']
+    accessToken: NotionWorkspace['accessToken']
+    botId: NotionWorkspace['botId']
   }): Promise<NotionWorkspace> {
     const workspace = new NotionWorkspace()
     Object.assign(workspace, data)

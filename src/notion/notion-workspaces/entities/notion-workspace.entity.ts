@@ -6,11 +6,14 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  Index,
+  BaseEntity,
 } from 'typeorm'
 import {User} from '../../../users/entities/user.entity'
 
 @Entity()
-export class NotionWorkspace {
+@Index(['workspaceId', 'owner'], {unique: true})
+export class NotionWorkspace extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -25,7 +28,13 @@ export class NotionWorkspace {
   name: string
 
   @Column({type: 'varchar'})
-  secretToken: string
+  accessToken: string
+
+  @Column({type: 'varchar'})
+  workspaceId: string
+
+  @Column({type: 'varchar'})
+  botId: string
 
   @CreateDateColumn({type: 'timestamp with time zone'})
   createdAt: Date

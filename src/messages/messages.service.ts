@@ -19,6 +19,7 @@ class MessagesService {
     endOfMonth.setMilliseconds(endOfMonth.getMilliseconds() - 1)
     return this.repository.countBy({
       chat: {owner: {id: owner.id}},
+      senderId: owner.telegramId,
       createdAt: Between(startOfMonth, endOfMonth),
     })
   }

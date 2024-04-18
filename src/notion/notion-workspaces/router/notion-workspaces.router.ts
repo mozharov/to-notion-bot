@@ -5,6 +5,9 @@ import {config} from '../../../config/config.service'
 import {bot} from '../../../bot'
 import {utils} from '../../../utils/utils.service'
 import {NotionAuthResponse} from '../models/notion-auth-response.model'
+import {notionWorkspacesService} from '../notion-workspaces.service'
+import {translate} from '../../../i18n/i18n.helper'
+import {chatsService} from '../../../chats/chats.service'
 
 const logger = new LoggerService('NotionWorkspacesRouter')
 
@@ -64,16 +67,45 @@ notionWorkspacesRouter.route('/notion').get(async (req, res) => {
   })
   const body = await response.json()
   const data = await utils.transformData(body, NotionAuthResponse)
-  // https://developers.notion.com/docs/authorization#step-3-send-the-code-in-a-post-request-to-the-notion-api
-  // https://github.com/mozharov/tg-notion-inbox-bot-backend/blob/main/src/services/notion-api/index.ts
-  // https://www.notion.so/my-integrations/public/1170e88caf4c42dbae09ff0161bc156c
 
-  // TODO: учесть лимит в 90 интеграций с Notion на аккаунт
+  const workspace = await notionWorkspacesService.findOneByOwnerAndWorkspaceId(
+    user,
+    data.workspace_id,
+  )
+  const countWorkspaces = await notionWorkspacesService.countByOwner(user)
+  if (!workspace && countWorkspaces >= config.get('MAX_WORKSPACES_PER_USER')) {
+    logger.warn('User has too many workspaces')
+    res
+      .status(400)
+      .send('User has too many workspaces. Please delete one old workspace to create new one.')
+    return
+  }
 
-  // TODO: сохранить workspace в базе
-  //   await notionWorkspacesService.createWorkspace({
-  //     owner: user,
-  //   })
+  const workspaceData = {
+    owner: user,
+    accessToken: data.access_token,
+    botId: data.bot_id,
+    name: data.workspace_name ?? data.workspace_id,
+    workspaceId: data.workspace_id,
+  }
+
+  logger.debug(workspace)
+  if (workspace) {
+    Object.assign(workspace, workspaceData)
+    await workspace.save()
+  } else {
+    await notionWorkspacesService.createWorkspace(workspaceData)
+  }
+
+  const chat = await chatsService.findChatByTelegramId(user.telegramId)
+
+  if (chat) {
+    await bot.api
+      .sendMessage(user.telegramId, translate('notion-was-set', chat.languageCode), {
+        parse_mode: 'HTML',
+      })
+      .catch(logger.error)
+  } else logger.warn('Chat not found')
 
   res.redirect(`https://t.me/${bot.botInfo.username}`)
 })

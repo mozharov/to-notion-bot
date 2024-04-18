@@ -247,7 +247,7 @@ export async function selectNotionWorkspaceForChat(
 
   await chatsService.updateChat({id: chat.id, notionWorkspace: workspace})
 
-  const notionService = new NotionService(workspace.secretToken)
+  const notionService = new NotionService(workspace.accessToken)
   const databases = await notionService.getDatabases()
 
   await ctx.editMessageText(ctx.t('chat-notion-settings.pages'), {
@@ -265,7 +265,7 @@ export async function selectNotionDatabaseForChat(
   const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   if (!chat.notionWorkspace) throw new Error('Chat has no notion workspace')
-  const notionService = new NotionService(chat.notionWorkspace.secretToken)
+  const notionService = new NotionService(chat.notionWorkspace.accessToken)
   const database = await notionService.getDatabase(notionDatabaseId)
 
   const notionDatabasesService = new NotionDatabasesService()

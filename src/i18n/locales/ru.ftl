@@ -282,3 +282,9 @@ limit-exceeded = <b>Количество отправленных сообщен
     .renew = Продлить подписку
 
 about-author = Кстати, меня создал <a href="https://t.me/mozharov_channel">Владислав Можаров</a>, рекомендую подписаться на его <a href="https://t.me/mozharov_channel">Telegram канал</a>
+
+notion-was-set = <b>Notion Workspace установлен</b>
+
+    Теперь ты можешь подключить этот Workspace к любому из твоих чатов через команду /chats
+    
+    Используй команду /workspaces, чтобы просмотреть список созданных интеграций с Notion

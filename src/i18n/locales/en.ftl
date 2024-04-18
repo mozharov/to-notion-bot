@@ -95,7 +95,7 @@ workspaces = *These are your Workspaces in Notion*
     You can add integration with a new *Workspace* or update available databases in already active integrations
     .add = Add or update integration
 
-workspace-settings = Integration with a *Workspace* in Notion
+workspace-settings = Integration with a <b>Workspace</b> in Notion
 
     <b>Name</b>: {$name}
 
@@ -266,3 +266,8 @@ limit-exceeded = <b>The number of sent messages has exceeded the monthly limit</
 
 about-author = By the way, I was created by <a href="https://t.me/mozharovv">Vladislav Mozharov</a>, I recommend subscribing to his <a href="https://t.me/mozharovv">Telegram channel</a>
 
+notion-was-set = <b>Notion Workspace is installed</b>
+
+    Now you can connect this Workspace to any of your chats using the /chats command
+    
+    Use the /workspaces command to view the list of created Notion integrations
