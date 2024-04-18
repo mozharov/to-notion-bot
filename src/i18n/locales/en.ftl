@@ -1,6 +1,6 @@
 bot-name = To Notion Bot
 
-start = ⚠️<b>The BOT IS CURRENTLY IN DEVELOPMENT, ALL DATA WILL BE DELETED</b>⚠️
+start = ⚠️<b>THIS BOT IS CURRENTLY IN DEVELOPMENT, ALL DATA WILL BE DELETED</b>⚠️
 
     Hello!
     <b>I'm a bot for instant content transfer from Telegram to Notion.</b>
