@@ -1,8 +1,15 @@
-import {Entity, CreateDateColumn, UpdateDateColumn, PrimaryColumn, Column} from 'typeorm'
+import {
+  Entity,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  Column,
+  BaseEntity,
+} from 'typeorm'
 import {SessionData} from '../session.context'
 
 @Entity()
-export class Session {
+export class Session extends BaseEntity {
   @PrimaryColumn()
   id: string
 

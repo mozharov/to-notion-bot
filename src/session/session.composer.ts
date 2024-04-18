@@ -2,7 +2,7 @@ import {Composer, session} from 'grammy'
 import {Context} from '../context'
 import {SessionData} from './session.context'
 import {Session} from './entities/session.entity'
-import {DataSource} from '../typeorm/typeorm.data-source'
+import {sessionService} from './session.service'
 
 export const sessionComposer = new Composer<Context>()
 
@@ -12,29 +12,23 @@ sessionComposer.use(
     getSessionKey,
     storage: {
       async read(id): Promise<SessionData | undefined> {
-        const sessionRepository = DataSource.getRepository(Session)
-        const sessionEntity = await sessionRepository.findOneBy({id})
+        const sessionEntity = await sessionService.findOneByChatId(id)
         return sessionEntity?.data || undefined
       },
 
-      async delete(key): Promise<void> {
-        const sessionRepository = DataSource.getRepository(Session)
-        const session = new Session()
-        session.id = key
-        await sessionRepository.remove(session)
+      async delete(id): Promise<void> {
+        await sessionService.deleteSessionById(id)
       },
 
       async write(id, data): Promise<void> {
-        const sessionRepository = DataSource.getRepository(Session)
         const session = new Session()
         session.id = id
         session.data = data
-        await sessionRepository.save(session)
+        await session.save()
       },
 
-      async has(key): Promise<boolean> {
-        const sessionRepository = DataSource.getRepository(Session)
-        return sessionRepository.existsBy({id: key})
+      has(key): Promise<boolean> {
+        return sessionService.isExists(key)
       },
     },
   }),
