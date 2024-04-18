@@ -10,6 +10,7 @@ import {webhookCallback} from 'grammy'
 import {broadcasterRouter} from './broadcaster/router/broadcaster.router'
 import {subscriptionsRouter} from './subscriptions/router/subscriptions.router'
 import {cryptoBotRouter} from './crypto-bot/router/crypto-bot.router'
+import {notionWorkspacesRouter} from './notion/notion-workspaces/router/notion-workspaces.router'
 
 const logger = new LoggerService('Server')
 
@@ -23,6 +24,7 @@ export function launchServer(): void {
   app.use(broadcasterRouter)
   app.use(subscriptionsRouter)
   app.use(cryptoBotRouter)
+  app.use(notionWorkspacesRouter)
 
   app.use(
     webhookCallback(bot, 'express', {

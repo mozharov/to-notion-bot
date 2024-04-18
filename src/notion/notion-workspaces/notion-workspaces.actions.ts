@@ -1,33 +1,30 @@
 import {CallbackQueryContext, ChatTypeContext} from 'grammy'
 import {usersService} from '../../users/users.service'
 import {chatsService} from '../../chats/chats.service'
-import {NotionWorkspacesService} from './notion-workspaces.service'
+import {notionWorkspacesService} from './notion-workspaces.service'
 import {Context} from '../../context'
 import {getKeyboardWithWorkspaces, getWorkspaceSettingsKeyboard} from './notion-workspaces.helper'
 
 export async function replyWithWorkspaces(ctx: ChatTypeContext<Context, 'private'>): Promise<void> {
-  const notionWorkspacesService = new NotionWorkspacesService()
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const workspaces = await notionWorkspacesService.getWorkspacesByOwner(user)
   await ctx.reply(ctx.t('workspaces'), {
-    reply_markup: getKeyboardWithWorkspaces(ctx, workspaces),
+    reply_markup: getKeyboardWithWorkspaces(ctx, workspaces, user),
     parse_mode: 'Markdown',
   })
 }
 
 export async function showWorkspaces(ctx: CallbackQueryContext<Context>): Promise<void> {
-  const notionWorkspacesService = new NotionWorkspacesService()
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const workspaces = await notionWorkspacesService.getWorkspacesByOwner(user)
   await ctx.editMessageText(ctx.t('workspaces'), {
-    reply_markup: getKeyboardWithWorkspaces(ctx, workspaces),
+    reply_markup: getKeyboardWithWorkspaces(ctx, workspaces, user),
     parse_mode: 'Markdown',
   })
 }
 
 export async function showWorkspaceSettings(ctx: CallbackQueryContext<Context>): Promise<void> {
   const workspaceId = String(ctx.callbackQuery.data.split(':')[1])
-  const notionWorkspacesService = new NotionWorkspacesService()
 
   const workspace = await notionWorkspacesService.getWorkspaceById(workspaceId)
   if (!workspace) throw new Error('Workspace not found')
@@ -43,7 +40,6 @@ export async function showWorkspaceSettings(ctx: CallbackQueryContext<Context>):
 
 export async function deleteWorkspace(ctx: CallbackQueryContext<Context>): Promise<void> {
   const workspaceId = String(ctx.callbackQuery.data.split(':')[1])
-  const notionWorkspacesService = new NotionWorkspacesService()
 
   const workspace = await notionWorkspacesService.getWorkspaceById(workspaceId)
   if (!workspace) throw new Error('Workspace not found')

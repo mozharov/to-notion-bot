@@ -146,4 +146,14 @@ export class Configuration {
   @IsString()
   @Transform(({value}) => value || null)
   CRYPTO_BOT_API_KEY: string | null
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  NOTION_CLIENT_ID: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  NOTION_SECRET_TOKEN: string
 }

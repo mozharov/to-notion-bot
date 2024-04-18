@@ -8,7 +8,7 @@ import {
 } from './notion-workspaces.actions'
 
 export const notionWorkspacesComposer = new Composer<Context>()
-// TODO: сделать бэкенд с интеграцией публичной и реализовать механику добавления интеграций, учесть лимит в 90 интеграций с Notion на аккаунт
+
 const privateChats = notionWorkspacesComposer.chatType('private')
 privateChats.command('workspaces').use(replyWithWorkspaces)
 privateChats.callbackQuery('workspaces').use(showWorkspaces)

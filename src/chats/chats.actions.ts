@@ -11,7 +11,7 @@ import {
   getSettingsChatKeyboard,
 } from './chats.helper'
 import {translate} from '../i18n/i18n.helper'
-import {NotionWorkspacesService} from '../notion/notion-workspaces/notion-workspaces.service'
+import {notionWorkspacesService as workspacesService} from '../notion/notion-workspaces/notion-workspaces.service'
 import {NotionService} from '../notion/notion.service'
 import {NotionDatabasesService} from '../notion/notion-databases/notion-databases.service'
 import {config} from '../config/config.service'
@@ -227,7 +227,6 @@ export async function showNotionSettings(ctx: CallbackQueryContext<Context>): Pr
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
   const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
-  const workspacesService = new NotionWorkspacesService()
   const workspaces = await workspacesService.getWorkspacesByOwner(chat.owner)
   await ctx.editMessageText(
     ctx.t('chat-notion-settings', {title: chat.title ?? chat.telegramId, type: chat.type}),
@@ -243,7 +242,6 @@ export async function selectNotionWorkspaceForChat(
   const workspaceId = String(ctx.callbackQuery.data.split(':')[3])
   const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
-  const workspacesService = new NotionWorkspacesService()
   const workspace = await workspacesService.getWorkspaceById(workspaceId)
   if (!workspace) throw new Error('Workspace not found')
 

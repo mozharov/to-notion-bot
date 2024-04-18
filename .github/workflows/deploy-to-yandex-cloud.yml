@@ -53,12 +53,22 @@ jobs:
           revision-network-id: enpgh2pcpfc87k6pd85i
           revision-env: |
             NODE_ENV=production
-            DB_SYNCHRONIZE=true
+            BOT_FETCH_INFO=false
+            BOT_FIRST_NAME="To Notion Bot"
+            BOT_ID=7107363808
+            BOT_USERNAME=to_notion_robot
+            LOGGER_FORMAT=json
+            LOGGER_LEVEL=3
+            DB_SYNCHRONIZE=false
+            DB_MIGRATIONS_RUN=true
+            MAX_CHATS_PER_USER=90
+            MAX_WORKSPACES_PER_USER=90
             ADMIN_TELEGRAM_ID=1033924450
             ORIGIN_DOMAIN=bba455u7kka4uvp9ljfh.containers.yandexcloud.net
+            MAX_SENDS_PER_USER=30
           revision-secrets: |
             BOT_TOKEN=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/to_notion_robot_token
-            WEBHOOK_SECRET=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/webhook_secret
+            BOT_WEBHOOK_SECRET=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/webhook_secret
             DB_HOST=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_HOST
             DB_PORT=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_PORT
             DB_USER=e6q34asflhr0g4i856m3/e6qpvq8em03fejdislh0/DB_USER
@@ -68,3 +78,7 @@ jobs:
             TINKOFF_TERMINAL_KEY=e6qibj2l94va1cj0rjl4/e6qj3espk603oe8g048i/TINKOFF_TERMINAL_KEY
             TINKOFF_TERMINAL_PASSWORD=e6qibj2l94va1cj0rjl4/e6qj3espk603oe8g048i/TINKOFF_TERMINAL_PASSWORD
             CRYPTO_BOT_API_KEY=e6q9s7hv47v9dtlsa5h0/e6q7vhqeamrs1ckoaib3/CRYPTO_BOT_API_KEY
+            MOY_NALOG_LOGIN=e6qjn7slv0cm2r9k7aot/e6q1p7h48s0lb9o5i906/MOY_NALOG_LOGIN
+            MOY_NALOG_PASSWORD=e6qjn7slv0cm2r9k7aot/e6q1p7h48s0lb9o5i906/MOY_NALOG_PASSWORD
+            NOTION_CLIENT_ID=e6qvq44qvbuddsspib5s/e6q1nr52vc0at0a1lf81/NOTION_CLIENT_ID
+            NOTION_SECRET_TOKEN=e6qvq44qvbuddsspib5s/e6q1nr52vc0at0a1lf81/NOTION_SECRET_TOKEN

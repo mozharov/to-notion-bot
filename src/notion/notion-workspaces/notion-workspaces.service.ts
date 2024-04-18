@@ -3,7 +3,7 @@ import {NotionWorkspace} from './entities/notion-workspace.entity'
 import {DataSource} from '../../typeorm/typeorm.data-source'
 import {User} from '../../users/entities/user.entity'
 
-export class NotionWorkspacesService {
+class NotionWorkspacesService {
   private readonly repository: Repository<NotionWorkspace>
 
   constructor() {
@@ -31,4 +31,16 @@ export class NotionWorkspacesService {
     Object.assign(workspace, data)
     return this.repository.save(workspace)
   }
+
+  public async createWorkspace(data: {
+    owner: NotionWorkspace['owner']
+    name: NotionWorkspace['name']
+    secretToken: NotionWorkspace['secretToken']
+  }): Promise<NotionWorkspace> {
+    const workspace = new NotionWorkspace()
+    Object.assign(workspace, data)
+    return this.repository.save(workspace)
+  }
 }
+
+export const notionWorkspacesService = new NotionWorkspacesService()

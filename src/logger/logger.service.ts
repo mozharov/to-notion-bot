@@ -1,6 +1,7 @@
 import {config} from '../config/config.service'
 import * as winston from 'winston'
 import {jsonConsole, prettyConsole} from './logger.transports'
+import {isNull, isUndefined} from 'lodash'
 
 export class LoggerService {
   private readonly logger: winston.Logger
@@ -54,16 +55,22 @@ export class LoggerService {
   }
 
   private logMessage(level: Level, value?: unknown, meta?: unknown): void {
-    const data: [string, unknown, Record<string, unknown>] = ['', meta, {context: this.context}]
-    if (typeof value === 'string') data[0] = value
-    else data[2].value = this.formatUnknownMeta(data[1])
-    if (typeof meta !== 'undefined') data[2].meta = this.formatUnknownMeta(data[1])
+    const data: LogData = {
+      level,
+      message: '',
+      meta: {
+        context: this.context,
+      },
+    }
+    if (typeof value === 'string') data.message = value
+    else data.meta.log_data = this.formatUnknownMeta(value)
+    if (!isUndefined(meta)) data.meta.meta_data = this.formatUnknownMeta(meta)
 
-    this.logger.log(level, data[0], data[2])
+    this.logger.log(level, data.message, data.meta)
   }
 
-  private formatUnknownMeta(meta: unknown): unknown {
-    if (typeof meta === 'undefined') return undefined
+  private formatUnknownMeta(meta: unknown): Record<string, unknown> | null | undefined {
+    if (typeof meta === 'undefined') return
     if (meta instanceof Error) {
       return {
         error: {
@@ -74,6 +81,7 @@ export class LoggerService {
         },
       }
     }
+    if (isNull(meta)) return meta
     try {
       return JSON.parse(JSON.stringify(meta))
     } catch (error) {
@@ -82,6 +90,12 @@ export class LoggerService {
   }
 }
 
+interface LogData {
+  level: Level
+  message: string
+  meta: Meta
+}
+type Meta = Record<string, unknown>
 type Level = 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
 export enum LogLevel {
   Fatal = 0,

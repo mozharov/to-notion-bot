@@ -4,7 +4,8 @@ import {LoggerService} from '../logger/logger.service'
 import {paymentsService} from '../payments/payments.service'
 import {Plan} from '../subscriptions/plans/entities/plan.entity'
 import {User} from '../users/entities/user.entity'
-import {validateCreateOrderResponseData} from './wallet.helper'
+import {utils} from '../utils/utils.service'
+import {CreateOrderResponse} from './models/create-order-response.model'
 
 const logger = new LoggerService('WalletService')
 
@@ -47,8 +48,9 @@ class WalletService {
         customerTelegramUserId: user.telegramId,
       }),
     })
+    const data = await response.json()
 
-    const order = await validateCreateOrderResponseData(response.json())
+    const order = await utils.transformData(data, CreateOrderResponse)
 
     logger.debug('Order created', order)
     payment.walletOrderId = order.data.id

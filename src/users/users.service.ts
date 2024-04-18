@@ -9,30 +9,34 @@ class UsersService {
     this.repository = DataSource.getRepository(User)
   }
 
-  public async getOrCreateUser(telegramId: number): Promise<User> {
+  public async getOrCreateUser(telegramId: User['telegramId']): Promise<User> {
     return (
       (await this.findUserByTelegramId(telegramId)) ||
       (await this.createUserByTelegramId(telegramId))
     )
   }
 
-  public async findUserByTelegramId(telegramId: number): Promise<User | null> {
+  public async findUserByTelegramId(telegramId: User['telegramId']): Promise<User | null> {
     return this.repository.findOne({
       where: {telegramId},
     })
   }
 
-  public existsUserByTelegramId(telegramId: number): Promise<boolean> {
+  public async findUserById(id: User['id']): Promise<User | null> {
+    return this.repository.findOneBy({id})
+  }
+
+  public existsUserByTelegramId(telegramId: User['telegramId']): Promise<boolean> {
     return this.repository.existsBy({telegramId})
   }
 
-  public async deleteUserByTelegramId(telegramId: number): Promise<void> {
+  public async deleteUserByTelegramId(telegramId: User['telegramId']): Promise<void> {
     const user = await this.findUserByTelegramId(telegramId)
     if (!user) return
     await user.remove()
   }
 
-  private async createUserByTelegramId(telegramId: number): Promise<User> {
+  private async createUserByTelegramId(telegramId: User['telegramId']): Promise<User> {
     const user = new User()
     user.telegramId = telegramId
 
