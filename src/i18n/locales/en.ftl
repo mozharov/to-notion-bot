@@ -171,7 +171,7 @@ chat-is-not-active = ⚠️ <b>Chat is not activated</b>
 
 notion-is-not-active = ⚠️ <b>Notion database is not connected</b>
 
-    Connect the Notion database in the chat settings
+    Connect a Notion database to this chat using the /chats command
 
 plan = <b>Choose a subscription plan</b>
     .months = {$months -> 
