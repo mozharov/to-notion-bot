@@ -2,7 +2,6 @@ import {config} from '../config/config.service'
 import {DataSourceOptions} from 'typeorm'
 import {User} from '../users/entities/user.entity'
 import {Chat} from '../chats/entities/chat.entity'
-import {Session} from '../session/entities/session.entity'
 import {NotionWorkspace} from '../notion/notion-workspaces/entities/notion-workspace.entity'
 import {NotionDatabase} from '../notion/notion-databases/entities/notion-database.entity'
 import {Message} from '../messages/entities/message.entity'
@@ -21,7 +20,6 @@ function buildTypeormConfig(): DataSourceOptions {
     entities: [
       User,
       Chat,
-      Session,
       NotionWorkspace,
       NotionDatabase,
       Message,

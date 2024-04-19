@@ -1,38 +1,30 @@
 import {Composer, session} from 'grammy'
 import {Context} from '../context'
 import {SessionData} from './session.context'
-import {Session} from './entities/session.entity'
-import {sessionService} from './session.service'
+import {PsqlAdapter} from '@grammyjs/storage-psql'
+import {Client} from 'pg'
+import {config} from '../config/config.service'
+
+export const sessionPostgresClient = new Client({
+  user: config.get('DB_USER'),
+  database: config.get('DB_NAME'),
+  password: config.get('DB_PASSWORD'),
+  port: config.get('DB_PORT'),
+  host: config.get('DB_HOST'),
+})
+const sessionTableName = '_sessions'
 
 export const sessionComposer = new Composer<Context>()
 
-sessionComposer.use(
-  session({
+sessionComposer.use(async (ctx, next) => {
+  const middleware = session({
     initial,
     getSessionKey,
-    storage: {
-      async read(id): Promise<SessionData | undefined> {
-        const sessionEntity = await sessionService.findOneByChatId(id)
-        return sessionEntity?.data || undefined
-      },
+    storage: await PsqlAdapter.create({tableName: sessionTableName, client: sessionPostgresClient}),
+  })
 
-      async delete(id): Promise<void> {
-        await sessionService.deleteSessionById(id)
-      },
-
-      async write(id, data): Promise<void> {
-        const session = new Session()
-        session.id = id
-        session.data = data
-        await session.save()
-      },
-
-      has(key): Promise<boolean> {
-        return sessionService.isExists(key)
-      },
-    },
-  }),
-)
+  await middleware(ctx, next)
+})
 
 function initial(): SessionData {
   return {}
