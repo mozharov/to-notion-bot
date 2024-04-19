@@ -52,6 +52,12 @@ export function convertFileToNotionBlock(file: File): BlockObjectRequest {
       audio: {type: 'external', external: {url: file.url}},
     }
   } else {
+    if (file.extension === 'pdf') {
+      return {
+        object: 'block',
+        pdf: {type: 'external', external: {url: file.url}},
+      }
+    }
     return {
       object: 'block',
       file: {type: 'external', external: {url: file.url}},
