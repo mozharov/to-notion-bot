@@ -10,6 +10,7 @@
     "format:check": "prettier --check \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\" --fix",
     "lint:check": "eslint \"src/**/*.ts\"",
+    "migration:create": "typeorm-ts-node-commonjs migration:create src/typeorm/migrations/migration",
     "migration:generate": "typeorm-ts-node-commonjs -d src/typeorm/typeorm.migration.options.ts -p true migration:generate src/typeorm/migrations/migration",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d src/typeorm/typeorm.migration.options.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/typeorm/typeorm.migration.options.ts"
