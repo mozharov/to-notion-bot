@@ -13,21 +13,41 @@ class PlansService {
     return this.repository.find({order: {cents: 'DESC'}})
   }
 
-  public async getPlanByName(name: Plan['name']): Promise<Plan> {
-    return this.repository.findOneByOrFail({name})
+  public async findPlanByname(name: Plan['name']): Promise<Plan | null> {
+    return this.repository.findOneBy({name})
   }
 
-  public async setPriceForMonthlyPlan(cents: number, kopecks: number): Promise<void> {
-    const plan = new Plan()
-    plan.name = 'month'
+  public async setPriceForMonthlyPlan(
+    cents: Plan['cents'],
+    kopecks: Plan['kopecks'],
+  ): Promise<void> {
+    const plan = await this.findPlanByname('month')
+    if (!plan) {
+      const newPlan = new Plan()
+      newPlan.name = 'month'
+      newPlan.cents = cents
+      newPlan.kopecks = kopecks
+      await newPlan.save()
+      return
+    }
     plan.cents = cents
     plan.kopecks = kopecks
     await plan.save()
   }
 
-  public async setPriceForYearlyPlan(cents: number, kopecks: number): Promise<void> {
-    const plan = new Plan()
-    plan.name = 'year'
+  public async setPriceForYearlyPlan(
+    cents: Plan['cents'],
+    kopecks: Plan['kopecks'],
+  ): Promise<void> {
+    const plan = await this.findPlanByname('year')
+    if (!plan) {
+      const newPlan = new Plan()
+      newPlan.name = 'year'
+      newPlan.cents = cents
+      newPlan.kopecks = kopecks
+      await newPlan.save()
+      return
+    }
     plan.cents = cents
     plan.kopecks = kopecks
     await plan.save()
