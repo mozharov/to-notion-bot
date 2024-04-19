@@ -31,6 +31,7 @@ export async function activatePrivateChat(
       owner: user,
       botStatus: 'unblocked',
       type: 'private',
+      status: 'active',
     })
   } else if (chat.botStatus === 'blocked') {
     await chatsService.updateChat({botStatus: 'unblocked', id: chat.id})
