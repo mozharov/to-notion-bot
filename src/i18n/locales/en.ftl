@@ -73,7 +73,7 @@ chat-settings = {$type ->
 
 chat-notion-settings = Select a *Workspace* in Notion for integration with {$type -> 
         [private] current chat
-        *[other] chat "*{$title}"
+        *[other] chat "*{$title}*"
     }
     .back = Back
     .pages = *Select a Notion database where I will send the content*

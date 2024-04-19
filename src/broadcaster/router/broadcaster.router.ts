@@ -15,17 +15,19 @@ export const broadcasterRouter = Router()
 // При выполнении этого эндпионта начинается рассылка по пользователям бота.
 // Вызывать эндпоинт следует регулярно, автоматически.
 broadcasterRouter.route('/broadcast').post(async (req, res) => {
+  logger.info('Broadcasting requested')
   if (req.get('X-Secret') !== config.get('BOT_WEBHOOK_SECRET')) {
+    logger.warn('Invalid webhook secret')
     res.sendStatus(403)
     return
   }
   if (isActiveBroadcasting) {
-    logger.debug('Broadcasting already in progress')
+    logger.warn('Broadcasting already in progress')
     res.sendStatus(202)
     return
   }
 
-  logger.debug('Broadcasting started')
+  logger.info('Broadcasting started')
   isActiveBroadcasting = true
   res.sendStatus(202)
   const broadcastings = await broadcasterService.getBroadcastings(10000)
@@ -52,5 +54,5 @@ broadcasterRouter.route('/broadcast').post(async (req, res) => {
   }
 
   isActiveBroadcasting = false
-  logger.debug('Broadcasting finished')
+  logger.info('Broadcasting finished')
 })

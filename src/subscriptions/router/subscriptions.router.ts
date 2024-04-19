@@ -12,14 +12,16 @@ const logger = new LoggerService('SubscriptionsRouter')
 export const subscriptionsRouter = Router()
 
 subscriptionsRouter.route('/notify-subscription').post(async (req, res) => {
+  logger.info('Notify subscription requested')
   if (req.get('X-Secret') !== config.get('BOT_WEBHOOK_SECRET')) {
+    logger.warn('Invalid webhook secret')
     res.sendStatus(403)
     return
   }
+  logger.info('Notify subscription started')
   res.sendStatus(202)
   const tommorow = new Date()
   tommorow.setDate(tommorow.getDate() + 1)
-  logger.debug('Tommorow', {tommorow})
 
   const subscriptions = await subscriptionsService.getSubscriptionsByEndsAtDay(tommorow)
 
@@ -40,4 +42,5 @@ subscriptionsRouter.route('/notify-subscription').post(async (req, res) => {
       logger.error('Failed to send message to user', {error})
     }
   }
+  logger.info('Notify subscription finished')
 })
