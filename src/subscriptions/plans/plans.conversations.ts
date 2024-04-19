@@ -23,8 +23,8 @@ export async function settingPrice(conversation: Conversation, ctx: Context): Pr
   await ctx.reply(ctx.t('set-price', {period: 'year', currency: 'RUB'}), {parse_mode: 'HTML'})
   const yearlyPriceKopecks = await conversation.form.int({otherwise})
   await Promise.all([
-    plansService.setPriceForMonthlyPlan(monthlyPriceCents, monthlyPriceKopecks),
     plansService.setPriceForYearlyPlan(yearlyPriceCents, yearlyPriceKopecks),
+    plansService.setPriceForMonthlyPlan(monthlyPriceCents, monthlyPriceKopecks),
   ])
   await ctx.reply(ctx.t('set-price.success'))
 }

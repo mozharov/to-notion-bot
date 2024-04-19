@@ -155,9 +155,11 @@ subscription = <b>Your subscription status:</b> {$status ->
             • unlimited number of connected chats
             • unlimited number of messages in Notion
 
-            <b>Expiration date:</b> {DATETIME($endsAt)} <i>(remaining {$daysLeft} days)</i>
+            <b>Subscription expiration date:</b> {DATETIME($endsAt)} <i>(remaining {$daysLeft} days)</i>
+
+            <i>After the subscription expiration date, there will be a limit of 30 sent messages per month</i>
         *[other] 
-            • {$messagesLimit} messages in Notion per month
+            • {$messagesLimit} sent messages per month
 
             ⚠️ To remove message count limits, renew your subscription.
     }
