@@ -49,7 +49,7 @@ export function convertFileToNotionBlock(file: File): BlockObjectRequest {
   } else if (file.type === 'audio') {
     return {
       object: 'block',
-      file: {type: 'external', external: {url: file.url}},
+      audio: {type: 'external', external: {url: file.url}},
     }
   } else {
     return {
