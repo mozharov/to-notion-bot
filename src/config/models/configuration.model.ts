@@ -151,4 +151,14 @@ export class Configuration {
   @IsString()
   @IsNotEmpty()
   NOTION_SECRET_TOKEN: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  OLD_BOT_TOKEN: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  OLD_BOT_DB_URL: string
 }

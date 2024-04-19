@@ -1,5 +1,7 @@
 import {Composer} from 'grammy'
 import {Context} from '../context'
+import {isAdmin} from '../users/users.filters'
+import {startService} from './start.service'
 
 export const startComposer = new Composer<Context>()
 
@@ -14,3 +16,9 @@ startComposer
     await new Promise(resolve => setTimeout(resolve, 1800))
     await ctx.reply(ctx.t('about-author'), {parse_mode: 'HTML'})
   })
+
+startComposer
+  .chatType('private')
+  .command('transfer_old_subscriptions')
+  .filter(isAdmin)
+  .use(() => startService.transferOldSubscriptions())

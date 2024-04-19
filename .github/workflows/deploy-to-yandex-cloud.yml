@@ -81,3 +81,5 @@ jobs:
             MOY_NALOG_PASSWORD=e6qjn7slv0cm2r9k7aot/e6q1p7h48s0lb9o5i906/MOY_NALOG_PASSWORD
             NOTION_CLIENT_ID=e6qvq44qvbuddsspib5s/e6q1nr52vc0at0a1lf81/NOTION_CLIENT_ID
             NOTION_SECRET_TOKEN=e6qvq44qvbuddsspib5s/e6q1nr52vc0at0a1lf81/NOTION_SECRET_TOKEN
+            OLD_BOT_DB_URL=e6q7q02d30a9rubmcm7l/e6q5eebu54g7ua3s1uig/MONGO_DB_URL
+            OLD_BOT_TOKEN=e6q7q02d30a9rubmcm7l/e6q5eebu54g7ua3s1uig/BOT_TOKEN
