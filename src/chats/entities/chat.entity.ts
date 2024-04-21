@@ -6,13 +6,14 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  BaseEntity,
 } from 'typeorm'
 import {User} from '../../users/entities/user.entity'
 import {NotionWorkspace} from '../../notion/notion-workspaces/entities/notion-workspace.entity'
 import {NotionDatabase} from '../../notion/notion-databases/entities/notion-database.entity'
 
 @Entity()
-export class Chat {
+export class Chat extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string
 

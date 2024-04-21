@@ -187,7 +187,7 @@ export async function deleteChat(ctx: CallbackQueryContext<Context>): Promise<vo
   const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   if (chat.type === 'private') throw new Error('Cannot delete private chat')
-  await chatsService.deleteChat(chat)
+  await Promise.all([ctx.api.leaveChat(chat.telegramId), chat.remove()])
   await showChats(ctx)
   await ctx.answerCallbackQuery(
     ctx.t('chat-settings.deleted', {title: chat.title || chat.telegramId}),
