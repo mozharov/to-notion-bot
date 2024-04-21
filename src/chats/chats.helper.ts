@@ -40,10 +40,12 @@ export function getSettingsChatKeyboard(
     })
   }
 
-  keyboard.row().add({
-    text: ctx.t('chat-settings.language', {language: chat.languageCode}),
-    callback_data: `chat:${chat.telegramId}:language`,
-  })
+  if (chat.type !== 'private') {
+    keyboard.row().add({
+      text: ctx.t('chat-settings.language', {language: chat.languageCode}),
+      callback_data: `chat:${chat.telegramId}:language`,
+    })
+  }
 
   keyboard.row().add({
     text: ctx.t('chat-settings.notion', {database}),

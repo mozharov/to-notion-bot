@@ -9,7 +9,8 @@ export const i18n = new I18n<Context>({
   directory: path.resolve(__dirname, 'locales'),
   localeNegotiator: async ctx => {
     const chat = ctx.chat?.id ? await chatsService.findChatByTelegramId(ctx.chat.id) : null
-    return chat?.languageCode ?? ((ctx.chat?.type === 'private' && ctx.from?.language_code) || 'en')
+    if (ctx.chat?.type === 'private') return ctx.from?.language_code ?? 'en'
+    return chat?.languageCode ?? (ctx.from?.language_code || 'en')
   },
 })
 
