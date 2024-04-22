@@ -20,7 +20,8 @@
 				"esbenp.prettier-vscode",
 				"Gruntfuggly.todo-tree",
 				"Postman.postman-for-vscode",
-				"cweijan.vscode-database-client2"
+				"cweijan.vscode-database-client2",
+				"Codeium.codeium"
 			]
 		}
 	},

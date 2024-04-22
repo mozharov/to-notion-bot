@@ -44,7 +44,7 @@ jobs:
           folder-id: b1gvq2m8dpd0kqg2et9a
           revision-service-account-id: aje97rvab1knd232rd1q
           revision-cores: 1
-          revision-memory: 1664Mb
+          revision-memory: 896Mb
           revision-core-fraction: 100
           revision-concurrency: 16
           revision-image-url: cr.yandex/${{ env.CR_REGISTRY }}/${{ env.CR_REPOSITORY }}:${{ github.sha }}

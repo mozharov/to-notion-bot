@@ -85,7 +85,7 @@ export class LoggerService {
     try {
       return JSON.parse(JSON.stringify(meta))
     } catch (error) {
-      return {errorWhileLogging: error instanceof Error ? error.message : 'Unknown error'}
+      return {error: 'Unknown Error'}
     }
   }
 }
