@@ -83,11 +83,30 @@ export class LoggerService {
     }
     if (isNull(meta)) return meta
     try {
-      return JSON.parse(JSON.stringify(meta))
+      return {
+        meta: stringify(meta),
+      }
     } catch (error) {
       return {error: 'Unknown Error'}
     }
   }
+}
+
+function stringify(obj: unknown): string {
+  let cache: object[] | null = []
+  const str = JSON.stringify(obj, function (key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (cache?.indexOf(value) !== -1) {
+        // Circular reference found, discard key
+        return
+      }
+      // Store value in our collection
+      cache.push(value)
+    }
+    return value
+  })
+  cache = null // reset the cache
+  return str
 }
 
 interface LogData {
