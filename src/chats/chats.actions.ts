@@ -16,10 +16,13 @@ import {NotionService} from '../notion/notion.service'
 import {NotionDatabasesService} from '../notion/notion-databases/notion-databases.service'
 import {config} from '../config/config.service'
 
+const logger = new LoggerService('ChatsActions')
+
 export async function activatePrivateChat(
   ctx: ChatTypeContext<Context, 'private'>,
   next: NextFunction,
 ): Promise<void> {
+  logger.warn('Activate private chat', {chatId: ctx.chat.id})
   const userId = ctx.chat.id
   const user = await usersService.getOrCreateUser(userId)
   const chat = await chatsService.findChatByTelegramId(userId)
@@ -149,6 +152,7 @@ export async function showChats(ctx: CallbackQueryContext<Context>): Promise<voi
 }
 
 export async function showChatSettings(ctx: CallbackQueryContext<Context>): Promise<void> {
+  logger.warn('showChatSettings')
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
 
   const chat = await chatsService.findChatByTelegramId(chatId)

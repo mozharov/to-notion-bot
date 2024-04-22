@@ -29,7 +29,6 @@ export function launchServer(): void {
   app.use(
     webhookCallback(bot, 'express', {
       secretToken: config.get('BOT_WEBHOOK_SECRET'),
-      timeoutMilliseconds: 20000,
       onTimeout(...args) {
         logger.fatal('Webhook timeout', args)
       },
