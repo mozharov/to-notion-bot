@@ -152,7 +152,6 @@ export async function showChats(ctx: CallbackQueryContext<Context>): Promise<voi
 }
 
 export async function showChatSettings(ctx: CallbackQueryContext<Context>): Promise<void> {
-  logger.warn('showChatSettings')
   const chatId = Number(ctx.callbackQuery.data.split(':')[1])
 
   const chat = await chatsService.findChatByTelegramId(chatId)
@@ -168,6 +167,7 @@ export async function showChatSettings(ctx: CallbackQueryContext<Context>): Prom
       : 'inactive'
     : 'null'
   const keyboard = getSettingsChatKeyboard(ctx, chat, database)
+  logger.warn('Keyboard')
   await ctx.editMessageText(
     ctx.t('chat-settings', {
       title,
