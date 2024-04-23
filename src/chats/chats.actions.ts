@@ -16,6 +16,8 @@ import {NotionService} from '../notion/notion.service'
 import {NotionDatabasesService} from '../notion/notion-databases/notion-databases.service'
 import {config} from '../config/config.service'
 
+const logger = new LoggerService('ChatsActions')
+
 export async function activatePrivateChat(
   ctx: ChatTypeContext<Context, 'private'>,
   next: NextFunction,
@@ -66,8 +68,6 @@ export async function updateGroupStatus(
     myChatMember: ChatMemberUpdated
   },
 ): Promise<void> {
-  const logger = new LoggerService('ChatsSettings')
-
   const chatId = ctx.myChatMember.chat.id
   const userId = ctx.myChatMember.from.id
   const botStatus = ctx.myChatMember.new_chat_member.status
@@ -187,7 +187,7 @@ export async function deleteChat(ctx: CallbackQueryContext<Context>): Promise<vo
   const chat = await chatsService.findChatByTelegramId(chatId)
   if (!chat) throw new Error('Chat not found')
   if (chat.type === 'private') throw new Error('Cannot delete private chat')
-  await Promise.all([ctx.api.leaveChat(chat.telegramId), chat.remove()])
+  await Promise.all([ctx.api.leaveChat(chat.telegramId).catch(logger.warn), chat.remove()])
   await showChats(ctx)
   await ctx.answerCallbackQuery(
     ctx.t('chat-settings.deleted', {title: chat.title || chat.telegramId}),
