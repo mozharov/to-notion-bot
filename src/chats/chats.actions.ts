@@ -15,28 +15,34 @@ import {notionWorkspacesService as workspacesService} from '../notion/notion-wor
 import {NotionService} from '../notion/notion.service'
 import {NotionDatabasesService} from '../notion/notion-databases/notion-databases.service'
 import {config} from '../config/config.service'
+import {Chat} from './entities/chat.entity'
 
+const memberValues = ['member', 'administrator', 'creator']
 const logger = new LoggerService('ChatsActions')
 
 export async function activatePrivateChat(
   ctx: ChatTypeContext<Context, 'private'>,
   next: NextFunction,
 ): Promise<void> {
-  const userId = ctx.chat.id
+  const userId = ctx.from.id
   const user = await usersService.getOrCreateUser(userId)
   const chat = await chatsService.findChatByTelegramId(userId)
+
+  const languageCode = ctx.from.language_code === 'ru' ? 'ru' : 'en'
+
   if (!chat) {
-    const languageCode = ctx.from.language_code === 'ru' ? 'ru' : 'en'
-    await chatsService.createChat({
-      languageCode,
-      telegramId: userId,
-      owner: user,
-      botStatus: 'unblocked',
-      type: 'private',
-      status: 'active',
-    })
+    const chat = new Chat()
+    chat.languageCode = languageCode
+    chat.owner = user
+    chat.telegramId = userId
+    chat.botStatus = 'unblocked'
+    chat.type = 'private'
+    chat.status = 'active'
+    await chat.save()
   } else if (chat.botStatus === 'blocked') {
-    await chatsService.updateChat({botStatus: 'unblocked', id: chat.id})
+    chat.languageCode = languageCode
+    chat.botStatus = 'unblocked'
+    await chat.save()
   }
   return next()
 }
@@ -46,20 +52,22 @@ export async function updatePrivateChatStatus(
     myChatMember: ChatMemberUpdated
   },
 ): Promise<void> {
-  const userId = ctx.myChatMember.chat.id
-  const botStatus = ctx.myChatMember.new_chat_member.status
+  const isMember = memberValues.includes(ctx.myChatMember.new_chat_member.status)
+  const chat = await chatsService.findChatByTelegramId(ctx.myChatMember.chat.id)
 
-  const chat = await chatsService.findChatByTelegramId(userId)
+  if (!isMember) {
+    if (chat?.botStatus === 'unblocked') {
+      chat.botStatus = 'blocked'
+      await chat.save()
+    }
+    return
+  }
 
-  const blocked = botStatus === 'kicked' && chat?.botStatus === 'unblocked'
-  const unblocked = botStatus === 'member' && chat?.botStatus === 'blocked'
-
-  if (blocked) {
-    chat.botStatus = 'blocked'
-    await chatsService.updateChat(chat)
-  } else if (unblocked) {
+  if (chat) {
     chat.botStatus = 'unblocked'
-    await chatsService.updateChat(chat)
+    await chat.save()
+  } else {
+    logger.warn('Failed to find chat', {myChatMember: ctx.myChatMember})
   }
 }
 
@@ -68,66 +76,77 @@ export async function updateGroupStatus(
     myChatMember: ChatMemberUpdated
   },
 ): Promise<void> {
-  const chatId = ctx.myChatMember.chat.id
-  const userId = ctx.myChatMember.from.id
-  const botStatus = ctx.myChatMember.new_chat_member.status
+  const isBotMember = memberValues.includes(ctx.myChatMember.new_chat_member.status)
+  const groupChat = await chatsService.findChatByTelegramId(ctx.myChatMember.chat.id)
+  const fromUserChat = await chatsService.findChatByTelegramId(ctx.myChatMember.from.id)
 
   const logSendMessageError = (error: unknown): void => {
     logger.warn('Failed to send message to user', {
       error,
-      userId,
-      chatId,
+      myChatMember: ctx.myChatMember,
     })
   }
 
-  const user = await usersService.getOrCreateUser(userId)
-  let chat = await chatsService.findChatByTelegramId(chatId)
-  const privateChat = await chatsService.findChatByTelegramId(userId)
+  if (!isBotMember) {
+    if (groupChat?.unblocked) {
+      groupChat.blocked = true
+      await groupChat.save()
 
-  const blocked = botStatus !== 'administrator' && chat?.botStatus === 'unblocked'
-  const unblocked = botStatus === 'administrator' && (!chat || chat.botStatus === 'blocked')
-
-  if (blocked && chat) {
-    chat.botStatus = 'blocked'
-    await chatsService.updateChat(chat)
-    if (privateChat) {
-      const text = translate('chat-blocked', privateChat.languageCode ?? 'en', {
-        title: chat.title ?? chatId,
-      })
-      await ctx.api.sendMessage(userId, text, {parse_mode: 'Markdown'}).catch(logSendMessageError)
+      const ownerChat = await chatsService.findChatByTelegramId(groupChat.owner.telegramId)
+      if (ownerChat?.unblocked) {
+        const text = translate('chat-blocked', ownerChat.languageCode, {
+          title: groupChat.title ?? groupChat.telegramId,
+        })
+        await ctx.api
+          .sendMessage(ownerChat.telegramId, text, {parse_mode: 'Markdown'})
+          .catch(logSendMessageError)
+      }
     }
     return
   }
-  if (unblocked) {
-    if (!chat) {
-      const type = ctx.myChatMember.chat.type === 'channel' ? 'channel' : 'group'
-      const chats = await chatsService.countChatsByOwner(user)
-      if (chats >= config.get('MAX_CHATS_PER_USER')) {
-        const text = translate('max-chats-reached', privateChat?.languageCode ?? 'en')
-        await ctx.api.sendMessage(userId, text, {parse_mode: 'Markdown'}).catch(logSendMessageError)
-        return
-      }
-      chat = await chatsService.createChat({
-        telegramId: chatId,
-        owner: user,
-        botStatus: 'unblocked',
-        title: ctx.myChatMember.chat.title,
-        type,
-        languageCode: privateChat?.languageCode,
-        watchMode: type === 'group' ? true : false,
-        silentMode: type === 'channel' ? true : false,
-      })
-    } else {
-      chat.botStatus = 'unblocked'
-      await chatsService.updateChat(chat)
-    }
-    if (privateChat) {
-      const text = translate('chat-unblocked', privateChat.languageCode ?? 'en', {
-        title: chat.title ?? chatId,
-      })
-      await ctx.api.sendMessage(userId, text, {parse_mode: 'Markdown'}).catch(logSendMessageError)
-    }
+
+  if (!fromUserChat) {
+    logger.warn('Failed to find from user chat', {myChatMember: ctx.myChatMember})
+    return
   }
+
+  if (!groupChat) {
+    const type = ctx.myChatMember.chat.type === 'channel' ? 'channel' : 'group'
+    const countChats = await chatsService.countChatsByOwner(fromUserChat.owner)
+    if (countChats >= config.get('MAX_CHATS_PER_USER') && fromUserChat.unblocked) {
+      const text = translate('max-chats-reached', fromUserChat.languageCode)
+      await ctx.api
+        .sendMessage(fromUserChat.telegramId, text, {parse_mode: 'Markdown'})
+        .catch(logSendMessageError)
+      return
+    }
+
+    const groupChat = new Chat()
+    groupChat.owner = fromUserChat.owner
+    groupChat.telegramId = ctx.myChatMember.chat.id
+    groupChat.botStatus = 'unblocked'
+    groupChat.status = 'active'
+    groupChat.title = ctx.myChatMember.chat.title
+    groupChat.type = type
+    groupChat.languageCode = fromUserChat.languageCode
+    groupChat.silentMode = true
+    await groupChat.save()
+  } else {
+    groupChat.owner = fromUserChat.owner
+    groupChat.title = ctx.myChatMember.chat.title
+    groupChat.botStatus = 'unblocked'
+    groupChat.status = 'active'
+    groupChat.silentMode = true
+    await groupChat.save()
+  }
+
+  if (fromUserChat.blocked) return
+  const text = translate('chat-unblocked', fromUserChat.languageCode, {
+    title: ctx.myChatMember.chat.title,
+  })
+  await ctx.api
+    .sendMessage(fromUserChat.telegramId, text, {parse_mode: 'Markdown'})
+    .catch(logSendMessageError)
 }
 
 export async function replyWithChats(ctx: ChatTypeContext<Context, 'private'>): Promise<void> {

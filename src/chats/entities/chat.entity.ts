@@ -58,6 +58,22 @@ export class Chat extends BaseEntity {
 
   @UpdateDateColumn({type: 'timestamp with time zone'})
   updatedAt: Date
+
+  public get blocked(): boolean {
+    return this.botStatus === 'blocked'
+  }
+
+  public get unblocked(): boolean {
+    return this.botStatus === 'unblocked'
+  }
+
+  public set unblocked(value: boolean) {
+    this.botStatus = value ? 'unblocked' : 'blocked'
+  }
+
+  public set blocked(value: boolean) {
+    this.botStatus = value ? 'blocked' : 'unblocked'
+  }
 }
 
 export type ActiveChat = Chat & {
