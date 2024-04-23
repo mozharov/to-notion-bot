@@ -28,23 +28,23 @@ export async function checkMentionMode(
   next: NextFunction,
 ): Promise<void> {
   const chat = await chatsService.findChatByTelegramId(ctx.chat.id)
-  if (chat?.onlyMentionMode && ctx.message?.text) {
+  if (chat?.onlyMentionMode) {
+    const message = ctx.message ?? ctx.channelPost
+    const text = message?.text ?? message?.caption
+    const entities = message?.entities ?? message?.caption_entities
+    if (!message || !text || !entities) return
     const senderId = getSenderId(ctx)
-    const sameTimeMessage = await messagesService.findSameTimeMessage(
-      chat,
-      senderId,
-      ctx.message.date,
-    )
+    const sameTimeMessage = await messagesService.findSameTimeMessage(chat, senderId, message.date)
     if (sameTimeMessage) {
       logger.debug('It is update message')
       return next()
     }
+    const botUsername = `@${ctx.me.username}`
 
-    const mention = ctx.message?.entities?.find(entity => {
+    const mention = entities.find(entity => {
       return (
         entity.type === 'mention' &&
-        ctx.message?.text?.slice(entity.offset, entity.offset + entity.length) ===
-          `@${ctx.me.username}`
+        text.slice(entity.offset, entity.offset + entity.length) === botUsername
       )
     })
     if (!mention) {
@@ -52,11 +52,11 @@ export async function checkMentionMode(
       return
     }
 
-    const mentionText = ctx.message.text.slice(mention.offset, mention.offset + mention.length)
-    if (!ctx.message.text.startsWith(mentionText)) return next()
+    const mentionText = text.slice(mention.offset, mention.offset + mention.length)
+    if (!text.startsWith(mentionText)) return next()
 
-    ctx.message.text = ctx.message.text.slice(mention.length)
-    ctx.message.entities = ctx.message.entities?.filter(
+    message.text = text.slice(mention.length)
+    message.entities = entities.filter(
       entity =>
         entity.offset !== mention.offset &&
         entity.length !== mention.length &&
