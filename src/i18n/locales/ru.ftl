@@ -185,7 +185,10 @@ chat-is-not-active = ⚠️ <b>Чат не активирован</b>
 
 notion-is-not-active = ⚠️ <b>База данных Notion не подключена</b>
     
-    Подключи базу данных Notion к чату с помощью команды /chats
+    {$type ->
+        [private] Подключи базу данных Notion к чату с помощью команды /chats
+        *[other] Подключи базу данных Notion к чату с помощью команды /chats в <a href="https://t.me/{$botUsername}">личном чате с ботом</a>
+    }
 
 broadcast = <b>Создание новой рассылки</b>
 

@@ -4,6 +4,7 @@ import {Context} from '../context'
 import {LoggerService} from '../logger/logger.service'
 import {getSenderId} from './messages.helper'
 import {messagesService} from './messages.service'
+import {config} from '../config/config.service'
 
 const logger = new LoggerService('MessagesMiddlewares')
 
@@ -17,7 +18,13 @@ export async function onlyActiveChat(ctx: Context, next: NextFunction): Promise<
     return
   }
   if (!chat.notionDatabase || !chat.notionWorkspace) {
-    await ctx.reply(ctx.t('notion-is-not-active'), {parse_mode: 'HTML'})
+    await ctx.reply(
+      ctx.t('notion-is-not-active', {
+        type: chat.type !== 'private' ? 'group' : 'private',
+        botUsername: config.get('BOT_USERNAME'),
+      }),
+      {parse_mode: 'HTML'},
+    )
     return
   }
   return next()

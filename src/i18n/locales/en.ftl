@@ -170,8 +170,11 @@ chat-is-not-active = ⚠️ <b>Chat is not activated</b>
     Activate the current chat using the /chats command to send messages to Notion
 
 notion-is-not-active = ⚠️ <b>Notion database is not connected</b>
-
-    Connect a Notion database to this chat using the /chats command
+    
+    {$type ->
+        [private] Connect a Notion database to this chat using the /chats command
+        *[other] Connect a Notion database to this chat using the /chats command in the <a href="https://t.me/{$botUsername}">private chat with the bot</a>
+    }
 
 plan = <b>Choose a subscription plan</b>
     .months = {$months -> 
