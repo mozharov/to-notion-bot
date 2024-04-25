@@ -57,9 +57,10 @@ messageContent
 
     const text = message.text ?? message.caption
     const title = truncateTextForTitle(text ?? ctx.t('new-file'))
+    const entities = message?.entities ?? message?.caption_entities
     const blocks =
-      text && (hasInnerContent(text, message.entities) || !!prevMessage)
-        ? convertMessageToNotionBlocks(text, message.entities)
+      text && (hasInnerContent(text, entities) || !!prevMessage)
+        ? convertMessageToNotionBlocks(text, entities)
         : []
 
     const tgFile = await getTelegramFile(ctx)
