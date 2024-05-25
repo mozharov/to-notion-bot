@@ -1,7 +1,7 @@
 bot-name = To Notion Bot
 
 start = Hello!
-    <b>I'm a bot for instant content transfer from Telegram to Notion.</b>
+    <b>I'm a bot for instant content transfer from Telegram to <a href="https://www.notion.so">Notion</a>.</b>
     
     Let's select a chat where I will send the content to Notion.
 
@@ -76,7 +76,14 @@ chat-notion-settings = Select a *Workspace* in Notion for integration with {$typ
     .back = Back
     .pages = *Select a Notion database where I will send the content*
 
-        If you do not see the necessary database in this list, try to update the Notion integration with the command /workspaces
+        If you don’t see the required database in this list, click on "*Add Database by Link*".
+    .link-to-database = Add Database by Link
+    .link = Send me the link to the Notion database that you want to attach to the chat.
+        To get the link, use the button from the screenshot.
+    .add-page = Add the database
+    .linked-database = Add the database <b>{$database}</b> to the chat?
+    .link-invalid = This doesn’t look like a database link. 
+        If you want to cancel the current action, use the command /cancel.
 
 max-chats-reached = *You have reached the limit of connected chats*
     Delete one of the connected chats to add a new one
@@ -300,3 +307,5 @@ notion-was-set = <b>Notion Workspace is installed</b>
     Now you can connect this Workspace to any of your chats using the /chats command
     
     Use the /workspaces command to view the list of created Notion integrations
+
+canceled = <b>Action canceled</b>

@@ -108,14 +108,22 @@ export function getChatNotionWorkspacePagesKeyboard(
   ctx: Context,
   chat: Chat,
   pages: NotionDatabaseResponse[],
+  workspaceId: string,
 ): InlineKeyboard {
   const keyboard = new InlineKeyboard()
 
   pages.forEach(page => {
+    const title = page.title[0]?.plain_text
+    if (!title) return
     keyboard.row().add({
-      text: page.title[0]?.plain_text ?? page.id,
+      text: title,
       callback_data: `chat:${chat.telegramId}:n-page:${page.id}`,
     })
+  })
+
+  keyboard.row().add({
+    text: ctx.t('chat-notion-settings.link-to-database'),
+    callback_data: `chat:${chat.telegramId}:link:${workspaceId}`,
   })
 
   keyboard.row().add({

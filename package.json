@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Bot for instantly sending content from Telegram to Notion.",
   "scripts": {
-    "build": "npx tsc --project tsconfig.build.json && copyfiles -u 1 src/**/*.ftl dist/",
+    "build": "npx tsc --project tsconfig.build.json && copyfiles -u 1 src/**/*.ftl dist/ && copyfiles -u 1 src/**/*.png dist/",
     "start:prod": "node dist/main.js",
     "start:dev": "DEBUG=grammy* nodemon --ext ts,ftl --watch src --ignore 'src/**/*.spec.ts' --exec 'npm run build && node dist/main.js'",
     "format": "prettier --write \"src/**/*.ts\"",

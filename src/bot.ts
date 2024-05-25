@@ -37,6 +37,11 @@ composer.use(sessionComposer)
 composer.use(i18nComposer)
 composer.use(conversationComposer)
 
+composer.command('cancel').use(async ctx => {
+  await ctx.conversation.exit()
+  await ctx.reply(ctx.t('canceled'), {parse_mode: 'HTML'})
+})
+
 composer.use(startComposer)
 composer.use(helpComposer)
 

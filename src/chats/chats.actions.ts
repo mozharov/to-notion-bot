@@ -264,14 +264,11 @@ export async function selectNotionWorkspaceForChat(
   if (!chat) throw new Error('Chat not found')
   const workspace = await workspacesService.getWorkspaceById(workspaceId)
   if (!workspace) throw new Error('Workspace not found')
-
   await chatsService.updateChat({id: chat.id, notionWorkspace: workspace})
-
   const notionService = new NotionService(workspace.accessToken)
   const databases = await notionService.getDatabases()
-
   await ctx.editMessageText(ctx.t('chat-notion-settings.pages'), {
-    reply_markup: getChatNotionWorkspacePagesKeyboard(ctx, chat, databases),
+    reply_markup: getChatNotionWorkspacePagesKeyboard(ctx, chat, databases, workspace.id),
     parse_mode: 'Markdown',
   })
   return

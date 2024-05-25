@@ -20,14 +20,19 @@ export class NotionService {
   public async getDatabases(): Promise<NotionDatabaseResponse[]> {
     const response = await this.limitter.schedule(() =>
       this.client.search({
-        page_size: 90,
+        page_size: 100,
         filter: {
           property: 'object',
           value: 'database',
         },
+        sort: {
+          direction: 'descending',
+          timestamp: 'last_edited_time',
+        },
       }),
     )
-    return response.results as NotionDatabaseResponse[]
+    // 50 is the maximum number of databases in keyboard
+    return response.results.slice(0, 50) as NotionDatabaseResponse[]
   }
 
   public async getDatabase(databaseId: string): Promise<DatabaseObjectResponse> {
