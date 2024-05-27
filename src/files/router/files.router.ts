@@ -4,7 +4,6 @@ import {filesService} from '../files.service'
 import superagent from 'superagent'
 import {bot} from '../../bot'
 import {config} from '../../config/config.service'
-import {PassThrough} from 'stream'
 
 const logger = new LoggerService('FilesRouter')
 
@@ -27,21 +26,5 @@ filesRouter.route('/file/:id/:fileId.:extension').get(async (req, res) => {
   const tgFile = await bot.api.getFile(file.fileId)
   logger.debug('File found', tgFile)
   const fileUrl = `https://api.telegram.org/file/bot${config.get('BOT_TOKEN')}/${tgFile.file_path}`
-
-  try {
-    const passThrough = new PassThrough()
-    superagent
-      .get(fileUrl)
-      .on('error', err => {
-        logger.error('Error during file streaming:', err)
-        res.status(500).send('Error fetching file')
-      })
-      .pipe(passThrough)
-    res.setHeader('Transfer-Encoding', 'chunked')
-    passThrough.pipe(res)
-  } catch (error) {
-    logger.error('Error fetching file:', error)
-    res.status(500).send('Error fetching file')
-  }
-  return
+  return superagent(fileUrl).pipe(res)
 })

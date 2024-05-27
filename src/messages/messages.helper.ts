@@ -27,15 +27,22 @@ export async function getTelegramFile(
   ) {
     return null
   }
-  return ctx.getFile().catch(async error => {
+  try {
+    const file = await ctx.getFile()
+    // max size 3.4 MB
+    if (file.file_size && file.file_size > 3.4 * 1024 * 1024) {
+      throw new TooBigFileError('File is too big')
+    }
+    return file
+  } catch (error) {
     const chat = await chatsService.findChatByTelegramId(ctx.chat.id)
-    if (error.error_code === 400) {
+    if (error && typeof error === 'object' && 'error_code' in error && error.error_code === 400) {
       logger.warn('File is too big')
       throw new TooBigFileError(chat?.languageCode)
     }
     logger.error('Error while getting file', error)
     throw error
-  })
+  }
 }
 
 export function getFileType(message: GrammyMessage): File['type'] {
