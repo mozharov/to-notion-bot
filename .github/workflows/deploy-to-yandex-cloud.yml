@@ -20,7 +20,7 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build-and-lint
         with:
-          node-version: '20.11.1'
+          node-version: '18.20.3'
 
       - name: Login to Yandex Cloud
         id: login-cr
