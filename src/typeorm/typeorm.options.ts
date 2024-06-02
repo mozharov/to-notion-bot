@@ -13,7 +13,9 @@ import {Broadcasting} from '../broadcaster/entities/broadcasting.entity'
 import {Referral} from '../referral/entities/referral.entity'
 import {Promocode} from '../promocodes/entities/promocode.entity'
 import {PromocodeActivation} from '../promocodes/entities/promocode-activation.entity'
-import {LogLevel} from '../logger/logger.service'
+import {LogLevel, LoggerService} from '../logger/logger.service'
+
+const logger = new LoggerService('TypeORM')
 
 function buildTypeormConfig(): DataSourceOptions {
   return {
@@ -45,6 +47,11 @@ function buildTypeormConfig(): DataSourceOptions {
     migrationsTableName: 'migrations',
     logging: config.get('LOGGER_LEVEL') >= LogLevel.Trace,
     poolSize: 10,
+    connectTimeoutMS: 10000,
+    poolErrorHandler: error => {
+      logger.error('Pool error')
+      logger.error(error)
+    },
   }
 }
 
