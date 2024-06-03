@@ -46,7 +46,7 @@ function buildTypeormConfig(): DataSourceOptions {
     migrationsRun: config.get('DB_MIGRATIONS_RUN'),
     migrationsTableName: 'migrations',
     logging: config.get('LOGGER_LEVEL') >= LogLevel.Trace,
-    poolSize: 10,
+    poolSize: 0,
     connectTimeoutMS: 10000,
     poolErrorHandler: error => {
       logger.error('Pool error')
