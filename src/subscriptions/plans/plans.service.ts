@@ -10,46 +10,36 @@ class PlansService {
   }
 
   public async getPlans(): Promise<Plan[]> {
-    return this.repository.find({order: {cents: 'DESC'}})
+    return this.repository.find({order: {amount: 'DESC'}})
   }
 
   public async findPlanByname(name: Plan['name']): Promise<Plan | null> {
     return this.repository.findOneBy({name})
   }
 
-  public async setPriceForMonthlyPlan(
-    cents: Plan['cents'],
-    kopecks: Plan['kopecks'],
-  ): Promise<void> {
+  public async setPriceForMonthlyPlan(amount: Plan['amount']): Promise<void> {
     const plan = await this.findPlanByname('month')
     if (!plan) {
       const newPlan = new Plan()
       newPlan.name = 'month'
-      newPlan.cents = cents
-      newPlan.kopecks = kopecks
+      newPlan.amount = amount
       await newPlan.save()
       return
     }
-    plan.cents = cents
-    plan.kopecks = kopecks
+    plan.amount = amount
     await plan.save()
   }
 
-  public async setPriceForYearlyPlan(
-    cents: Plan['cents'],
-    kopecks: Plan['kopecks'],
-  ): Promise<void> {
+  public async setPriceForYearlyPlan(amount: Plan['amount']): Promise<void> {
     const plan = await this.findPlanByname('year')
     if (!plan) {
       const newPlan = new Plan()
       newPlan.name = 'year'
-      newPlan.cents = cents
-      newPlan.kopecks = kopecks
+      newPlan.amount = amount
       await newPlan.save()
       return
     }
-    plan.cents = cents
-    plan.kopecks = kopecks
+    plan.amount = amount
     await plan.save()
   }
 }

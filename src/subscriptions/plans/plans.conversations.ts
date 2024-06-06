@@ -14,17 +14,13 @@ export async function settingPrice(conversation: Conversation, ctx: Context): Pr
     return
   }
 
-  await ctx.reply(ctx.t('set-price', {period: 'month', currency: 'USD'}), {parse_mode: 'HTML'})
-  const monthlyPriceCents = await conversation.form.int({otherwise})
-  await ctx.reply(ctx.t('set-price', {period: 'month', currency: 'RUB'}), {parse_mode: 'HTML'})
-  const monthlyPriceKopecks = await conversation.form.int({otherwise})
-  await ctx.reply(ctx.t('set-price', {period: 'year', currency: 'USD'}), {parse_mode: 'HTML'})
-  const yearlyPriceCents = await conversation.form.int({otherwise})
-  await ctx.reply(ctx.t('set-price', {period: 'year', currency: 'RUB'}), {parse_mode: 'HTML'})
-  const yearlyPriceKopecks = await conversation.form.int({otherwise})
+  await ctx.reply(ctx.t('set-price', {period: 'month'}), {parse_mode: 'HTML'})
+  const monthlyPrice = await conversation.form.int({otherwise})
+  await ctx.reply(ctx.t('set-price', {period: 'year'}), {parse_mode: 'HTML'})
+  const yearlyPrice = await conversation.form.int({otherwise})
   await Promise.all([
-    plansService.setPriceForYearlyPlan(yearlyPriceCents, yearlyPriceKopecks),
-    plansService.setPriceForMonthlyPlan(monthlyPriceCents, monthlyPriceKopecks),
+    plansService.setPriceForYearlyPlan(yearlyPrice),
+    plansService.setPriceForMonthlyPlan(monthlyPrice),
   ])
   await ctx.reply(ctx.t('set-price.success'))
 }

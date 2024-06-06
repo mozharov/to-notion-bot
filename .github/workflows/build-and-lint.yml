@@ -15,4 +15,4 @@ jobs:
       - name: Build and Lint
         uses: ./.github/actions/build-and-lint
         with:
-          node-version: '18.20.3'
+          node-version: '20.14.0'

@@ -4,13 +4,47 @@ import {isAdmin} from '../../users/users.filters'
 import {settingPrice} from './plans.conversations'
 import {plansService} from './plans.service'
 import {usersService} from '../../users/users.service'
-import {walletService} from '../../wallet/wallet.service'
 import {createConversation} from '@grammyjs/conversations'
-import {tinkoffService} from '../../tinkoff/tinkoff.service'
-import {config} from '../../config/config.service'
-import {cryptoBotService} from '../../crypto-bot/crypto-bot.service'
+import {paymentsService} from '../../payments/payments.service'
+import {subscriptionsService} from '../subscriptions.service'
+import {referralService} from '../../referral/referral.service'
+import {LoggerService} from '../../logger/logger.service'
+
+const logger = new LoggerService('PlansComposer')
 
 export const plansComposer = new Composer<Context>()
+
+plansComposer.on('pre_checkout_query', async ctx => {
+  await ctx.answerPreCheckoutQuery(true)
+})
+
+plansComposer.on('message:successful_payment', async ctx => {
+  const payment = await paymentsService.findById(ctx.message.successful_payment.invoice_payload)
+  if (!payment) throw new Error('Payment not found')
+
+  const days = payment.plan.name === 'month' ? 30 : 360
+  await subscriptionsService.giveDaysToUser(payment.user, days)
+  payment.status = 'completed'
+  await payment.save()
+
+  await ctx
+    .reply(
+      ctx.t('pay-success', {
+        hasReceipt: 'false',
+      }),
+      {parse_mode: 'HTML'},
+    )
+    .catch(logger.error)
+  const referral = await referralService.getOrCreateReferral(payment.user)
+  if (referral.referrerCode) {
+    const referrer = await referralService.findReferrerByCode(referral.referrerCode)
+    if (referrer) {
+      await subscriptionsService.giveDaysToUser(referrer.owner, days)
+      referrer.monthsCount += payment.plan.name === 'month' ? 1 : 12
+      await referrer.save()
+    }
+  }
+})
 
 plansComposer
   .chatType('private')
@@ -37,35 +71,19 @@ privateChats.callbackQuery(/^plan:(month|year)$/).use(async ctx => {
   if (!plan) throw new Error('Plan not found')
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const description = ctx.t('plan.description', {months: planName === 'month' ? 1 : 12})
-  const language = (await ctx.i18n.getLocale()) as 'ru' | 'en'
 
-  const keyboard = new InlineKeyboard()
-  if (config.get('WALLET_API_KEY')) {
-    const walletPaymentUrl = await walletService.createOrder(description, user, plan)
-    keyboard.row().add({
-      url: walletPaymentUrl,
-      text: ctx.t('plan.pay-wallet'),
-    })
-  }
-  if (config.get('TINKOFF_TERMINAL_KEY') && config.get('TINKOFF_TERMINAL_PASSWORD')) {
-    const tinkoffPaymentUrl = await tinkoffService.createOrder(user, plan, description, language)
-    keyboard.row().add({
-      url: tinkoffPaymentUrl,
-      text: ctx.t('plan.pay-card'),
-    })
-  }
-  if (config.get('CRYPTO_BOT_API_KEY')) {
-    const invoiceUrl = await cryptoBotService.createInvoice(description, user, plan)
-    keyboard.row().add({
-      url: invoiceUrl,
-      text: ctx.t('plan.pay-crypto'),
-    })
-  }
-
-  await ctx.editMessageText(ctx.t('plan.pay', {price: plan.dollars}), {
-    reply_markup: keyboard,
-    parse_mode: 'HTML',
+  const payment = await paymentsService.createPayment({
+    amount: plan.amount,
+    user,
+    plan,
   })
+
+  await ctx.replyWithInvoice(ctx.t('plan.title'), description, payment.id, 'XTR', [
+    {
+      label: description,
+      amount: plan.amount,
+    },
+  ])
 })
 
 privateChats.callbackQuery('plans').use(async ctx => {
@@ -75,7 +93,7 @@ privateChats.callbackQuery('plans').use(async ctx => {
     keyboard.text(
       ctx.t('plan.months', {
         months: plan.name === 'month' ? 1 : 12,
-        price: plan.dollars,
+        price: plan.amount,
       }),
       `plan:${plan.name}`,
     )

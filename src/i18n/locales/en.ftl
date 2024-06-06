@@ -187,19 +187,16 @@ notion-is-not-active = ⚠️ <b>Notion database is not connected</b>
 
 plan = <b>Choose a subscription plan</b>
     .months = {$months -> 
-        [12] ${$price} / year
-        [1] ${$price} / month
-        *[other] ${$price} / {$months} months.
+        [12] ⭐{$price} / year
+        [1] ⭐{$price} / month
+        *[other] ⭐{$price} / {$months} months.
     }
-    .pay-wallet = 👛 Pay with Wallet
-    .pay-card = 🇷🇺 Pay with a Russian card
-    .pay-crypto = 💱 Pay with Crypto Bot
     .description = {$months -> 
         [12] Full access to {bot-name} for 12 months
         [1] Full access to {bot-name} for 1 month
         *[other] Full access to {bot-name} for {$months} months.
     }
-    .pay = <b>Choose a payment method</b>
+    .title = Subscription
     
 broadcast = <b>Creating a new broadcast</b>
 
@@ -227,10 +224,7 @@ set-price = <b>Setting subscription price on {$period ->
         *[year] 1 year
     }</b>
 
-    Please enter a new price in <b>{$currency -> 
-        [RUB] kopecks
-        *[other] cents
-    }</b>
+    Please enter a new price in <b>Telegram Stars</b>
     .cancel = Cancel price setting
     .int-invalid = ⚠️ Invalid value
     .success = Price set

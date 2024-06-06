@@ -19,14 +19,14 @@ export class Payment extends BaseEntity {
   @Column({type: 'integer'})
   amount: number
 
-  @Column({type: 'enum', enum: ['RUB', 'USD']})
-  currency: 'RUB' | 'USD'
+  @Column({type: 'enum', enum: ['USD', 'XTR', 'RUB'], default: 'XTR'})
+  currency: 'XTR' | 'USD' | 'RUB'
 
   @Column({type: 'enum', enum: ['pending', 'completed', 'failed'], default: 'pending'})
   status: 'pending' | 'completed' | 'failed'
 
-  @Column({type: 'enum', enum: ['card', 'wallet', 'crypto']})
-  type: 'card' | 'wallet' | 'crypto'
+  @Column({type: 'enum', enum: ['card', 'wallet', 'crypto', 'XTR'], default: 'XTR'})
+  type: 'card' | 'wallet' | 'crypto' | 'XTR'
 
   @Column({type: 'varchar', nullable: true, default: null})
   walletOrderNumber: string | null
@@ -41,9 +41,6 @@ export class Payment extends BaseEntity {
   @ManyToOne(() => User, {onDelete: 'CASCADE', nullable: false, eager: true})
   @JoinColumn()
   user: User
-
-  @Column({type: 'varchar', nullable: true, default: null})
-  moyNalogReceiptId: string | null
 
   @CreateDateColumn({type: 'timestamp with time zone'})
   createdAt: Date

@@ -1,7 +1,5 @@
 import express, {NextFunction, Request, Response} from 'express'
 import 'express-async-errors'
-import {tinkoffRouter} from './tinkoff/router/tinkoff.router'
-import {walletRouter} from './wallet/router/wallet.router'
 import {filesRouter} from './files/router/files.router'
 import {bot} from './bot'
 import {config} from './config/config.service'
@@ -9,7 +7,6 @@ import {LoggerService} from './logger/logger.service'
 import {webhookCallback} from 'grammy'
 import {broadcasterRouter} from './broadcaster/router/broadcaster.router'
 import {subscriptionsRouter} from './subscriptions/router/subscriptions.router'
-import {cryptoBotRouter} from './crypto-bot/router/crypto-bot.router'
 import {notionWorkspacesRouter} from './notion/notion-workspaces/router/notion-workspaces.router'
 
 const logger = new LoggerService('Server')
@@ -18,12 +15,9 @@ export function launchServer(): void {
   const app = express()
   app.use(express.json())
 
-  app.use(tinkoffRouter)
-  app.use(walletRouter)
   app.use(filesRouter)
   app.use(broadcasterRouter)
   app.use(subscriptionsRouter)
-  app.use(cryptoBotRouter)
   app.use(notionWorkspacesRouter)
 
   app.use(

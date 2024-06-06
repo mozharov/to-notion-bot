@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=amd64/node:18.20-alpine
+ARG BASE_IMAGE=amd64/node:20.14-alpine
 
 
 ## Development stage
