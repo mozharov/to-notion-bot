@@ -8,6 +8,7 @@ import {NotionAuthResponse} from '../models/notion-auth-response.model'
 import {notionWorkspacesService} from '../notion-workspaces.service'
 import {translate} from '../../../i18n/i18n.helper'
 import {chatsService} from '../../../chats/chats.service'
+import { analytics } from '../../../analytics/analytics.service'
 
 const logger = new LoggerService('NotionWorkspacesRouter')
 
@@ -107,5 +108,6 @@ notionWorkspacesRouter.route('/notion').get(async (req, res) => {
       .catch(logger.error)
   } else logger.warn('Chat not found')
 
+  analytics.track('completed notion integration', user.telegramId)
   res.redirect(`https://t.me/${botInfo.username}`)
 })
