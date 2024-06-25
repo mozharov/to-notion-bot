@@ -8,7 +8,7 @@ import {NotionAuthResponse} from '../models/notion-auth-response.model'
 import {notionWorkspacesService} from '../notion-workspaces.service'
 import {translate} from '../../../i18n/i18n.helper'
 import {chatsService} from '../../../chats/chats.service'
-import { analytics } from '../../../analytics/analytics.service'
+import {analytics} from '../../../analytics/analytics.service'
 
 const logger = new LoggerService('NotionWorkspacesRouter')
 
