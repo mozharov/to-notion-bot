@@ -30,6 +30,13 @@ class SubscriptionsService {
     return result
   }
 
+  public hasActiveSubscriptionByTelegramUserId(telegramUserId: number): Promise<boolean> {
+    return this.repository.exists({
+      where: {user: {telegramId: telegramUserId}, isActive: true, endsAt: MoreThan(new Date())},
+      order: {endsAt: 'DESC'},
+    })
+  }
+
   public async giveDaysToUser(user: User, days: number): Promise<Subscription> {
     const subscription = await this.findActiveSubscriptionByUser(user)
     if (subscription) {
