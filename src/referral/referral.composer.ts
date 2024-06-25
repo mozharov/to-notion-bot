@@ -4,6 +4,7 @@ import {referralService} from './referral.service'
 import {usersService} from '../users/users.service'
 import {LoggerService} from '../logger/logger.service'
 import {subscriptionsService} from '../subscriptions/subscriptions.service'
+import {analytics} from '../analytics/analytics.service'
 
 const logger = new LoggerService('ReferralComposer')
 
@@ -12,6 +13,7 @@ export const referralComposer = new Composer<Context>()
 const privateChat = referralComposer.chatType('private')
 
 privateChat.command('referral').use(async ctx => {
+  analytics.track('referral command', ctx.from.id)
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const referral = await referralService.getOrCreateReferral(user)
   const newUsers = await referralService.countReferralsByReferrerCode(referral.code)
@@ -57,6 +59,10 @@ privateChat.command('start').use(async (ctx, next) => {
       const TWO_MONTHS = 60
       await Promise.all([referral.save(), subscriptionsService.giveDaysToUser(user, TWO_MONTHS)])
       months = 2
+      analytics.track('new referral', ctx.from.id, {
+        referrer: referrer.owner.telegramId,
+        referrerCode: referrer.code,
+      })
     }
 
     const keyboard = new InlineKeyboard().add({

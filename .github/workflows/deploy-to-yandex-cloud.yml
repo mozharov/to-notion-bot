@@ -58,13 +58,14 @@ jobs:
             BOT_USERNAME=to_notion_robot
             LOGGER_FORMAT=json
             LOGGER_LEVEL=3
-            DB_SYNCHRONIZE=true
+            DB_SYNCHRONIZE=false
             DB_MIGRATIONS_RUN=false
             MAX_CHATS_PER_USER=90
             MAX_WORKSPACES_PER_USER=90
             ADMIN_TELEGRAM_ID=1033924450
             ORIGIN_DOMAIN=bba455u7kka4uvp9ljfh.containers.yandexcloud.net
             MAX_SENDS_PER_USER=30
+            POSTHOG_API_KEY=phc_h6Oy9tb8Ztt7A3X5Fv2P2o6GLhyBmXusRPzMLKFDMhj
           revision-secrets: |
             BOT_TOKEN=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/to_notion_robot_token
             BOT_WEBHOOK_SECRET=e6q2rt29n1fjclo7jd2p/e6qast92tl9e5hrhb3on/webhook_secret

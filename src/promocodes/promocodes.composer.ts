@@ -8,6 +8,7 @@ import {creatingPromocode, generatingPromocode} from './promocodes.conversations
 import {LoggerService} from '../logger/logger.service'
 import {subscriptionsService} from '../subscriptions/subscriptions.service'
 import {usersService} from '../users/users.service'
+import {analytics} from '../analytics/analytics.service'
 
 const logger = new LoggerService('PromocodesComposer')
 
@@ -40,7 +41,7 @@ privateChats.on('message:text').use(async (ctx, next) => {
   const user = await usersService.getOrCreateUser(ctx.from.id)
   const promocode = await promocodesService.findActivePromocode(ctx.message.text, user)
   if (!promocode) return next()
-
+  analytics.track('promocode activated', ctx.from.id, {promocode: promocode.code})
   await promocodesService.activatePromocode(promocode, user)
   await subscriptionsService.giveDaysToUser(user, promocode.freeDays)
   promocode.used += 1

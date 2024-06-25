@@ -17,6 +17,8 @@ import {plansComposer} from './subscriptions/plans/plans.composer'
 import {referralComposer} from './referral/referral.composer'
 import {promocodesComposer} from './promocodes/promocodes.composer'
 import {UserFromGetMe} from 'grammy/types'
+import {analyticsComposer} from './analytics/analytics.composer'
+import {analytics} from './analytics/analytics.service'
 
 export const botInfo: UserFromGetMe = {
   id: config.get('BOT_ID'),
@@ -37,7 +39,11 @@ composer.use(sessionComposer)
 composer.use(i18nComposer)
 composer.use(conversationComposer)
 
+composer.use(analyticsComposer)
+
 composer.command('cancel').use(async ctx => {
+  const userId = ctx.from?.id
+  if (userId) analytics.track('cancel command', userId)
   await ctx.conversation.exit()
   await ctx.reply(ctx.t('canceled'), {parse_mode: 'HTML'})
 })
@@ -57,6 +63,7 @@ composer.use(promocodesComposer)
 composer.use(messageComposer)
 
 composer.chatType('private').on('callback_query', async ctx => {
+  analytics.track('unknown callback', ctx.from.id)
   await ctx.answerCallbackQuery({text: ctx.t('unknown-callback-query')})
   return ctx.deleteMessage().catch(() => true)
 })

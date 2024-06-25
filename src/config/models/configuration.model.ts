@@ -151,4 +151,8 @@ export class Configuration {
   @IsString()
   @IsNotEmpty()
   NOTION_SECRET_TOKEN: string
+
+  @Expose()
+  @IsString()
+  POSTHOG_API_KEY: string
 }

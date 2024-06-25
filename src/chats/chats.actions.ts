@@ -16,6 +16,7 @@ import {NotionService} from '../notion/notion.service'
 import {NotionDatabasesService} from '../notion/notion-databases/notion-databases.service'
 import {config} from '../config/config.service'
 import {Chat} from './entities/chat.entity'
+import {analytics} from '../analytics/analytics.service'
 
 const memberValues = ['member', 'administrator', 'creator']
 const logger = new LoggerService('ChatsActions')
@@ -56,6 +57,7 @@ export async function updatePrivateChatStatus(
   const chat = await chatsService.findChatByTelegramId(ctx.myChatMember.chat.id)
 
   if (!isMember) {
+    analytics.track('chat was blocked', ctx.from.id)
     if (chat?.botStatus === 'unblocked') {
       chat.botStatus = 'blocked'
       await chat.save()
@@ -63,6 +65,7 @@ export async function updatePrivateChatStatus(
     return
   }
 
+  analytics.track('chat was unblocked', ctx.from.id)
   if (chat) {
     chat.botStatus = 'unblocked'
     await chat.save()
@@ -79,6 +82,12 @@ export async function updateGroupStatus(
   const isBotMember = memberValues.includes(ctx.myChatMember.new_chat_member.status)
   const groupChat = await chatsService.findChatByTelegramId(ctx.myChatMember.chat.id)
   const fromUserChat = await chatsService.findChatByTelegramId(ctx.myChatMember.from.id)
+
+  const userId = ctx.from?.id
+  if (userId) {
+    if (isBotMember) analytics.track('bot was added to group', userId)
+    else analytics.track('bot was removed from group', userId)
+  }
 
   const logSendMessageError = (error: unknown): void => {
     logger.warn('Failed to send message to user', {

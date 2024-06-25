@@ -23,6 +23,7 @@ import {
 } from '../notion/notion.helper'
 import {filesService} from '../files/files.service'
 import {checkSubscription} from '../subscriptions/subscriptions.middleware'
+import {analytics} from '../analytics/analytics.service'
 
 const logger = new LoggerService('MessagesComposer')
 
@@ -70,6 +71,15 @@ messageContent
       const fileBlock = convertFileToNotionBlock(file)
       blocks.push(fileBlock)
     }
+
+    analytics.track('sent message', senderId, {
+      chat: chat.id,
+      file: !!tgFile,
+      fileSize: tgFile?.file_size,
+      textLength: text?.length,
+      forwardMessage: !!message.forward_origin,
+      updateNotionPage: !!prevMessage,
+    })
 
     const linkToOriginal = getLinkToOriginal(message)
     if (linkToOriginal) {

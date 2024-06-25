@@ -5,6 +5,7 @@ import {subscriptionsService} from './subscriptions.service'
 import {messagesService} from '../messages/messages.service'
 import {config} from '../config/config.service'
 import {LoggerService} from '../logger/logger.service'
+import {analytics} from '../analytics/analytics.service'
 
 const logger = new LoggerService('SubscriptionsMiddleware')
 
@@ -16,6 +17,7 @@ export async function checkSubscription(ctx: Context, next: NextFunction): Promi
     const messages = await messagesService.countMessagesForCurrentMonthByOwner(chat.owner)
     logger.debug(`User ${chat.owner.telegramId} has ${messages} messages in the current month`)
     if (messages >= config.get('MAX_SENDS_PER_USER')) {
+      analytics.track('messages limit exceeded', chat.owner.telegramId)
       if (chat.silentMode && chat.type !== 'private') {
         await ctx.api.sendMessage(
           chat.owner.telegramId,

@@ -9,6 +9,7 @@ import {paymentsService} from '../../payments/payments.service'
 import {subscriptionsService} from '../subscriptions.service'
 import {referralService} from '../../referral/referral.service'
 import {LoggerService} from '../../logger/logger.service'
+import {analytics} from '../../analytics/analytics.service'
 
 const logger = new LoggerService('PlansComposer')
 
@@ -19,6 +20,7 @@ plansComposer.on('pre_checkout_query', async ctx => {
 })
 
 plansComposer.on('message:successful_payment', async ctx => {
+  analytics.track('successful payment', ctx.from.id)
   const payment = await paymentsService.findById(ctx.message.successful_payment.invoice_payload)
   if (!payment) throw new Error('Payment not found')
 
@@ -67,6 +69,7 @@ onlyAdmin.command('set_price').use(async ctx => {
 
 privateChats.callbackQuery(/^plan:(month|year)$/).use(async ctx => {
   const planName = String(ctx.callbackQuery.data.split(':')[1]) as 'month' | 'year'
+  analytics.track('plan callback', ctx.from.id, {plan})
   const plan = await plansService.findPlanByname(planName)
   if (!plan) throw new Error('Plan not found')
   const user = await usersService.getOrCreateUser(ctx.from.id)
@@ -87,6 +90,7 @@ privateChats.callbackQuery(/^plan:(month|year)$/).use(async ctx => {
 })
 
 privateChats.callbackQuery('plans').use(async ctx => {
+  analytics.track('plans callback', ctx.from.id)
   const plans = await plansService.getPlans()
   const keyboard = new InlineKeyboard()
   for (const plan of plans) {
