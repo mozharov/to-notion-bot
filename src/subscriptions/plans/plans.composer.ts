@@ -69,7 +69,7 @@ onlyAdmin.command('set_price').use(async ctx => {
 
 privateChats.callbackQuery(/^plan:(month|year)$/).use(async ctx => {
   const planName = String(ctx.callbackQuery.data.split(':')[1]) as 'month' | 'year'
-  analytics.track('plan callback', ctx.from.id, {plan})
+  analytics.track('plan callback', ctx.from.id, {plan: planName})
   const plan = await plansService.findPlanByname(planName)
   if (!plan) throw new Error('Plan not found')
   const user = await usersService.getOrCreateUser(ctx.from.id)
