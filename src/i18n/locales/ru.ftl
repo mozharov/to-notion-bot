@@ -294,7 +294,7 @@ limit-exceeded = <b>Количество отправленных сообщен
     }
     .renew = Продлить подписку
 
-about-author = Кстати, меня создал <a href="https://t.me/mozharov_channel">Владислав Можаров</a>, рекомендую подписаться на его <a href="https://t.me/mozharov_channel">Telegram канал</a>
+about-author = Кстати, меня создал <a href="https://t.me/mozharovv">Владислав Можаров</a>, рекомендую подписаться на его <a href="https://t.me/mozharovv">Telegram канал</a>
 
 notion-was-set = <b>Notion Workspace установлен</b>
 
