@@ -63,6 +63,7 @@
     "pg": "^8.11.5",
     "posthog-node": "^4.0.1",
     "reflect-metadata": "^0.2.1",
+    "socks-proxy-agent": "^8.0.4",
     "superagent": "^9.0.1",
     "typeorm": "^0.3.20",
     "winston": "^3.12.0"
