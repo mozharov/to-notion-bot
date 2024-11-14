@@ -10,12 +10,12 @@ import {chatsComposer} from './chats/chats.composer'
 import {notionWorkspacesComposer} from './notion/notion-workspaces/notion-workspaces.composer'
 import {messageComposer} from './messages/messages.composer'
 import {helpComposer} from './help/help.composer'
-import {subscriptionsComposer} from './subscriptions/subscriptions.composer'
+// import {subscriptionsComposer} from './subscriptions/subscriptions.composer'
 import {autoRetry} from '@grammyjs/auto-retry'
 import {broadcasterComposer} from './broadcaster/broadcaster.composer'
-import {plansComposer} from './subscriptions/plans/plans.composer'
-import {referralComposer} from './referral/referral.composer'
-import {promocodesComposer} from './promocodes/promocodes.composer'
+// import {plansComposer} from './subscriptions/plans/plans.composer'
+// import {referralComposer} from './referral/referral.composer'
+// import {promocodesComposer} from './promocodes/promocodes.composer'
 import {UserFromGetMe} from 'grammy/types'
 import {analyticsComposer} from './analytics/analytics.composer'
 import {analytics} from './analytics/analytics.service'
@@ -51,14 +51,16 @@ composer.command('cancel').use(async ctx => {
 composer.use(startComposer)
 composer.use(helpComposer)
 
-composer.use(subscriptionsComposer)
-composer.use(referralComposer)
+// Временно бесплатный.
+// composer.use(subscriptionsComposer)
+// composer.use(referralComposer)
 
 composer.use(chatsComposer)
 composer.use(notionWorkspacesComposer)
 composer.use(broadcasterComposer)
-composer.use(plansComposer)
-composer.use(promocodesComposer)
+// Временно бесплатный.
+// composer.use(plansComposer)
+// composer.use(promocodesComposer)
 
 composer.use(messageComposer)
 

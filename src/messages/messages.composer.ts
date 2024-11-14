@@ -22,7 +22,7 @@ import {
   truncateTextForTitle,
 } from '../notion/notion.helper'
 import {filesService} from '../files/files.service'
-import {checkSubscription} from '../subscriptions/subscriptions.middleware'
+// import {checkSubscription} from '../subscriptions/subscriptions.middleware'
 import {analytics} from '../analytics/analytics.service'
 
 const logger = new LoggerService('MessagesComposer')
@@ -42,7 +42,8 @@ messageContent.chatType(['group', 'supergroup']).use(checkMentionMode)
 
 messageContent
   .use(onlyActiveChat)
-  .use(checkSubscription)
+  // Временно делаю бота бесплатным. (а может и не временно)
+  // .use(checkSubscription)
   .use(async ctx => {
     logger.debug('Message received')
     const senderId = getSenderId(ctx)
