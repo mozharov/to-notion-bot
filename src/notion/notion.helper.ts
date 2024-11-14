@@ -38,8 +38,9 @@ export function convertMessageToNotionBlocks(
 }
 
 export function convertFileToNotionBlock(file: File): BlockObjectRequest {
+  logger.debug('file', file)
+
   if (file.type === 'image') {
-    logger.debug(`extension: ${file.extension}`)
     return {
       object: 'block',
       image: {type: 'external', external: {url: file.url}},
