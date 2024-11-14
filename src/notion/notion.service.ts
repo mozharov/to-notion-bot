@@ -7,12 +7,6 @@ import {
 import {LoggerService} from '../logger/logger.service'
 import {notionApiLimitter} from '../limitter/limitter.service'
 import {NotFoundError} from '../errors/not-found.error'
-import {SocksProxyAgent} from 'socks-proxy-agent'
-
-// это socks5 прокся наша из Армении — дал для теста, чтобы можно было проверить если что
-const agent = new SocksProxyAgent(
-  'socks://ravjjivpsh-res-country-AM-state-616051-city-616052-hold-session-session-66dc32a1c52f4:J5VkmJzPXYBlyTlV@190.2.130.11:9999',
-)
 
 export class NotionService {
   private readonly client: Client
@@ -20,7 +14,7 @@ export class NotionService {
   private readonly limitter = notionApiLimitter
 
   constructor(secretToken: string) {
-    this.client = new Client({auth: secretToken, agent})
+    this.client = new Client({auth: secretToken})
   }
 
   public async getDatabases(): Promise<NotionDatabaseResponse[]> {
