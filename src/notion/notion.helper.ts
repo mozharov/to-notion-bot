@@ -2,7 +2,9 @@ import {MessageEntity} from 'grammy/types'
 import {Annotations, TextBlock, RichText} from './notion.types'
 import {BlockObjectRequest} from '@notionhq/client/build/src/api-endpoints'
 import {File} from '../files/entities/file.entity'
+import {LoggerService} from '../logger/logger.service'
 
+const logger = new LoggerService('MessagesComposer')
 const MAX_TITLE_LENGTH = 120 // Custom limitation
 const MAX_TEXT_CONTENT_LENGTH = 2000 // Notion API limitation
 const MAX_ARRAY_LENGTH = 100 // Notion API limitation
@@ -37,6 +39,7 @@ export function convertMessageToNotionBlocks(
 
 export function convertFileToNotionBlock(file: File): BlockObjectRequest {
   if (file.type === 'image') {
+    logger.debug(`extension: ${file.extension}`)
     return {
       object: 'block',
       image: {type: 'external', external: {url: file.url}},
