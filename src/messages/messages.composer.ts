@@ -8,7 +8,7 @@ import {
   getSentAt,
   getFileType,
   getLinkToOriginal,
-  getLinkToSender,
+  // getLinkToSender,
 } from './messages.helper'
 import {LoggerService} from '../logger/logger.service'
 import {messagesService} from './messages.service'
@@ -96,20 +96,20 @@ messageContent
         },
       })
     }
-    const linkToSender = getLinkToSender(message)
-    if (linkToSender) {
-      blocks.push({
-        object: 'block',
-        paragraph: {
-          rich_text: [
-            {
-              text: {content: ctx.t('link-to-sender'), link: {url: linkToSender}},
-              annotations: {italic: true},
-            },
-          ],
-        },
-      })
-    }
+    // const linkToSender = getLinkToSender(message)
+    // if (linkToSender) {
+    //   blocks.push({
+    //     object: 'block',
+    //     paragraph: {
+    //       rich_text: [
+    //         {
+    //           text: {content: ctx.t('link-to-sender'), link: {url: linkToSender}},
+    //           annotations: {italic: true},
+    //         },
+    //       ],
+    //     },
+    //   })
+    // }
 
     const notionService = new NotionService(chat.notionWorkspace.accessToken)
     const notionPageId = await notionService.saveToNotion(
