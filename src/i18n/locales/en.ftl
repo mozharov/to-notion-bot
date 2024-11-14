@@ -137,9 +137,7 @@ error-not-found = ⚠️ Failed to find the necessary Notion database or page
 
     Try to update the Notion integration with the command /workspaces
 
-error-too-big-file = ⚠️ The file size exceeds the maximum allowed size of 3.4 MB.
-
-    This is a temporary limitation; soon the limits will be increased to 20 MB.
+error-too-big-file = ⚠️ The file size exceeds the maximum allowed size of 20 MB.
 
     Try sending a smaller file.
 
