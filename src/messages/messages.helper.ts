@@ -30,9 +30,9 @@ export async function getTelegramFile(
   try {
     const file = await ctx.getFile()
     // max size 3.4 MB
-    if (file.file_size && file.file_size > 3.4 * 1024 * 1024) {
-      throw new TooBigFileError('File is too big')
-    }
+    // if (file.file_size && file.file_size > 3.4 * 1024 * 1024) {
+    //   throw new TooBigFileError('File is too big')
+    // }
     return file
   } catch (error) {
     const chat = await chatsService.findChatByTelegramId(ctx.chat.id)
