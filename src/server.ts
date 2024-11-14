@@ -35,5 +35,5 @@ export function launchServer(): void {
     return next()
   })
 
-  app.listen(config.get('PORT'), () => logger.debug('Server started'))
+  app.listen(config.get('PORT'), config.get('HOST'), () => logger.debug('Server started'))
 }

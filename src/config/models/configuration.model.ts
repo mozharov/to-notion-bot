@@ -155,4 +155,9 @@ export class Configuration {
   @Expose()
   @IsString()
   POSTHOG_API_KEY: string
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  HOST: string
 }
