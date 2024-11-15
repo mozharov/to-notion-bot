@@ -19,6 +19,7 @@ import {broadcasterComposer} from './broadcaster/broadcaster.composer'
 import {UserFromGetMe} from 'grammy/types'
 import {analyticsComposer} from './analytics/analytics.composer'
 import {analytics} from './analytics/analytics.service'
+import {donateComposer} from './donate/donate.composer'
 
 export const botInfo: UserFromGetMe = {
   id: config.get('BOT_ID'),
@@ -50,6 +51,7 @@ composer.command('cancel').use(async ctx => {
 
 composer.use(startComposer)
 composer.use(helpComposer)
+composer.use(donateComposer)
 
 // Временно бесплатный.
 // composer.use(subscriptionsComposer)

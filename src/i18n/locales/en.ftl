@@ -303,3 +303,13 @@ notion-was-set = <b>Notion Workspace is installed</b>
     Use the /workspaces command to view the list of created Notion integrations
 
 canceled = <b>Action canceled</b>
+
+donate = <b>Support development</b>
+
+    If the bot has helped you or simply made your life a little easier, then I suggest you support the project development with any comfortable amount.
+
+    Any amount helps and motivates me to continue working on the project.
+    The bot is completely free and is developed solely through donations.
+
+    Click the button below to support the development.
+    .link = Donate to the project ❤️
