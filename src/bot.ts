@@ -66,6 +66,57 @@ composer.use(broadcasterComposer)
 
 composer.use(messageComposer)
 
+composer
+  .command('setmycommands')
+  .filter(ctx => ctx.from?.id === config.get('ADMIN_TELEGRAM_ID'))
+  .use(async ctx => {
+    await ctx.api.setMyCommands(
+      [
+        {
+          command: 'donate',
+          description: 'For those who have benefited from the bot',
+        },
+        {
+          command: 'chats',
+          description: 'Connected chats',
+        },
+        {
+          command: 'workspaces',
+          description: 'Connected Notion workspaces',
+        },
+        {
+          command: 'help',
+          description: 'Links and instructions',
+        },
+      ],
+      {scope: {type: 'all_private_chats'}},
+    )
+    await ctx.api.setMyCommands(
+      [
+        {
+          command: 'donate',
+          description: 'Для тех, кому бот принёс пользу',
+        },
+        {
+          command: 'chats',
+          description: 'Подключённые чаты',
+        },
+        {
+          command: 'workspaces',
+          description: 'Подключеные пространства Notion',
+        },
+        {
+          command: 'help',
+          description: 'Ссылки и инструкции',
+        },
+      ],
+      {
+        scope: {type: 'all_private_chats'},
+        language_code: 'ru',
+      },
+    )
+  })
+
 composer.chatType('private').on('callback_query', async ctx => {
   analytics.track('unknown callback', ctx.from.id)
   await ctx.answerCallbackQuery({text: ctx.t('unknown-callback-query')})
