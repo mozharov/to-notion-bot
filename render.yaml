@@ -1,0 +1,54 @@
+# Exported from Render on 2024-11-16T04:23:23Z
+services:
+- type: web
+  name: to-notion-bot
+  runtime: docker
+  repo: https://github.com/mozharov/to-notion-bot
+  plan: starter
+  envVars:
+  - key: ORIGIN_DOMAIN
+    sync: false
+  - key: LOGGER_LEVEL
+    sync: false
+  - key: LOGGER_FORMAT
+    sync: false
+  - key: HOST
+    sync: false
+  - key: NOTION_SECRET_TOKEN
+    sync: false
+  - key: POSTHOG_API_KEY
+    sync: false
+  - key: NOTION_CLIENT_ID
+    sync: false
+  - key: ADMIN_TELEGRAM_ID
+    sync: false
+  - key: DB_MIGRATIONS_RUN
+    sync: false
+  - key: DB_SYNCHRONIZE
+    sync: false
+  - key: DB_PASSWORD
+    sync: false
+  - key: DB_USER
+    sync: false
+  - key: DB_NAME
+    sync: false
+  - key: DB_PORT
+    sync: false
+  - key: DB_HOST
+    sync: false
+  - key: BOT_USERNAME
+    sync: false
+  - key: BOT_ID
+    sync: false
+  - key: BOT_FIRST_NAME
+    sync: false
+  - key: NODE_ENV
+    sync: false
+  - key: BOT_WEBHOOK_SECRET
+    sync: false
+  - key: BOT_TOKEN
+    sync: false
+  region: frankfurt
+  dockerContext: .
+  dockerfilePath: ./Dockerfile
+version: "1"
