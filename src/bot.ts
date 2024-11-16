@@ -64,8 +64,6 @@ composer.use(broadcasterComposer)
 // composer.use(plansComposer)
 // composer.use(promocodesComposer)
 
-composer.use(messageComposer)
-
 composer
   .command('setmycommands')
   .filter(ctx => ctx.from?.id === config.get('ADMIN_TELEGRAM_ID'))
@@ -116,6 +114,8 @@ composer
       },
     )
   })
+
+composer.use(messageComposer)
 
 composer.chatType('private').on('callback_query', async ctx => {
   analytics.track('unknown callback', ctx.from.id)
