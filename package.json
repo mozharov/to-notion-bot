@@ -59,7 +59,7 @@
     "lodash": "^4.17.21",
     "mongodb": "^5.9.2",
     "moy-nalog": "^1.0.6",
-    "nanoid": "^3.3.7",
+    "nanoid": "^3.3.8",
     "pg": "^8.11.5",
     "posthog-node": "^4.0.1",
     "reflect-metadata": "^0.2.1",
