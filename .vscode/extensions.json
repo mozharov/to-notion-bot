@@ -1,12 +1,12 @@
 {
-    "recommendations": [
-        "github.copilot-chat",
-        "github.copilot",
-        "dbaeumer.vscode-eslint",
-        "ms-vscode-remote.remote-containers",
-        "ldez.ignore-files",
-        "gruntfuggly.todo-tree",
-        "esbenp.prettier-vscode",
-        "github.vscode-github-actions"
-    ]
+  "recommendations": [
+    "ms-vscode-remote.remote-containers",
+    "ldez.ignore-files",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "gruntfuggly.todo-tree",
+    "postman.postman-for-vscode",
+    "paulys.fluent-syntax-highlighting",
+    "alexcvzz.vscode-sqlite"
+  ]
 }
