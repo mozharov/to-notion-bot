@@ -22,6 +22,7 @@ import {workspacesCommand} from '../handlers/commands/workspaces.js'
 import {workspacesCallback} from '../handlers/callbacks/workspaces.js'
 import {workspaceSettingsCallback} from '../handlers/callbacks/workspace-settings.js'
 import {deleteWorkspaceCallback} from '../handlers/callbacks/delete-workspace.js'
+import {subscriptionCommand} from '../handlers/commands/subscription.js'
 
 export const privateChats = new Composer()
 const composer = privateChats.chatType('private')
@@ -39,6 +40,7 @@ composer.on('my_chat_member:from').use(async ctx => {
 })
 
 composer.command('start', startCommand)
+composer.command('subscription', subscriptionCommand)
 composer.command('help', helpCommand)
 composer.command('chats', chatsCommand)
 composer.command('workspaces', workspacesCommand)
