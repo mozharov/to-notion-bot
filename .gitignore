@@ -1,7 +1,8 @@
 /node_modules
 /dist
 /.pnpm-store
-.DS_Store
+/sql
+/.DS_Store
 .env.local
 main.db*
 .env*
