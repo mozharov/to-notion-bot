@@ -149,3 +149,7 @@ help = <b>How to use the bot:</b>
     To Notion Bot is <a href="https://github.com/mozharov/to-notion-bot">Open Source</a>.
 
     If you have any questions or problems, you can write them in our chat or directly to the bot author.
+
+left-messages-limit-reached = ⚠️ <b>You have reached the limit of messages.</b>
+    Buy a subscription to continue using the bot without any limits.
+    .button = 🎁 Buy a lifetime subscription

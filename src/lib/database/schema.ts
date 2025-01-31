@@ -6,6 +6,8 @@ export const usersTable = sqliteTable(
   {
     id: text('id').primaryKey().notNull(),
     telegramId: integer('telegram_id', {mode: 'number'}).unique().notNull(),
+    leftMessages: integer('left_messages', {mode: 'number'}).default(30).notNull(), // -1 if no limit (has subscription)
+    subscriptionEndsAt: integer('subscription_ends_at', {mode: 'timestamp'}), // null if no end date
     createdAt: integer('created_at', {mode: 'timestamp'})
       .notNull()
       .default(sql`(unixepoch())`),

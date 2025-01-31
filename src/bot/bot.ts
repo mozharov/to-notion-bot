@@ -12,6 +12,7 @@ import {groupsAndChannels} from './routes/groups-and-channels.js'
 import {checkMentionMode} from './middlewares/check-mention-mode.js'
 import {onlyActiveChat} from './middlewares/only-active-chat.js'
 import {messageHandler} from './handlers/message.js'
+import {checkLeftMessages} from './middlewares/check-left-messages.js'
 
 export const bot = new Bot(config.BOT_TOKEN, {botInfo: config.botInfo})
 bot.api.config.use(autoRetry())
@@ -38,4 +39,5 @@ messagesComposer.chatType(['group', 'supergroup']).use(checkMentionMode)
 messagesComposer
   .chatType(['private', 'channel', 'group', 'supergroup'])
   .use(onlyActiveChat)
+  .use(checkLeftMessages)
   .use(messageHandler)
