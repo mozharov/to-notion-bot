@@ -2,7 +2,7 @@
 
 export interface CreateInvoiceArgs {
   amount: string
-  currency?: string // default is SATS
+  currency?: string
   metadata?: {
     orderId?: string
     tgUserId?: number

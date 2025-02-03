@@ -14,11 +14,11 @@ class BTCPay {
     }
   }
 
-  async createInvoice({amount, metadata}: CreateInvoiceArgs) {
+  async createInvoice({amount, currency, metadata}: CreateInvoiceArgs) {
     const response = await got
       .post(`${this.apiUrl}/invoices`, {
         headers: this.headers,
-        body: JSON.stringify({amount, metadata}),
+        body: JSON.stringify({amount, currency, metadata}),
       })
       .json()
     return response as CreateInvoiceResponse

@@ -17,10 +17,12 @@ payBitcoinRouter.get('/pay-bitcoin', async ctx => {
   const invoice = await createInvoice({
     amount,
     userId: user.id,
+    currency: 'SATS',
   })
   const btcpayInvoice = await btcpay
     .createInvoice({
       amount: amount.toString(),
+      currency: 'SATS',
       metadata: {
         orderId: invoice.id,
         tgUserId: user.telegramId,
