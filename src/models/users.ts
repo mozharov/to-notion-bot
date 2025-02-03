@@ -24,3 +24,8 @@ export async function getUser(id: string): Promise<User | null> {
 export async function updateUser(id: string, data: Partial<User>): Promise<void> {
   await db.update(usersTable).set(data).where(eq(usersTable.id, id))
 }
+
+export async function getUserByTelegramId(telegramId: number): Promise<User | null> {
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.telegramId, telegramId))
+  return user ?? null
+}

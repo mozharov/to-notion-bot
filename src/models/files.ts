@@ -1,9 +1,10 @@
 import {db} from '../lib/database/database.js'
 import {filesTable} from '../lib/database/schema.js'
 import type {File as GrammyFile} from 'grammy/types'
-export type File = typeof filesTable.$inferSelect
 import {randomUUID} from 'crypto'
 import {eq, and} from 'drizzle-orm'
+
+export type File = typeof filesTable.$inferSelect
 
 export async function createFile(file: GrammyFile, type: File['type']): Promise<File> {
   const [savedFile] = await db

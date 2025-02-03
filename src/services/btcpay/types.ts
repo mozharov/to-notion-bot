@@ -3,7 +3,7 @@
 export interface CreateInvoiceArgs {
   amount: string
   currency?: string // default is SATS
-  matadata?: {
+  metadata?: {
     orderId?: string
     tgUserId?: number
   }

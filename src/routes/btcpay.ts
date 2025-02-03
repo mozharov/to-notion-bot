@@ -2,6 +2,11 @@ import Router from '@koa/router'
 import crypto from 'crypto'
 import {config} from '../config.js'
 import type {Context} from 'koa'
+import {updateUser} from '../models/users.js'
+import {updateInvoice} from '../models/invoices.js'
+import {bot} from '../bot/bot.js'
+import {translate} from '../bot/lib/i18n.js'
+import {getChatByTelegramIdOrThrow} from '../models/chats.js'
 
 export const btcpayRouter = new Router()
 
@@ -11,23 +16,39 @@ btcpayRouter.post('/btcpay', async ctx => {
   const body = ctx.request.body as BTCPayWebhookBody
   ctx.log.info({body}, 'BTCPay webhook received')
 
-  const {orderId, tgUserId} = body.metadata ?? {}
-  if (!orderId || !tgUserId) return ctx.throw('Missing orderId or tgUserId in metadata')
-  const {type, invoiceId} = body
+  const {type, invoiceId, metadata} = body
+  const {orderId, tgUserId} = metadata ?? {}
+  if (!orderId || !tgUserId) return ctx.throw('Missing orderId or tgUserId in metadata', 400)
+
+  const chat = await getChatByTelegramIdOrThrow(tgUserId)
 
   if (type === 'InvoiceExpired') {
-    ctx.log.debug({invoiceId}, 'Invoice expired')
-    // TODO: handle expired invoice
+    ctx.log.info({invoiceId}, 'Invoice expired')
+    await updateInvoice(orderId, {status: 'expired'})
   } else if (type === 'InvoiceProcessing') {
-    ctx.log.debug({invoiceId}, 'Invoice processing')
-    // TODO: handle processing invoice
+    ctx.log.info({invoiceId}, 'Invoice processing')
+    await updateInvoice(orderId, {status: 'processing'})
+    await updateUser(chat.ownerId, {
+      leftMessages: -1,
+      subscriptionEndsAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    })
+    await bot.api
+      .sendMessage(chat.telegramId, translate('subscription.invoice-processing', chat.languageCode))
+      .catch(error => ctx.log.error({error}, 'Error sending message to user'))
   } else if (type === 'InvoiceSettled') {
-    ctx.log.debug({invoiceId}, 'Invoice settled')
-    // TODO: handle settled invoice
+    ctx.log.info({invoiceId}, 'Invoice settled')
+    await updateUser(chat.ownerId, {
+      subscriptionEndsAt: null,
+      leftMessages: -1,
+    })
+    await updateInvoice(orderId, {status: 'settled'})
+    await bot.api
+      .sendMessage(chat.telegramId, translate('subscription.invoice-settled', chat.languageCode))
+      .catch(error => ctx.log.error({error}, 'Error sending message to user'))
   } else if (type === 'InvoiceInvalid') {
-    ctx.log.debug({invoiceId}, 'Invoice invalid')
-    // TODO: handle invalid invoice
-  } else return ctx.throw(`Unknown invoice type: ${type}`)
+    ctx.log.info({invoiceId}, 'Invoice invalid')
+    await updateInvoice(orderId, {status: 'invalid'})
+  } else return ctx.throw(`Unknown invoice type: ${type}`, 400)
 
   ctx.body = 'OK'
 })
