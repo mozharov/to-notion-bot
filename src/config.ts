@@ -19,8 +19,12 @@ export const config = {
     MAX_CHATS_PER_USER: z.number().default(90),
     MAX_WORKSPACES_PER_USER: z.number().default(90),
     NOTION_CLIENT_ID: z.string().nonempty(),
-    NOTION_REDIRECT_HOST: z.string().nonempty(),
     NOTION_SECRET_TOKEN: z.string().nonempty(),
+    HOST: z.string().nonempty(),
+    BTCPAY_INSTANCE_URL: z.string().nonempty(),
+    BTCPAY_API_KEY: z.string().nonempty(),
+    BTCPAY_STORE_ID: z.string().nonempty(),
+    BTCPAY_WEBHOOK_SECRET: z.string().nonempty(),
   }),
 
   get botInfo(): UserFromGetMe | undefined {

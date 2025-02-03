@@ -36,7 +36,7 @@ notionRouter.get('/notion', async ctx => {
   const authToken = Buffer.from(
     `${config.NOTION_CLIENT_ID}:${config.NOTION_SECRET_TOKEN}`,
   ).toString('base64')
-  const redirectUri = `http${config.NODE_ENV === 'development' ? '' : 's'}://${config.NOTION_REDIRECT_HOST}/notion`
+  const redirectUri = `http${config.NODE_ENV === 'development' ? '' : 's'}://${config.HOST}/notion`
 
   const response = await fetch(`https://api.notion.com/v1/oauth/token`, {
     body: JSON.stringify({
