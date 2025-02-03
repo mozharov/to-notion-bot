@@ -6,11 +6,13 @@ import {serializeError} from 'serialize-error'
 import {deleteWebhook, setWebhook} from './bot/webhook.js'
 import {posthog} from './lib/posthog.js'
 import {migrateDatabase} from './lib/database/database.js'
+import {startCronJobs} from './services/cron/cron.js'
 
 if (config.DB_MIGRATE) migrateDatabase()
 
 const server = startServer()
 server.once('listening', () => {
+  startCronJobs()
   if (config.NGROK_TOKEN) {
     void startTunnel().then(tunnelUrl => setWebhook(tunnelUrl))
   }

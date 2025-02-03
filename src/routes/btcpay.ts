@@ -33,7 +33,11 @@ btcpayRouter.post('/btcpay', async ctx => {
       subscriptionEndsAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     })
     await bot.api
-      .sendMessage(chat.telegramId, translate('subscription.invoice-processing', chat.languageCode))
+      .sendMessage(
+        chat.telegramId,
+        translate('subscription.invoice-processing', chat.languageCode),
+        {parse_mode: 'HTML'},
+      )
       .catch(error => ctx.log.error({error}, 'Error sending message to user'))
   } else if (type === 'InvoiceSettled') {
     ctx.log.info({invoiceId}, 'Invoice settled')
@@ -43,7 +47,9 @@ btcpayRouter.post('/btcpay', async ctx => {
     })
     await updateInvoice(orderId, {status: 'settled'})
     await bot.api
-      .sendMessage(chat.telegramId, translate('subscription.invoice-settled', chat.languageCode))
+      .sendMessage(chat.telegramId, translate('subscription.invoice-settled', chat.languageCode), {
+        parse_mode: 'HTML',
+      })
       .catch(error => ctx.log.error({error}, 'Error sending message to user'))
   } else if (type === 'InvoiceInvalid') {
     ctx.log.info({invoiceId}, 'Invoice invalid')
