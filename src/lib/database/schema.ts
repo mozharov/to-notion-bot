@@ -118,3 +118,18 @@ export const sessionsTable = sqliteTable('sessions', {
   key: text('key').primaryKey().notNull(),
   state: text('state').notNull(),
 })
+
+export const invoicesTable = sqliteTable('invoices', {
+  id: text('id').primaryKey().notNull(),
+  btcpayInvoiceId: text('btcpay_invoice_id'),
+  amount: integer('amount', {mode: 'number'}).notNull(), // in sats
+  userId: text('user_id')
+    .notNull()
+    .references(() => usersTable.id, {onDelete: 'cascade'}),
+  status: text('status', {enum: ['created', 'processing', 'settled', 'invalid', 'expired']})
+    .default('created')
+    .notNull(),
+  createdAt: integer('created_at', {mode: 'timestamp'})
+    .notNull()
+    .default(sql`(unixepoch())`),
+})
