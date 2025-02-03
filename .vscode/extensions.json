@@ -6,6 +6,7 @@
     "esbenp.prettier-vscode",
     "postman.postman-for-vscode",
     "paulys.fluent-syntax-highlighting",
-    "alexcvzz.vscode-sqlite"
+    "alexcvzz.vscode-sqlite",
+    "fabiospampinato.vscode-todo-plus"
   ]
 }
