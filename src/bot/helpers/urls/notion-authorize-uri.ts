@@ -1,5 +1,5 @@
-import {config} from '../../config.js'
-import type {User} from '../../models/users.js'
+import {config} from '../../../config.js'
+import type {User} from '../../../models/users.js'
 
 export function buildNotionAuthorizeURI(userId: User['id']): string {
   const clientId = config.NOTION_CLIENT_ID

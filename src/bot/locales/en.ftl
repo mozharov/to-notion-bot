@@ -151,5 +151,34 @@ help = <b>How to use the bot:</b>
     If you have any questions or problems, you can write them in our chat or directly to the bot author.
 
 left-messages-limit-reached = ⚠️ <b>You have reached the limit of messages.</b>
-    Buy a subscription to continue using the bot without any limits.
-    .button = 🎁 Buy a lifetime subscription
+    Buy a lifetime access to continue using the bot without any limits.
+
+subscription = 🚀 <b>Lifetime Access</b>
+    The free version of the bot allows you to send up to 30 messages to Notion to evaluate its capabilities.
+
+    <b>For unlimited use of the bot, lifetime access is available — you pay only once and use it forever.</b>
+
+    <b>💯 Money back guarantee within 30 days.</b>
+    If the bot does not meet your expectations, we will return the entire amount without any questions.
+
+    <b>Choose a convenient payment method:</b>
+    <b>🔸 Bitcoin</b>
+    ₿ {$btcPrice} (≈${$btcUsd})
+
+    <b>🔸 Telegram Stars</b>
+    ⭐️ {$telegramStarsPrice} (≈${$telegramStarsUsd})
+
+    <b>Note that by choosing Bitcoin payment, you pay almost 3 times less!</b>
+    .button = 🎁 Get lifetime access
+    .bitcoin = ₿ Bitcoin
+    .telegram-stars = ⭐️ Telegram Stars
+    .title = Lifetime Access
+    .description = Unlimited access to the bot without restrictions.
+    .already-has = You already have lifetime access to the bot.
+    .invoice-settled = <b>🎉 Payment successful.</b>
+        Now you can use the bot without any restrictions.
+    .invoice-processing = <b>⏳ Payment is being processed.</b>
+        It takes some time to confirm the payment.
+
+        <b>To avoid making you wait, I'm giving you temporary access to the bot right now.</b>
+        After successful payment confirmation, you will receive lifetime access.

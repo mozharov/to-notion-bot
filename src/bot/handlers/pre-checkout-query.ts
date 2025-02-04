@@ -1,7 +1,7 @@
-import {Middleware, type Context} from 'grammy'
+import {Middleware} from 'grammy'
 import {getInvoiceOrThrow} from '../../models/invoices.js'
 
-export const preCheckoutQuery: Middleware<Context> = async ctx => {
+export const preCheckoutQuery: Middleware = async ctx => {
   ctx.tracker.capture('pre checkout query')
   if (!ctx.preCheckoutQuery) throw new Error('Pre checkout query is not found')
   const invoice = await getInvoiceOrThrow({id: ctx.preCheckoutQuery.invoice_payload})

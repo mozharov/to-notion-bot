@@ -1,7 +1,7 @@
 import {type Context, InlineKeyboard} from 'grammy'
 import type {Chat} from '../../../models/chats.js'
 import type {NotionWorkspace} from '../../../models/notion-workspaces.js'
-import {buildNotionAuthorizeURI} from '../notion-authorize-uri.js'
+import {buildNotionAuthorizeURI} from '../urls/notion-authorize-uri.js'
 
 export function buildChatNotionSettingsKeyboard(
   t: Context['t'],

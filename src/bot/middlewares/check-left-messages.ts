@@ -2,6 +2,7 @@ import {InlineKeyboard, type Middleware} from 'grammy'
 import {getChatByTelegramId} from '../../models/chats.js'
 import {updateUser} from '../../models/users.js'
 import {bot} from '../bot.js'
+import {getLifetimeAccessUrl} from '../helpers/urls/lifetime-access.js'
 
 export const checkLeftMessages: Middleware = async (ctx, next) => {
   if (!ctx.chatId) return next()
@@ -14,8 +15,8 @@ export const checkLeftMessages: Middleware = async (ctx, next) => {
       }),
       {
         reply_markup: new InlineKeyboard().add({
-          text: ctx.t('left-messages-limit-reached.button'),
-          url: `https://t.me/${bot.botInfo.username}?start=lifetime_subscription`,
+          text: ctx.t('subscription.button'),
+          url: getLifetimeAccessUrl(),
         }),
       },
     )

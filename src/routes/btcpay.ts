@@ -38,7 +38,9 @@ btcpayRouter.post('/btcpay', async ctx => {
         translate('subscription.invoice-processing', chat.languageCode),
         {parse_mode: 'HTML'},
       )
-      .catch(error => ctx.log.error({error}, 'Error sending message to user'))
+      .catch((error: unknown) => {
+        ctx.log.error({error}, 'Error sending message to user')
+      })
   } else if (type === 'InvoiceSettled') {
     ctx.log.info({invoiceId}, 'Invoice settled')
     await updateUser(chat.ownerId, {
@@ -50,7 +52,9 @@ btcpayRouter.post('/btcpay', async ctx => {
       .sendMessage(chat.telegramId, translate('subscription.invoice-settled', chat.languageCode), {
         parse_mode: 'HTML',
       })
-      .catch(error => ctx.log.error({error}, 'Error sending message to user'))
+      .catch((error: unknown) => {
+        ctx.log.error({error}, 'Error sending message to user')
+      })
   } else if (type === 'InvoiceInvalid') {
     ctx.log.info({invoiceId}, 'Invoice invalid')
     await updateInvoice(orderId, {status: 'invalid'})
@@ -61,7 +65,13 @@ btcpayRouter.post('/btcpay', async ctx => {
 
 // Only fields used in webhook
 interface BTCPayWebhookBody {
-  type: 'InvoiceExpired' | 'InvoiceProcessing' | 'InvoiceSettled' | 'InvoiceInvalid'
+  type:
+    | 'InvoiceExpired'
+    | 'InvoiceProcessing'
+    | 'InvoiceSettled'
+    | 'InvoiceInvalid'
+    | 'InvoiceReceivedPayment'
+    | 'InvoicePaymentSettled'
   invoiceId: string
   metadata?: {
     orderId?: string
@@ -83,6 +93,6 @@ function validateRequest(ctx: Context) {
   )
 
   if (checksum.length !== digest.length || !crypto.timingSafeEqual(digest, checksum)) {
-    ctx.throw(`Request body digest (${digest}) did not match ${sigHeaderName} (${checksum})`)
+    ctx.throw(`Request body digest did not match ${sigHeaderName}`)
   }
 }

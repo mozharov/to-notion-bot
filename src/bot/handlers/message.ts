@@ -11,12 +11,12 @@ import {
 import {hasInnerContent} from '../helpers/notion-block.js'
 import {getFileType, getTelegramFile} from '../helpers/telegram-file.js'
 import {createFile} from '../../models/files.js'
-import {getLinkToOriginal} from '../helpers/link-to-original.js'
+import {getLinkToOriginal} from '../helpers/urls/link-to-original.js'
 import {NotionClient} from '../../lib/notion-client.js'
 import {NotFoundDatabaseError} from '../errors/not-found-database-error.js'
 import {createMessage} from '../../models/messages.js'
 import {translate} from '../lib/i18n.js'
-import {buildLinkToNotionPage} from '../helpers/link-to-notion-page.js'
+import {buildLinkToNotionPage} from '../helpers/urls/link-to-notion-page.js'
 
 export const messageHandler: Middleware<
   ChatTypeContext<Context, 'channel' | 'group' | 'supergroup' | 'private'>

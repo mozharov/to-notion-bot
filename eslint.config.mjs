@@ -22,7 +22,6 @@ export default tseslint.config(
         'error',
         {
           allowNumber: true,
-          allowBuffer: true
         },
       ],
     },

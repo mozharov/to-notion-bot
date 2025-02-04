@@ -1,7 +1,7 @@
 import type {BlockObjectRequest} from '@notionhq/client/build/src/api-endpoints.js'
 import type {MessageEntity} from 'grammy/types'
 import {File} from '../../models/files.js'
-import {getFileUrl} from './file-url.js'
+import {getFileUrl} from './urls/file-url.js'
 
 const MAX_TITLE_LENGTH = 120
 const MAX_TEXT_CONTENT_LENGTH = 2000 // Notion API limitation

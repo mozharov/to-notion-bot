@@ -27,6 +27,8 @@ export const config = {
     BTCPAY_WEBHOOK_SECRET: z.string().nonempty(),
     LIFETIME_ACCESS_PRICE: z.number().default(25000), // in sats
     LIFETIME_ACCESS_TELEGRAM_STARS_PRICE: z.number().default(3500),
+    BTC_TO_USD: z.number().default(100000),
+    TELEGRAM_STARS_TO_USD: z.number().default(0.02),
   }),
 
   get botInfo(): UserFromGetMe | undefined {

@@ -2,6 +2,8 @@ import {InlineKeyboard} from 'grammy'
 import type {Context} from 'grammy'
 import type {ExtendedChat} from '../../../models/chats.js'
 import {bot} from '../../bot.js'
+import {getLifetimeAccessUrl} from '../urls/lifetime-access.js'
+import {isUserHasLifetimeAccess} from '../user.js'
 
 export function buildChatsKeyboard(t: Context['t'], chats: ExtendedChat[]) {
   const keyboard = new InlineKeyboard()
@@ -21,5 +23,12 @@ export function buildChatsKeyboard(t: Context['t'], chats: ExtendedChat[]) {
   keyboard
     .row()
     .add({text: t('chats.add'), url: `https://t.me/${bot.botInfo.username}?startgroup=true`})
+
+  if (chats[0] && !isUserHasLifetimeAccess(chats[0].owner)) {
+    keyboard.add({
+      text: t('subscription.button'),
+      url: getLifetimeAccessUrl(),
+    })
+  }
   return keyboard
 }

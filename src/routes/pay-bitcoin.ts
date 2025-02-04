@@ -28,7 +28,11 @@ payBitcoinRouter.get('/pay-bitcoin', async ctx => {
         tgUserId: user.telegramId,
       },
     })
-    .catch(error => ctx.throw(500, 'Failed to create invoice', error?.response?.body ?? error))
+    .catch((error: unknown) => {
+      const errorBody = (error as {response?: {body: unknown}}).response?.body ?? error
+      ctx.log.error({error: errorBody}, 'Failed to create invoice')
+      throw new Error('Failed to create invoice')
+    })
 
   await updateInvoice(invoice.id, {btcpayInvoiceId: btcpayInvoice.id})
   ctx.redirect(btcpayInvoice.checkoutLink)
