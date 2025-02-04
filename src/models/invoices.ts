@@ -1,6 +1,6 @@
 import {db} from '../lib/database/database.js'
 import {invoicesTable, usersTable} from '../lib/database/schema.js'
-import {eq, and} from 'drizzle-orm'
+import {eq, and, gt} from 'drizzle-orm'
 import {randomUUID} from 'crypto'
 
 type InsertInvoice = Omit<typeof invoicesTable.$inferInsert, 'id'>
@@ -52,4 +52,20 @@ export async function getInvoice(where: Partial<Invoice>): Promise<ExtendedInvoi
 
 export async function updateInvoice(id: string, invoice: Partial<Invoice>) {
   await db.update(invoicesTable).set(invoice).where(eq(invoicesTable.id, id))
+}
+
+export async function getUserRefundableInvoice(userId: string) {
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+  const [invoice] = await db
+    .select()
+    .from(invoicesTable)
+    .where(
+      and(
+        eq(invoicesTable.userId, userId),
+        eq(invoicesTable.status, 'settled'),
+        gt(invoicesTable.settledAt, thirtyDaysAgo),
+      ),
+    )
+  if (!invoice) return null
+  return invoice
 }

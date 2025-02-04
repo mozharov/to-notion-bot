@@ -128,9 +128,12 @@ export const invoicesTable = sqliteTable('invoices', {
   userId: text('user_id')
     .notNull()
     .references(() => usersTable.id, {onDelete: 'cascade'}),
-  status: text('status', {enum: ['created', 'processing', 'settled', 'invalid', 'expired']})
+  status: text('status', {
+    enum: ['created', 'processing', 'settled', 'invalid', 'expired', 'refunded'],
+  })
     .default('created')
     .notNull(),
+  settledAt: integer('settled_at', {mode: 'timestamp'}),
   createdAt: integer('created_at', {mode: 'timestamp'})
     .notNull()
     .default(sql`(unixepoch())`),

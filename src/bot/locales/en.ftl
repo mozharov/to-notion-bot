@@ -184,3 +184,12 @@ subscription = 🚀 <b>Lifetime Access</b>
         After successful payment confirmation, you will receive lifetime access.
     .expired = <b>🔴 Access to the bot has expired.</b>
         Buy lifetime access to continue using the bot without restrictions.
+
+refund = <b>💸 Cancel lifetime access and get a refund.</b>
+    You will lose access to the bot, but you will get a refund.
+
+    <b>Are you sure you want to cancel lifetime access?</b>
+    .btcpay = <b>Your subscription has been canceled. To get a refund, click the link below.</b>
+        {$link}
+    .telegram = <b>Your subscription has been canceled. Telegram Stars have been returned.</b>
+    .do-it = Refund

@@ -16,6 +16,7 @@ export const successfulPayment: Middleware<
   await updateInvoice(invoice.id, {
     status: 'settled',
     telegramInvoiceId: tgPayment.telegram_payment_charge_id,
+    settledAt: new Date(),
   })
   await ctx.reply(ctx.t('subscription.invoice-settled'))
 }

@@ -1,6 +1,6 @@
 import {config} from '../../config.js'
 import got from 'got'
-import type {CreateInvoiceArgs, CreateInvoiceResponse} from './types.js'
+import type {CreateInvoiceArgs, CreateInvoiceResponse, RefundInvoiceResponse} from './types.js'
 
 class BTCPay {
   private readonly apiUrl: string
@@ -22,6 +22,18 @@ class BTCPay {
       })
       .json()
     return response as CreateInvoiceResponse
+  }
+
+  async refundInvoice(invoiceId: string) {
+    const response = await got
+      .post(`${this.apiUrl}/invoices/${invoiceId}/refund`, {
+        headers: this.headers,
+        body: JSON.stringify({
+          refundVariant: 'RateThen',
+        }),
+      })
+      .json()
+    return response as RefundInvoiceResponse
   }
 }
 

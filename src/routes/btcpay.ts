@@ -47,7 +47,7 @@ btcpayRouter.post('/btcpay', async ctx => {
       subscriptionEndsAt: null,
       leftMessages: -1,
     })
-    await updateInvoice(orderId, {status: 'settled'})
+    await updateInvoice(orderId, {status: 'settled', settledAt: new Date()})
     await bot.api
       .sendMessage(chat.telegramId, translate('subscription.invoice-settled', chat.languageCode), {
         parse_mode: 'HTML',

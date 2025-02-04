@@ -28,3 +28,15 @@ export interface CreateInvoiceResponse {
     tgUserId?: number
   }
 }
+
+export interface RefundInvoiceResponse {
+  id: string
+  name: string
+  description: string
+  currency: string
+  amount: string
+  BOLT11Expiration: string
+  autoApproveClaims: boolean
+  archived: boolean
+  viewLink: string
+}
