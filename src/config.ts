@@ -26,6 +26,7 @@ export const config = {
     BTCPAY_STORE_ID: z.string().nonempty(),
     BTCPAY_WEBHOOK_SECRET: z.string().nonempty(),
     LIFETIME_ACCESS_PRICE: z.number().default(25000), // in sats
+    LIFETIME_ACCESS_TELEGRAM_STARS_PRICE: z.number().default(3500),
   }),
 
   get botInfo(): UserFromGetMe | undefined {

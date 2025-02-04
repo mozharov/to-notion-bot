@@ -23,6 +23,7 @@ import {workspacesCallback} from '../handlers/callbacks/workspaces.js'
 import {workspaceSettingsCallback} from '../handlers/callbacks/workspace-settings.js'
 import {deleteWorkspaceCallback} from '../handlers/callbacks/delete-workspace.js'
 import {subscriptionCommand} from '../handlers/commands/subscription.js'
+import {payTelegramStarsCallback} from '../handlers/callbacks/pay-telegram-stars.js'
 
 export const privateChats = new Composer()
 const composer = privateChats.chatType('private')
@@ -74,5 +75,6 @@ composer.callbackQuery(
   /^chat:(-?\d+):link:([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})$/,
   linkToDatabaseCallback,
 )
+composer.callbackQuery('pay-telegram-stars', payTelegramStarsCallback)
 
 composer.on('callback_query', unknownCallback)

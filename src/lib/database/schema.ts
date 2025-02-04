@@ -122,6 +122,7 @@ export const sessionsTable = sqliteTable('sessions', {
 export const invoicesTable = sqliteTable('invoices', {
   id: text('id').primaryKey().notNull(),
   btcpayInvoiceId: text('btcpay_invoice_id'),
+  telegramInvoiceId: text('telegram_invoice_id'),
   amount: integer('amount', {mode: 'number'}).notNull(),
   currency: text('currency', {enum: ['SATS', 'XTR']}).notNull(),
   userId: text('user_id')
