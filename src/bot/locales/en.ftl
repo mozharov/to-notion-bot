@@ -151,7 +151,7 @@ help = <b>How to use the bot:</b>
     If you have any questions or problems, you can write them in our chat or directly to the bot author.
 
 left-messages-limit-reached = ⚠️ <b>You have reached the limit of messages.</b>
-    Buy a lifetime access to continue using the bot without any limits.
+    Buy lifetime access to continue using the bot without any limits.
 
 subscription = 🚀 <b>Lifetime Access</b>
     The free version of the bot allows you to send up to 30 messages to Notion to evaluate its capabilities.
@@ -182,3 +182,5 @@ subscription = 🚀 <b>Lifetime Access</b>
 
         <b>To avoid making you wait, I'm giving you temporary access to the bot right now.</b>
         After successful payment confirmation, you will receive lifetime access.
+    .expired = <b>🔴 Access to the bot has expired.</b>
+        Buy lifetime access to continue using the bot without restrictions.
