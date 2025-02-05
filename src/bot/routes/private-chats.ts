@@ -29,6 +29,7 @@ import {adminOnly} from '../middlewares/admin-only.js'
 import {promocodeCommand} from '../handlers/commands/promocode.js'
 import {removePromocodeCommand} from '../handlers/commands/remove-promocode.js'
 import {checkPromocode} from '../middlewares/check-promocode.js'
+import {feedbackCommand} from '../handlers/commands/feedback.js'
 
 export const privateChats = new Composer()
 const composer = privateChats.chatType('private')
@@ -50,6 +51,7 @@ composer.command('help', helpCommand)
 composer.command('chats', chatsCommand)
 composer.command('workspaces', workspacesCommand)
 composer.command('refund', refundCommand)
+composer.command('feedback', feedbackCommand)
 composer.filter(adminOnly).command('promocode', promocodeCommand)
 composer.filter(adminOnly).command('remove_promocode', removePromocodeCommand)
 

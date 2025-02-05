@@ -5,6 +5,7 @@ import {
   linkToDatabaseAction,
   type LinkToDatabaseParams,
 } from '../handlers/actions/link-to-database.js'
+import {feedbackAction} from '../handlers/actions/feedback.js'
 
 export const handleStateActions: Middleware<ChatTypeContext<Context, 'private'>> = async (
   ctx,
@@ -17,6 +18,8 @@ export const handleStateActions: Middleware<ChatTypeContext<Context, 'private'>>
 
   if (action === 'link-to-database') {
     return linkToDatabaseAction(ctx, params as LinkToDatabaseParams, next)
+  } else if (action === 'feedback') {
+    return feedbackAction(ctx, next)
   } else await clearState(ctx.from.id)
 
   return next()

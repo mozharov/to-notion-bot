@@ -12,6 +12,7 @@ export const checkPromocode: Middleware<ChatTypeContext<Context, 'private'>> = a
   if (code && code.length <= config.MAX_PROMOCODE_LENGTH) {
     const result = await applyPromocode(code, ctx.from.id)
     if (result) {
+      ctx.tracker.capture('promocode applied', {code: result.code})
       await ctx.reply(
         ctx.t('promocode.applied', {
           code: result.code,
