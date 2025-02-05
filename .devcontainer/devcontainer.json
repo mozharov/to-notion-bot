@@ -11,7 +11,8 @@
         "esbenp.prettier-vscode",
         "Gruntfuggly.todo-tree",
         "Postman.postman-for-vscode",
-        "alexcvzz.vscode-sqlite"
+        "alexcvzz.vscode-sqlite",
+        "fabiospampinato.vscode-todo-plus"
       ]
     }
   },

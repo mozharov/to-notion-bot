@@ -21,9 +21,9 @@ export async function linkToDatabaseAction(
   next: NextFunction,
 ) {
   ctx.tracker.capture('link to database action')
+  await clearState(ctx.from.id)
   const text = ctx.message?.text
   if (!text) {
-    await clearState(ctx.from.id)
     await ctx.reply(ctx.t('action-canceled'))
     return next()
   }

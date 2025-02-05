@@ -22,6 +22,14 @@ import {workspacesCommand} from '../handlers/commands/workspaces.js'
 import {workspacesCallback} from '../handlers/callbacks/workspaces.js'
 import {workspaceSettingsCallback} from '../handlers/callbacks/workspace-settings.js'
 import {deleteWorkspaceCallback} from '../handlers/callbacks/delete-workspace.js'
+import {payTelegramStarsCallback} from '../handlers/callbacks/pay-telegram-stars.js'
+import {refundCommand} from '../handlers/commands/refund.js'
+import {refundCallback} from '../handlers/callbacks/refund.js'
+import {adminOnly} from '../middlewares/admin-only.js'
+import {promocodeCommand} from '../handlers/commands/promocode.js'
+import {removePromocodeCommand} from '../handlers/commands/remove-promocode.js'
+import {checkPromocode} from '../middlewares/check-promocode.js'
+import {feedbackCommand} from '../handlers/commands/feedback.js'
 
 export const privateChats = new Composer()
 const composer = privateChats.chatType('private')
@@ -42,6 +50,12 @@ composer.command('start', startCommand)
 composer.command('help', helpCommand)
 composer.command('chats', chatsCommand)
 composer.command('workspaces', workspacesCommand)
+composer.command('refund', refundCommand)
+composer.command('feedback', feedbackCommand)
+composer.filter(adminOnly).command('promocode', promocodeCommand)
+composer.filter(adminOnly).command('remove_promocode', removePromocodeCommand)
+
+composer.on('message:text').use(checkPromocode)
 
 composer.callbackQuery('workspaces', workspacesCallback)
 composer.callbackQuery(
@@ -72,5 +86,7 @@ composer.callbackQuery(
   /^chat:(-?\d+):link:([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})$/,
   linkToDatabaseCallback,
 )
+composer.callbackQuery('pay-telegram-stars', payTelegramStarsCallback)
+composer.callbackQuery('refund', refundCallback)
 
 composer.on('callback_query', unknownCallback)

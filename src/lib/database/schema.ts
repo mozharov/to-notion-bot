@@ -6,6 +6,8 @@ export const usersTable = sqliteTable(
   {
     id: text('id').primaryKey().notNull(),
     telegramId: integer('telegram_id', {mode: 'number'}).unique().notNull(),
+    leftMessages: integer('left_messages', {mode: 'number'}).default(30).notNull(), // -1 if no limit (has subscription)
+    subscriptionEndsAt: integer('subscription_ends_at', {mode: 'timestamp'}), // null if no end date
     createdAt: integer('created_at', {mode: 'timestamp'})
       .notNull()
       .default(sql`(unixepoch())`),
@@ -115,4 +117,45 @@ export const messagesTable = sqliteTable(
 export const sessionsTable = sqliteTable('sessions', {
   key: text('key').primaryKey().notNull(),
   state: text('state').notNull(),
+})
+
+export const invoicesTable = sqliteTable('invoices', {
+  id: text('id').primaryKey().notNull(),
+  btcpayInvoiceId: text('btcpay_invoice_id'),
+  telegramInvoiceId: text('telegram_invoice_id'),
+  amount: integer('amount', {mode: 'number'}).notNull(),
+  currency: text('currency', {enum: ['SATS', 'XTR']}).notNull(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => usersTable.id, {onDelete: 'cascade'}),
+  status: text('status', {
+    enum: ['created', 'processing', 'settled', 'invalid', 'expired', 'refunded'],
+  })
+    .default('created')
+    .notNull(),
+  settledAt: integer('settled_at', {mode: 'timestamp'}),
+  createdAt: integer('created_at', {mode: 'timestamp'})
+    .notNull()
+    .default(sql`(unixepoch())`),
+})
+
+export const promocodesTable = sqliteTable('promocodes', {
+  code: text('code').primaryKey().notNull(),
+  givesDays: integer('gives_days', {mode: 'number'}).notNull(), // -1 if lifetime
+  usesLeft: integer('uses_left', {mode: 'number'}).notNull(), // -1 if no limit
+  createdAt: integer('created_at', {mode: 'timestamp'})
+    .notNull()
+    .default(sql`(unixepoch())`),
+})
+
+export const promocodesUsersTable = sqliteTable('promocodes_users', {
+  code: text('code')
+    .notNull()
+    .references(() => promocodesTable.code, {onDelete: 'cascade'}),
+  userId: text('user_id')
+    .notNull()
+    .references(() => usersTable.id, {onDelete: 'cascade'}),
+  createdAt: integer('created_at', {mode: 'timestamp'})
+    .notNull()
+    .default(sql`(unixepoch())`),
 })

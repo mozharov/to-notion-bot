@@ -148,4 +148,70 @@ help = <b>How to use the bot:</b>
 
     To Notion Bot is <a href="https://github.com/mozharov/to-notion-bot">Open Source</a>.
 
-    If you have any questions or problems, you can write them in our chat or directly to the bot author.
+    If you have any questions or suggestions for improving the bot, you can write them in our chat or to the bot author.
+
+    <b>Use the /feedback command to send a message directly to the bot author.</b>
+
+left-messages-limit-reached = ⚠️ <b>You have reached the limit of messages.</b>
+    Buy lifetime access to continue using the bot without any limits.
+
+subscription = 🚀 <b>Lifetime Access</b>
+    The free version of the bot allows you to send up to 30 messages to Notion to evaluate its capabilities.
+
+    <b>For unlimited use of the bot, lifetime access is available — you pay only once and use it forever.</b>
+
+    <b>💯 Money back guarantee within 30 days.</b>
+    If the bot does not meet your expectations, we will return the entire amount without any questions.
+
+    <b>Choose a convenient payment method:</b>
+    <b>🔸 Bitcoin</b>
+    ₿ {$btcPrice} (≈${$btcUsd})
+
+    <b>🔸 Telegram Stars</b>
+    ⭐️ {$telegramStarsPrice} (≈${$telegramStarsUsd})
+
+    <b>Note that by choosing Bitcoin payment, you pay in 2 times less!</b>
+    .button = 🎁 Get lifetime access
+    .bitcoin = ₿ Bitcoin
+    .telegram-stars = ⭐️ Telegram Stars
+    .title = Lifetime Access
+    .description = Unlimited access to the bot without restrictions.
+    .already-has = You already have lifetime access to the bot.
+    .invoice-settled = <b>🎉 Payment successful.</b>
+        Now you can use the bot without any restrictions.
+    .invoice-processing = <b>⏳ Payment is being processed.</b>
+        It takes some time to confirm the payment.
+
+        <b>To avoid making you wait, I'm giving you temporary access to the bot right now.</b>
+        After successful payment confirmation, you will receive lifetime access.
+    .expired = <b>🔴 Access to the bot has expired.</b>
+        Buy lifetime access to continue using the bot without restrictions.
+
+refund = <b>💸 Cancel lifetime access and get a refund.</b>
+    You will lose access to the bot, but you will get a refund.
+
+    <b>Are you sure you want to cancel lifetime access?</b>
+    .btcpay = <b>Your subscription has been canceled. To get a refund, click the link below.</b>
+        {$link}
+    .telegram = <b>Your subscription has been canceled. Telegram Stars have been returned.</b>
+    .do-it = Refund
+
+promocode = <b>Promocode created.</b>
+    Code: <code>{$code}</code>
+    Days: <b>{$days}</b>
+    Uses: <b>{$uses}</b>
+    .already-exists = <b>Promocode already exists.</b>
+    .removed = <b>Promocode removed.</b>
+    .applied = <b>Promocode applied.</b>
+        {$endsAt ->
+            [null] You have lifetime access to the bot now.
+                
+                Enjoy!
+            *[other] Your subscription ends at: <b>{$endsAt}</b>
+            
+                Enjoy the bot!
+        }
+
+feedback = 📨 <b>Send any message.</b>
+    I will forward it to the bot author.
+    .sent = <b>Message sent.</b>
