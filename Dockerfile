@@ -4,8 +4,7 @@ WORKDIR /app
 FROM base AS pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN npm install -g pnpm
-RUN corepack enable
+RUN npm install -g pnpm@9.15
 COPY . .
 
 FROM pnpm AS build
