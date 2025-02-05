@@ -25,6 +25,10 @@ import {deleteWorkspaceCallback} from '../handlers/callbacks/delete-workspace.js
 import {payTelegramStarsCallback} from '../handlers/callbacks/pay-telegram-stars.js'
 import {refundCommand} from '../handlers/commands/refund.js'
 import {refundCallback} from '../handlers/callbacks/refund.js'
+import {adminOnly} from '../middlewares/admin-only.js'
+import {promocodeCommand} from '../handlers/commands/promocode.js'
+import {removePromocodeCommand} from '../handlers/commands/remove-promocode.js'
+import {checkPromocode} from '../middlewares/check-promocode.js'
 
 export const privateChats = new Composer()
 const composer = privateChats.chatType('private')
@@ -46,6 +50,10 @@ composer.command('help', helpCommand)
 composer.command('chats', chatsCommand)
 composer.command('workspaces', workspacesCommand)
 composer.command('refund', refundCommand)
+composer.filter(adminOnly).command('promocode', promocodeCommand)
+composer.filter(adminOnly).command('remove_promocode', removePromocodeCommand)
+
+composer.on('message:text').use(checkPromocode)
 
 composer.callbackQuery('workspaces', workspacesCallback)
 composer.callbackQuery(

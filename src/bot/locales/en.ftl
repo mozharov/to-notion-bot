@@ -193,3 +193,19 @@ refund = <b>💸 Cancel lifetime access and get a refund.</b>
         {$link}
     .telegram = <b>Your subscription has been canceled. Telegram Stars have been returned.</b>
     .do-it = Refund
+
+promocode = <b>Promocode created.</b>
+    Code: <code>{$code}</code>
+    Days: <b>{$days}</b>
+    Uses: <b>{$uses}</b>
+    .already-exists = <b>Promocode already exists.</b>
+    .removed = <b>Promocode removed.</b>
+    .applied = <b>Promocode applied.</b>
+        {$endsAt ->
+            [null] You have lifetime access to the bot now.
+                
+                Enjoy!
+            *[other] Your subscription ends at: <b>{$endsAt}</b>
+            
+                Enjoy the bot!
+        }

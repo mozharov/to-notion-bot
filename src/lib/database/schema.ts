@@ -138,3 +138,24 @@ export const invoicesTable = sqliteTable('invoices', {
     .notNull()
     .default(sql`(unixepoch())`),
 })
+
+export const promocodesTable = sqliteTable('promocodes', {
+  code: text('code').primaryKey().notNull(),
+  givesDays: integer('gives_days', {mode: 'number'}).notNull(), // -1 if lifetime
+  usesLeft: integer('uses_left', {mode: 'number'}).notNull(), // -1 if no limit
+  createdAt: integer('created_at', {mode: 'timestamp'})
+    .notNull()
+    .default(sql`(unixepoch())`),
+})
+
+export const promocodesUsersTable = sqliteTable('promocodes_users', {
+  code: text('code')
+    .notNull()
+    .references(() => promocodesTable.code, {onDelete: 'cascade'}),
+  userId: text('user_id')
+    .notNull()
+    .references(() => usersTable.id, {onDelete: 'cascade'}),
+  createdAt: integer('created_at', {mode: 'timestamp'})
+    .notNull()
+    .default(sql`(unixepoch())`),
+})

@@ -29,6 +29,8 @@ export const config = {
     LIFETIME_ACCESS_TELEGRAM_STARS_PRICE: z.number().default(3000),
     BTC_TO_USD: z.number().default(100000),
     TELEGRAM_STARS_TO_USD: z.number().default(0.02),
+    TG_ADMIN_ID: z.number(),
+    MAX_PROMOCODE_LENGTH: z.number().default(50),
   }),
 
   get botInfo(): UserFromGetMe | undefined {
