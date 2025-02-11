@@ -215,3 +215,8 @@ promocode = <b>Promocode created.</b>
 feedback = 📨 <b>Send any message.</b>
     I will forward it to the bot author.
     .sent = <b>Message sent.</b>
+
+contact = 
+    .title = Contact
+    .name = Name
+    .phone = Phone

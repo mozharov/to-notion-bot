@@ -17,6 +17,7 @@ import {NotFoundDatabaseError} from '../errors/not-found-database-error.js'
 import {createMessage} from '../../models/messages.js'
 import {translate} from '../lib/i18n.js'
 import {buildLinkToNotionPage} from '../helpers/urls/link-to-notion-page.js'
+import type {Message} from 'grammy/types'
 
 export const messageHandler: Middleware<
   ChatTypeContext<Context, 'channel' | 'group' | 'supergroup' | 'private'>
@@ -27,7 +28,7 @@ export const messageHandler: Middleware<
   if (chat?.status !== 'active' || !chat.notionWorkspaceId || !chat.notionDatabaseId) {
     throw new Error('Chat is not active')
   }
-  const message = ctx.message ?? ctx.channelPost
+  const message = ctx.msg
   if (!message) throw new Error('Message is not found')
   const prevMessage = await getPrevMessage(message, chat)
   const isUpdate = !!prevMessage
@@ -36,8 +37,14 @@ export const messageHandler: Middleware<
   if (silentMode) await ctx.replyWithChatAction('upload_document')
   else await ctx.replyWithChatAction('typing')
 
-  const text = message.text ?? message.caption
-  const title = truncateTextForTitle(text ?? ctx.t('new-file'))
+  // Contact
+  const contact = message.contact
+  const contactText = contact && getContactText(ctx, contact)
+  const contactTitle = contact && ctx.t('contact.title')
+  //
+
+  const text = contactText ?? message.text ?? message.caption
+  const title = contactTitle ?? truncateTextForTitle(text ?? ctx.t('new-file'))
   const entities = message.entities ?? message.caption_entities
   const blocks =
     text && (hasInnerContent(text, entities) || !!prevMessage)
@@ -137,4 +144,15 @@ async function notifyUser(
     senderId: ctx.me.id,
     sentAt: botMessage.date,
   })
+}
+
+function getContactText(ctx: Context, contact: Message.ContactMessage['contact']) {
+  const parts = []
+  if (contact.first_name || contact.last_name) {
+    const name = [contact.first_name, contact.last_name].filter(Boolean).join(' ')
+    parts.push(`${ctx.t('contact.name')}: ${name}`)
+  }
+  if (contact.phone_number) parts.push(`${ctx.t('contact.phone')}: ${contact.phone_number}`)
+  if (contact.user_id) parts.push(`Telegram ID: ${contact.user_id}`)
+  return parts.join('\n')
 }
