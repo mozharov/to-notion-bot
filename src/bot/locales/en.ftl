@@ -84,12 +84,12 @@ chat-notion-settings = Select a <b>Workspace</b> in Notion for integration with 
     .link-to-database = Add Database by Link
     .pages = <b>Select a Notion database where I will send the content.</b>
 
-        If you don’t see the required database in this list, click on <b>{chat-notion-settings.link-to-database}</b>.
+        If you don't see the required database in this list, click on <b>{chat-notion-settings.link-to-database}</b>.
     .link = Send me the link to the Notion database that you want to attach to the chat.
         To get the link, use the button from the screenshot.
     .add-page = Add the database
     .linked-database = Add the database <b>{$database}</b> to the chat?
-    .link-invalid = This doesn’t look like a database link. 
+    .link-invalid = This doesn't look like a database link. 
 
 workspaces = <b>These are your Workspaces in Notion.</b>
     You can add a new integration with a <b>Workspace</b> or update the available databases in already active integrations.
