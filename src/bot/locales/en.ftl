@@ -162,6 +162,7 @@ subscription = 🚀 <b>Lifetime Access</b>
 
     <b>💯 Money back guarantee within 30 days.</b>
     If the bot does not meet your expectations, we will return the entire amount without any questions.
+    Use the /refund command to get a refund.
 
     <b>Choose a convenient payment method:</b>
     <b>🔸 Bitcoin</b>
@@ -195,6 +196,8 @@ refund = <b>💸 Cancel lifetime access and get a refund.</b>
         {$link}
     .telegram = <b>Your subscription has been canceled. Telegram Stars have been returned.</b>
     .do-it = Refund
+    .not-available = <b>Refund is not available.</b>
+        You don't have paid access to the bot or the refund period has expired.
 
 promocode = <b>Promocode created.</b>
     Code: <code>{$code}</code>
