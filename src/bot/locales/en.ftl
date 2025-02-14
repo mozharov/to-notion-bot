@@ -170,8 +170,6 @@ subscription = 🚀 <b>Lifetime Access</b>
     <b>🔸 Telegram Stars</b>
     ⭐️ {$telegramStarsPrice} (≈${$telegramStarsUsd})
 
-    <b>Note that by choosing Bitcoin payment, you pay in 2 times less!</b>
-
     <i>For an alternative payment method, please contact the bot author: @vmozharov.</i>
     .button = 🎁 Get lifetime access
     .bitcoin = ₿ Bitcoin
