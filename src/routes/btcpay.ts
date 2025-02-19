@@ -7,6 +7,7 @@ import {updateInvoice} from '../models/invoices.js'
 import {bot} from '../bot/bot.js'
 import {translate} from '../bot/lib/i18n.js'
 import {getChatByTelegramIdOrThrow} from '../models/chats.js'
+import {Tracker} from '../bot/lib/tracker.js'
 
 export const btcpayRouter = new Router()
 
@@ -42,6 +43,8 @@ btcpayRouter.post('/btcpay', async ctx => {
         ctx.log.error({error}, 'Error sending message to user')
       })
   } else if (type === 'InvoiceSettled') {
+    const tracker = new Tracker(tgUserId.toString())
+    tracker.capture('invoice settled')
     ctx.log.info({invoiceId}, 'Invoice settled')
     await updateUser(chat.ownerId, {
       subscriptionEndsAt: null,

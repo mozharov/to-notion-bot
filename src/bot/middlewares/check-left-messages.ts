@@ -8,7 +8,8 @@ export const checkLeftMessages: Middleware = async (ctx, next) => {
   if (!ctx.chatId) return next()
   const chat = await getChatByTelegramId(ctx.chatId)
   if (!chat) return next()
-  if (chat.owner.leftMessages === 0)
+  if (chat.owner.leftMessages === 0) {
+    ctx.tracker.capture('left messages limit reached')
     return ctx.reply(
       ctx.t('left-messages-limit-reached', {
         botUsername: bot.botInfo.username,
@@ -20,7 +21,7 @@ export const checkLeftMessages: Middleware = async (ctx, next) => {
         }),
       },
     )
-  else if (chat.owner.leftMessages > 0) {
+  } else if (chat.owner.leftMessages > 0) {
     await updateUser(chat.owner.id, {leftMessages: chat.owner.leftMessages - 1})
   }
   return next()
