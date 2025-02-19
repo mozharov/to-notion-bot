@@ -29,13 +29,19 @@ export const checkMentionMode: Middleware<
     const mentionText = text.slice(mention.offset, mention.offset + mention.length)
     if (!text.startsWith(mentionText)) return next()
 
-    message.text = text.slice(mention.length)
-    message.entities = entities.filter(
-      entity =>
-        entity.offset !== mention.offset &&
-        entity.length !== mention.length &&
-        entity.type !== 'mention',
-    )
+    const mentionLength = mention.length
+
+    const newText = text.slice(mentionLength)
+    message.text = newText
+
+    // Adjust offsets of all entities except the current mention
+    message.entities = entities
+      .filter(entity => entity !== mention) // Remove only the bot mention
+      .map(entity => ({
+        ...entity,
+        offset: entity.offset - mentionLength,
+      }))
+      .filter(entity => entity.offset >= 0 && entity.offset + entity.length <= newText.length)
   }
 
   return next()
