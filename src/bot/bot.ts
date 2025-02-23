@@ -26,7 +26,7 @@ composer.use(addTrackerToContext)
 composer.use(i18nMiddleware)
 composer.use(identifyUser)
 
-composer.preCheckoutQuery('*', preCheckoutQuery)
+composer.on('pre_checkout_query', preCheckoutQuery)
 composer.on('message:successful_payment', successfulPayment)
 
 composer.use(privateChats)
