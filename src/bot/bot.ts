@@ -22,11 +22,11 @@ bot.api.config.use(parseMode('HTML'))
 
 export const composer = bot.errorBoundary(errorHandler)
 composer.use(addLoggerToContext)
+composer.on('pre_checkout_query', preCheckoutQuery)
 composer.use(addTrackerToContext)
 composer.use(i18nMiddleware)
 composer.use(identifyUser)
 
-composer.on('pre_checkout_query', preCheckoutQuery)
 composer.on('message:successful_payment', successfulPayment)
 
 composer.use(privateChats)
