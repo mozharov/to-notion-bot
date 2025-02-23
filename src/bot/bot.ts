@@ -22,8 +22,8 @@ bot.api.config.use(parseMode('HTML'))
 
 export const composer = bot.errorBoundary(errorHandler)
 composer.use(addLoggerToContext)
-composer.on('pre_checkout_query', preCheckoutQuery)
 composer.use(addTrackerToContext)
+composer.on('pre_checkout_query', preCheckoutQuery)
 composer.use(i18nMiddleware)
 composer.use(identifyUser)
 
