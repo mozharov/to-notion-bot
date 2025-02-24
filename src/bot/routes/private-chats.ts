@@ -30,6 +30,7 @@ import {promocodeCommand} from '../handlers/commands/promocode.js'
 import {removePromocodeCommand} from '../handlers/commands/remove-promocode.js'
 import {checkPromocode} from '../middlewares/check-promocode.js'
 import {feedbackCommand} from '../handlers/commands/feedback.js'
+import {giveCommand} from '../handlers/commands/give.js'
 
 export const privateChats = new Composer()
 const composer = privateChats.chatType('private')
@@ -54,6 +55,7 @@ composer.command('refund', refundCommand)
 composer.command('feedback', feedbackCommand)
 composer.filter(adminOnly).command('promocode', promocodeCommand)
 composer.filter(adminOnly).command('remove_promocode', removePromocodeCommand)
+composer.filter(adminOnly).command('give', giveCommand)
 
 composer.on('message:text').use(checkPromocode)
 

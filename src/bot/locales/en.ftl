@@ -223,3 +223,7 @@ contact =
     .title = Contact
     .name = Name
     .phone = Phone
+
+give = <b>You have given lifetime access to the bot to user {$user}.</b>
+
+user-not-found = <b>User not found.</b>

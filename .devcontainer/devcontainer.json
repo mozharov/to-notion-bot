@@ -12,7 +12,8 @@
         "Gruntfuggly.todo-tree",
         "Postman.postman-for-vscode",
         "alexcvzz.vscode-sqlite",
-        "fabiospampinato.vscode-todo-plus"
+        "fabiospampinato.vscode-todo-plus",
+        "damms005.devdb"
       ]
     }
   },
