@@ -16,3 +16,4 @@ eslint.config.mjs
 main.db*
 drizzle.config.ts
 .npmrc
+.devdbrc

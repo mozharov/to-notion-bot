@@ -40,7 +40,7 @@ export const messageHandler: Middleware<
   // Contact
   const contact = message.contact
   const contactText = contact && getContactText(ctx, contact)
-  const contactTitle = contact && ctx.t('contact.title')
+  const contactTitle = contact && `${contact.first_name} ${contact.last_name ?? ''}`
   //
 
   const text = contactText ?? message.text ?? message.caption

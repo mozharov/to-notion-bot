@@ -220,7 +220,6 @@ feedback = 📨 <b>Send any message.</b>
     .sent = <b>Message sent.</b>
 
 contact = 
-    .title = Contact
     .name = Name
     .phone = Phone
 
