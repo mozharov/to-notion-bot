@@ -30,6 +30,7 @@ export const messageHandler: Middleware<
   }
   const message = ctx.msg
   if (!message) throw new Error('Message is not found')
+
   const prevMessage = await getPrevMessage(message, chat)
   const isUpdate = !!prevMessage
   const silentMode = (!message.reply_to_message && isUpdate) || chat.silentMode
@@ -50,6 +51,34 @@ export const messageHandler: Middleware<
     text && (hasInnerContent(text, entities) || !!prevMessage)
       ? convertMessageToNotionBlocks(text, entities)
       : []
+
+  // Handle reply to message that isn't in Notion yet
+  const replyToMessage = message.reply_to_message
+  if (replyToMessage && !prevMessage) {
+    const replyText = replyToMessage.text ?? replyToMessage.caption
+    const replyEntities = replyToMessage.entities ?? replyToMessage.caption_entities
+
+    // Add divider before the original message content
+    blocks.unshift({
+      object: 'block',
+      divider: {},
+    })
+
+    // Add original message content
+    if (replyText) {
+      const replyBlocks = convertMessageToNotionBlocks(replyText, replyEntities)
+      blocks.unshift(...replyBlocks)
+    }
+
+    // Process file from reply message using the enhanced getTelegramFile function
+    const replyTgFile = await getTelegramFile(ctx, replyToMessage)
+    if (replyTgFile) {
+      const fileType = getFileType(replyToMessage)
+      const file = await createFile(replyTgFile, fileType)
+      const fileBlock = convertFileToNotionBlock(file)
+      blocks.unshift(fileBlock)
+    }
+  }
 
   const tgFile = await getTelegramFile(ctx)
   if (tgFile) {
