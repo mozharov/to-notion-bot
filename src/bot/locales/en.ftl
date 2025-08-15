@@ -9,11 +9,13 @@ cancel = Cancel
 start = 🚀 Turn Telegram into your second brain!
 
     ToNotionBot will help you:
-    📝 Save important messages in 1 click
-    🎯 Manage tasks directly from chats
-    📊 Collect materials for projects
-    🗂 Organize team knowledge base
-    ⚡ Instantly send any content from Telegram to <a href="https://notion.so">Notion</a>
+    📝 Save any Telegram content to Notion in 1 click
+    ✨ Keep formatting, files, voice messages
+    🔄 Reply to messages to update existing Notion pages
+    🎯 Work with @to_notion_robot mention or auto-save all
+    📂 Connect different Notion DBs to different chats
+    👥 Perfect for teams - unlimited group chats
+    ⚡ One lifetime access (1500⭐) = all features forever
     
     Let's choose a chat from which I will send messages to Notion.
 
