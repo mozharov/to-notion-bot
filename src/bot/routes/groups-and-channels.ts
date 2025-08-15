@@ -5,7 +5,7 @@ import {unblockChatAndNotify} from '../services/unblock-chat-and-notify.js'
 export const groupsAndChannels = new Composer()
 const composer = groupsAndChannels.chatType(['group', 'supergroup', 'channel'])
 
-composer.on('my_chat_member:from').use(async ctx => {
+composer.on('my_chat_member').use(async ctx => {
   const isMember = ['member', 'administrator', 'creator'].includes(
     ctx.myChatMember.new_chat_member.status,
   )

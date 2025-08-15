@@ -164,10 +164,6 @@ subscription = 🚀 <b>Lifetime Access</b>
     If the bot does not meet your expectations, we will return the entire amount without any questions.
     Use the /refund command to get a refund.
 
-    <b>Choose a convenient payment method:</b>
-    <b>🔸 Bitcoin</b>
-    ₿ {$btcPrice} (≈${$btcUsd})
-
     <b>🔸 Telegram Stars</b>
     ⭐️ {$telegramStarsPrice} (≈${$telegramStarsUsd})
 
