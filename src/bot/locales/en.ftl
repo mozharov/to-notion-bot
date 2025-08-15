@@ -6,9 +6,16 @@ deactivate = Deactivate
 action-canceled = <b>Action canceled</b>
 cancel = Cancel
 
-start = Hello!
-    <b>I'm a bot for instant content transfer from Telegram to <a href="https://www.notion.so">Notion</a>.</b>
-    Let's select a chat where I will send messages to Notion.
+start = 🚀 Turn Telegram into your second brain!
+
+    ToNotionBot will help you:
+    📝 Save important messages in 1 click
+    🎯 Manage tasks directly from chats
+    📊 Collect materials for projects
+    🗂 Organize team knowledge base
+    ⚡ Instantly send any content from Telegram to <a href="https://notion.so">Notion</a>
+    
+    Let's choose a chat from which I will send messages to Notion.
 
 chats = <b>These are your connected chats.</b>
     Add me to a group or channel so the chat will appear in the list.
