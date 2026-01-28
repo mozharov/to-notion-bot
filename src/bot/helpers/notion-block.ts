@@ -1,5 +1,5 @@
 import type {BlockObjectRequest} from '@notionhq/client/build/src/api-endpoints.js'
-import type {MessageEntity} from 'grammy/types'
+import type {Checklist, MessageEntity} from 'grammy/types'
 import {File} from '../../models/files.js'
 import {getFileUrl} from './urls/file-url.js'
 
@@ -180,6 +180,16 @@ export function convertFileToNotionBlock(file: File): BlockObjectRequest {
   }
 }
 
+export function convertChecklistToNotionBlocks(checklist: Checklist): ToDoBlock[] {
+  return checklist.tasks.map(task => ({
+    object: 'block',
+    to_do: {
+      rich_text: [{text: {content: task.text}, annotations: {}}],
+      checked: !!task.completion_date,
+    },
+  }))
+}
+
 // Not full description of types, only those that are used in the project
 export interface RichText {
   text: {
@@ -204,5 +214,13 @@ export interface TextBlock {
   object: 'block'
   paragraph: {
     rich_text: RichText[]
+  }
+}
+
+export interface ToDoBlock {
+  object: 'block'
+  to_do: {
+    rich_text: RichText[]
+    checked: boolean
   }
 }

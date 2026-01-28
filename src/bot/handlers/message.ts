@@ -4,11 +4,12 @@ import {getSentAt} from '../helpers/sent-at.js'
 import {getChatByTelegramId, type Chat} from '../../models/chats.js'
 import {getPrevMessage} from '../helpers/prev-message.js'
 import {
+  convertChecklistToNotionBlocks,
   convertFileToNotionBlock,
   convertMessageToNotionBlocks,
+  hasInnerContent,
   truncateTextForTitle,
 } from '../helpers/notion-block.js'
-import {hasInnerContent} from '../helpers/notion-block.js'
 import {getFileType, getTelegramFile} from '../helpers/telegram-file.js'
 import {createFile} from '../../models/files.js'
 import {getLinkToOriginal} from '../helpers/urls/link-to-original.js'
@@ -42,15 +43,21 @@ export const messageHandler: Middleware<
   const contact = message.contact
   const contactText = contact && getContactText(ctx, contact)
   const contactTitle = contact && `${contact.first_name} ${contact.last_name ?? ''}`
-  //
+
+  // Checklist
+  const checklist = message.checklist
+  const checklistTitle = checklist?.title
+  const checklistBlocks = checklist ? convertChecklistToNotionBlocks(checklist) : []
 
   const text = contactText ?? message.text ?? message.caption
-  const title = contactTitle ?? truncateTextForTitle(text ?? ctx.t('new-file'))
+  const title = contactTitle ?? checklistTitle ?? truncateTextForTitle(text ?? ctx.t('new-file'))
   const entities = message.entities ?? message.caption_entities
-  const blocks =
-    text && (hasInnerContent(text, entities) || !!prevMessage)
+  const blocks = [
+    ...(text && (hasInnerContent(text, entities) || !!prevMessage)
       ? convertMessageToNotionBlocks(text, entities)
-      : []
+      : []),
+    ...checklistBlocks,
+  ]
 
   // Handle reply to message that isn't in Notion yet
   const replyToMessage = message.reply_to_message
@@ -95,6 +102,8 @@ export const messageHandler: Middleware<
     textLength: text?.length,
     forwardMessage: !!message.forward_origin,
     updateNotionPage: !!prevMessage,
+    checklist: !!checklist,
+    checklistTasksCount: checklist?.tasks.length,
   })
 
   const linkToOriginal = getLinkToOriginal(message)

@@ -134,6 +134,8 @@ notion-is-not-active = ⚠️ <b>Notion database is not connected.</b>
 
 new-file = Some file
 
+new-checklist = New checklist
+
 new-message = {$isUpdate -> 
         [false] <b>A new page <a href="{$url}">has been created</a> in Notion database.</b>
        *[other] <b>The page <a href="{$url}">has been updated</a> in Notion database.</b>

@@ -32,7 +32,7 @@ composer.on('message:successful_payment', successfulPayment)
 composer.use(privateChats)
 composer.use(groupsAndChannels)
 
-const messagesComposer = composer.on([':text', ':caption', ':file', ':contact'])
+const messagesComposer = composer.on([':text', ':caption', ':file', ':contact', ':checklist'])
 messagesComposer.chatType(['group', 'supergroup']).use(checkMentionMode)
 messagesComposer
   .chatType(['private', 'channel', 'group', 'supergroup'])
