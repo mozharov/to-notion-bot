@@ -5,7 +5,7 @@ FROM base AS deps
 COPY package.json package-lock.json ./
 
 FROM deps AS build
-RUN --mount=type=cache,id=npm,target=/root/.npm npm ci
+RUN --mount=type=cache,id=npm,target=/root/.npm npm ci --include=dev
 COPY . .
 RUN npm run build
 
