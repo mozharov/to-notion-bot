@@ -21,13 +21,7 @@ export const config = {
     NOTION_CLIENT_ID: z.string().nonempty(),
     NOTION_SECRET_TOKEN: z.string().nonempty(),
     HOST: z.string().nonempty(),
-    BTCPAY_INSTANCE_URL: z.string().nonempty(),
-    BTCPAY_API_KEY: z.string().nonempty(),
-    BTCPAY_STORE_ID: z.string().nonempty(),
-    BTCPAY_WEBHOOK_SECRET: z.string().nonempty(),
-    LIFETIME_ACCESS_PRICE: z.number().default(25000), // in sats
     LIFETIME_ACCESS_TELEGRAM_STARS_PRICE: z.number().default(3000),
-    BTC_TO_USD: z.number().default(100000),
     TELEGRAM_STARS_TO_USD: z.number().default(0.02),
     TG_ADMIN_ID: z.number(),
     MAX_PROMOCODE_LENGTH: z.number().default(50),

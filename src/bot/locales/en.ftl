@@ -180,7 +180,6 @@ subscription = 🚀 <b>Lifetime Access</b>
 
     <i>For an alternative payment method, please contact the bot author: @vmozharov.</i>
     .button = 🎁 Get lifetime access
-    .bitcoin = ₿ Bitcoin
     .telegram-stars = ⭐️ Telegram Stars
     .title = Lifetime Access
     .description = Unlimited access to the bot without restrictions.
@@ -199,8 +198,6 @@ refund = <b>💸 Cancel lifetime access and get a refund.</b>
     You will lose access to the bot, but you will get a refund.
 
     <b>Are you sure you want to cancel lifetime access?</b>
-    .btcpay = <b>Your subscription has been canceled. To get a refund, click the link below.</b>
-        {$link}
     .telegram = <b>Your subscription has been canceled. Telegram Stars have been returned.</b>
     .do-it = Refund
     .not-available = <b>Refund is not available.</b>

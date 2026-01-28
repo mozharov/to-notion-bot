@@ -16,17 +16,14 @@ export const startCommand: Middleware<ChatTypeContext<Context, 'private'>> = asy
       await ctx.reply(ctx.t('subscription.already-has'))
       return
     }
-    const btcPrice = config.LIFETIME_ACCESS_PRICE / 100000000
     const telegramStarsPrice = config.LIFETIME_ACCESS_TELEGRAM_STARS_PRICE
     await ctx.reply(
       ctx.t('subscription', {
-        btcPrice: btcPrice.toString(),
-        btcUsd: (btcPrice * config.BTC_TO_USD).toFixed(0),
         telegramStarsPrice,
         telegramStarsUsd: (telegramStarsPrice * config.TELEGRAM_STARS_TO_USD).toFixed(0),
       }),
       {
-        reply_markup: buildSubscriptionKeyboard(ctx.t, ctx.from.id),
+        reply_markup: buildSubscriptionKeyboard(ctx.t),
       },
     )
     return

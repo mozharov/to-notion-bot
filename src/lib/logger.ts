@@ -1,8 +1,8 @@
-import {pino, type Logger} from 'pino'
+import {pino, type Logger, LoggerOptions} from 'pino'
 import {config} from '../config.js'
 import {serializeError} from 'serialize-error'
 
-const options: pino.LoggerOptions = {
+const options: LoggerOptions = {
   level: config.LOG_LEVEL,
   formatters: {
     level: label => ({level: label}),

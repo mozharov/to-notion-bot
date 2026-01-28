@@ -7,7 +7,6 @@
     "node": ">=22 <25"
   },
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "build:clean": "rm -rf dist",
     "build:compile": "tsc -p tsconfig.json",
     "build:copy-locales": "mkdir -p dist/bot/locales && cp -r src/bot/locales/*.ftl dist/bot/locales/",
