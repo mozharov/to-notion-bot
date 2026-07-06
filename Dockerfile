@@ -17,4 +17,7 @@ COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
 COPY --from=deps /app/package.json /app/package.json
 COPY --from=build /app/drizzle /app/drizzle
+ENV PORT=8443
+VOLUME /data
+EXPOSE 8443
 CMD [ "node", "dist/main" ]
