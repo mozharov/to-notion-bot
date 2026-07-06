@@ -97,5 +97,5 @@ notionRouter.get('/notion', async ctx => {
     distinctId: user.telegramId.toString(),
     event: 'completed notion integration',
   })
-  ctx.redirect(`https://t.me/${config.BOT_USERNAME}`)
+  ctx.redirect(`https://t.me/${bot.botInfo.username}`)
 })
