@@ -154,12 +154,11 @@ help = <b>How to use the bot:</b>
     <b>4.</b> Press "{activate}" in the chat settings.
     <b>5.</b> Send a message to the selected chat to send its content to Notion.
 
-    <b>Our chat:</b> @to_notion_chat
     <b>Author:</b> @vmozharov
 
     To Notion Bot is <a href="https://github.com/mozharov/to-notion-bot">Open Source</a>.
 
-    If you have any questions or suggestions for improving the bot, you can write them in our chat or to the bot author.
+    If you have any questions or suggestions for improving the bot, you can write them to the bot author.
 
     <b>Use the /feedback command to send a message directly to the bot author.</b>
 
