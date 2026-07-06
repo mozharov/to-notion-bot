@@ -55,4 +55,12 @@ export const config = {
   get subscriptionLifetimePriceStars(): number {
     return Math.round(this.SUBSCRIPTION_LIFETIME_PRICE_USD / this.TELEGRAM_STARS_TO_USD)
   },
+
+  get notionRedirectUri(): string {
+    const hasProtocol = /^https?:\/\//.test(this.HOST)
+    const origin = hasProtocol
+      ? this.HOST
+      : `http${this.NODE_ENV === 'development' ? '' : 's'}://${this.HOST}`
+    return `${origin}/notion`
+  },
 }
