@@ -5,7 +5,7 @@ import {translate} from '../../../bot/lib/i18n.js'
 import {getChatByTelegramIdOrThrow} from '../../../models/chats.js'
 import {getUsersWithExpiredSubscription} from '../../../models/users.js'
 import {InlineKeyboard} from 'grammy'
-import {getLifetimeAccessUrl} from '../../../bot/helpers/urls/lifetime-access.js'
+import {getSubscriptionUrl} from '../../../bot/helpers/urls/subscription.js'
 
 export async function checkSubscriptions() {
   const expiredUsers = await getUsersWithExpiredSubscription()
@@ -20,7 +20,7 @@ export async function checkSubscriptions() {
       })
 
       const keyboard = new InlineKeyboard().add({
-        url: getLifetimeAccessUrl(),
+        url: getSubscriptionUrl(),
         text: translate('subscription.button', chat.languageCode),
       })
       await bot.api.sendMessage(

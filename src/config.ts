@@ -21,7 +21,9 @@ export const config = {
     NOTION_CLIENT_ID: z.string().nonempty(),
     NOTION_SECRET_TOKEN: z.string().nonempty(),
     HOST: z.string().nonempty(),
-    LIFETIME_ACCESS_TELEGRAM_STARS_PRICE: z.number().default(3000),
+    SUBSCRIPTION_MONTHLY_PRICE_USD: z.number().default(5),
+    SUBSCRIPTION_YEARLY_PRICE_USD: z.number().default(50),
+    SUBSCRIPTION_LIFETIME_PRICE_USD: z.number().default(150),
     TELEGRAM_STARS_TO_USD: z.number().default(0.02),
     TG_ADMIN_ID: z.number(),
     MAX_PROMOCODE_LENGTH: z.number().default(50),
@@ -40,5 +42,17 @@ export const config = {
       can_connect_to_business: false,
       has_main_web_app: false,
     }
+  },
+
+  get subscriptionMonthlyPriceStars(): number {
+    return Math.round(this.SUBSCRIPTION_MONTHLY_PRICE_USD / this.TELEGRAM_STARS_TO_USD)
+  },
+
+  get subscriptionYearlyPriceStars(): number {
+    return Math.round(this.SUBSCRIPTION_YEARLY_PRICE_USD / this.TELEGRAM_STARS_TO_USD)
+  },
+
+  get subscriptionLifetimePriceStars(): number {
+    return Math.round(this.SUBSCRIPTION_LIFETIME_PRICE_USD / this.TELEGRAM_STARS_TO_USD)
   },
 }

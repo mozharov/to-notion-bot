@@ -15,8 +15,8 @@ start = 🚀 Turn Telegram into your second brain!
     🎯 Work with @to_notion_robot mention or auto-save all
     📂 Connect different Notion DBs to different chats
     👥 Perfect for teams - unlimited group chats
-    ⚡ One lifetime access (1500⭐) = all features forever
-    
+    ⚡ Subscription from $5/month = all features unlocked
+
     Let's choose a chat from which I will send messages to Notion.
 
 chats = <b>These are your connected chats.</b>
@@ -164,40 +164,47 @@ help = <b>How to use the bot:</b>
     <b>Use the /feedback command to send a message directly to the bot author.</b>
 
 left-messages-limit-reached = ⚠️ <b>You have reached the limit of messages.</b>
-    Buy lifetime access to continue using the bot without any limits.
+    Buy a subscription to continue using the bot without any limits.
 
-subscription = 🚀 <b>Lifetime Access</b>
+subscription = 🚀 <b>Subscription</b>
     The free version of the bot allows you to send up to 30 messages to Notion to evaluate its capabilities.
 
-    <b>For unlimited use of the bot, lifetime access is available — you pay only once and use it forever.</b>
+    <b>For unlimited use of the bot, choose a plan below.</b>
 
     <b>💯 Money back guarantee within 30 days.</b>
     If the bot does not meet your expectations, we will return the entire amount without any questions.
     Use the /refund command to get a refund.
 
     <b>🔸 Telegram Stars</b>
-    ⭐️ {$telegramStarsPrice} (≈${$telegramStarsUsd})
+    ⭐️ 1 month — {$monthlyStars} (≈${$monthlyUsd})
+    ⭐️ 1 year — {$yearlyStars} (≈${$yearlyUsd})
+    ⭐️ Lifetime — {$lifetimeStars} (≈${$lifetimeUsd})
 
     <i>For an alternative payment method, please contact the bot author: @vmozharov.</i>
-    .button = 🎁 Get lifetime access
-    .telegram-stars = ⭐️ Telegram Stars
-    .title = Lifetime Access
-    .description = Unlimited access to the bot without restrictions.
-    .already-has = You already have lifetime access to the bot.
+    .button = 🎁 Get subscription
+    .telegram-stars-month = ⭐️ 1 month — {$stars}
+    .telegram-stars-year = ⭐️ 1 year — {$stars}
+    .telegram-stars-lifetime = ⭐️ Lifetime — {$stars}
+    .title = {$plan ->
+            [year] Yearly Subscription
+            [lifetime] Lifetime Access
+           *[other] Monthly Subscription
+        }
+    .description = {$plan ->
+            [year] Unlimited access to the bot for 1 year without restrictions.
+            [lifetime] Unlimited access to the bot forever without restrictions.
+           *[other] Unlimited access to the bot for 1 month without restrictions.
+        }
+    .already-has = You already have unlimited access to the bot.
     .invoice-settled = <b>🎉 Payment successful.</b>
         Now you can use the bot without any restrictions.
-    .invoice-processing = <b>⏳ Payment is being processed.</b>
-        It takes some time to confirm the payment.
-
-        <b>To avoid making you wait, I'm giving you temporary access to the bot right now.</b>
-        After successful payment confirmation, you will receive lifetime access.
     .expired = <b>🔴 Access to the bot has expired.</b>
-        Buy lifetime access to continue using the bot without restrictions.
+        Buy a subscription to continue using the bot without restrictions.
 
-refund = <b>💸 Cancel lifetime access and get a refund.</b>
+refund = <b>💸 Cancel subscription and get a refund.</b>
     You will lose access to the bot, but you will get a refund.
 
-    <b>Are you sure you want to cancel lifetime access?</b>
+    <b>Are you sure you want to cancel your subscription?</b>
     .telegram = <b>Your subscription has been canceled. Telegram Stars have been returned.</b>
     .do-it = Refund
     .not-available = <b>Refund is not available.</b>

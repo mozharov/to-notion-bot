@@ -88,7 +88,7 @@ composer.callbackQuery(
   /^chat:(-?\d+):link:([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})$/,
   linkToDatabaseCallback,
 )
-composer.callbackQuery('pay-telegram-stars', payTelegramStarsCallback)
+composer.callbackQuery(/^pay-telegram-stars:(month|year|lifetime)$/, payTelegramStarsCallback)
 composer.callbackQuery('refund', refundCallback)
 
 composer.on('callback_query', unknownCallback)

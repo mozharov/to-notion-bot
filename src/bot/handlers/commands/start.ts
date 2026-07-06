@@ -9,18 +9,21 @@ import {config} from '../../../config.js'
 export const startCommand: Middleware<ChatTypeContext<Context, 'private'>> = async ctx => {
   const startParam = ctx.match
 
-  if (startParam === 'lifetime_subscription') {
-    ctx.tracker.capture('start command with lifetime subscription')
+  if (startParam === 'subscription') {
+    ctx.tracker.capture('start command with subscription')
     const user = await getOrCreateUser(ctx.from.id)
     if (isUserHasLifetimeAccess(user)) {
       await ctx.reply(ctx.t('subscription.already-has'))
       return
     }
-    const telegramStarsPrice = config.LIFETIME_ACCESS_TELEGRAM_STARS_PRICE
     await ctx.reply(
       ctx.t('subscription', {
-        telegramStarsPrice,
-        telegramStarsUsd: (telegramStarsPrice * config.TELEGRAM_STARS_TO_USD).toFixed(0),
+        monthlyStars: config.subscriptionMonthlyPriceStars,
+        monthlyUsd: config.SUBSCRIPTION_MONTHLY_PRICE_USD,
+        yearlyStars: config.subscriptionYearlyPriceStars,
+        yearlyUsd: config.SUBSCRIPTION_YEARLY_PRICE_USD,
+        lifetimeStars: config.subscriptionLifetimePriceStars,
+        lifetimeUsd: config.SUBSCRIPTION_LIFETIME_PRICE_USD,
       }),
       {
         reply_markup: buildSubscriptionKeyboard(ctx.t),

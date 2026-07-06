@@ -125,6 +125,7 @@ export const invoicesTable = sqliteTable('invoices', {
   telegramInvoiceId: text('telegram_invoice_id'),
   amount: integer('amount', {mode: 'number'}).notNull(),
   currency: text('currency', {enum: ['SATS', 'XTR']}).notNull(),
+  period: text('period', {enum: ['month', 'year', 'lifetime']}),
   userId: text('user_id')
     .notNull()
     .references(() => usersTable.id, {onDelete: 'cascade'}),
