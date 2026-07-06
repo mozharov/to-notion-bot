@@ -32,10 +32,8 @@ services:
       start_period: 30s
 
   legal:
-    image: nginx:alpine
-    volumes:
-      - ./legal:/usr/share/nginx/html:ro
-      - ./legal/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    build:
+      context: ./legal
     expose:
       - "80"
     restart: unless-stopped
