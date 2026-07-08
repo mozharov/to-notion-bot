@@ -156,8 +156,6 @@ help = <b>How to use the bot:</b>
 
     <b>Author:</b> @vmozharov
 
-    To Notion Bot is <a href="https://github.com/mozharov/to-notion-bot">Open Source</a>.
-
     If you have any questions or suggestions for improving the bot, you can write them to the bot author.
 
     <b>Use the /feedback command to send a message directly to the bot author.</b>

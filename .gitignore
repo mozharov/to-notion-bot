@@ -8,3 +8,4 @@ main.db*
 .env*
 *.todo
 .devdbrc
+.claude
