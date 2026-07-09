@@ -56,11 +56,12 @@ export const config = {
     return Math.round(this.SUBSCRIPTION_LIFETIME_PRICE_USD / this.TELEGRAM_STARS_TO_USD)
   },
 
-  get notionRedirectUri(): string {
+  get origin(): string {
     const hasProtocol = /^https?:\/\//.test(this.HOST)
-    const origin = hasProtocol
-      ? this.HOST
-      : `http${this.NODE_ENV === 'development' ? '' : 's'}://${this.HOST}`
-    return `${origin}/notion`
+    return hasProtocol ? this.HOST : `http${this.NODE_ENV === 'development' ? '' : 's'}://${this.HOST}`
+  },
+
+  get notionRedirectUri(): string {
+    return `${this.origin}/notion`
   },
 }
