@@ -3,18 +3,31 @@ services:
     build:
       context: .
     environment:
-      NODE_ENV: production
-      PORT: 8443
-      BOT_TOKEN: ${BOT_TOKEN:?Set BOT_TOKEN in Coolify environment variables}
-      BOT_WEBHOOK_SECRET: ${BOT_WEBHOOK_SECRET:?Set BOT_WEBHOOK_SECRET in Coolify environment variables}
-      HOST: ${HOST:?Set HOST to the public URL Coolify assigns this app, e.g. https://bot.example.com}
-      DB_URL: /data/bot.sqlite3
-      DB_MIGRATE: ${DB_MIGRATE:-true}
-      NOTION_CLIENT_ID: ${NOTION_CLIENT_ID:?Set NOTION_CLIENT_ID in Coolify environment variables}
-      NOTION_SECRET_TOKEN: ${NOTION_SECRET_TOKEN:?Set NOTION_SECRET_TOKEN in Coolify environment variables}
-      TG_ADMIN_ID: ${TG_ADMIN_ID:?Set TG_ADMIN_ID in Coolify environment variables}
-      POSTHOG_API_KEY: ${POSTHOG_API_KEY:-}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
+      - NODE_ENV=production
+      - PORT=8443
+      - BOT_TOKEN=${BOT_TOKEN:?Set BOT_TOKEN in Coolify environment variables}
+      - BOT_WEBHOOK_SECRET=${BOT_WEBHOOK_SECRET:?Set BOT_WEBHOOK_SECRET in Coolify environment variables}
+      - HOST=${HOST:?Set HOST to the public URL Coolify assigns this app, e.g. https://bot.example.com}
+      - DB_URL=/data/bot.sqlite3
+      - DB_MIGRATE=${DB_MIGRATE:-true}
+      - NOTION_CLIENT_ID=${NOTION_CLIENT_ID:?Set NOTION_CLIENT_ID in Coolify environment variables}
+      - NOTION_SECRET_TOKEN=${NOTION_SECRET_TOKEN:?Set NOTION_SECRET_TOKEN in Coolify environment variables}
+      - TG_ADMIN_ID=${TG_ADMIN_ID:?Set TG_ADMIN_ID in Coolify environment variables}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      # Optional — only forwarded to the container if set on the host/Coolify,
+      # otherwise the defaults in src/config.ts apply.
+      - NGROK_TOKEN
+      - BOT_ID
+      - BOT_NAME
+      - BOT_USERNAME
+      - MAX_CHATS_PER_USER
+      - MAX_WORKSPACES_PER_USER
+      - SUBSCRIPTION_MONTHLY_PRICE_USD
+      - SUBSCRIPTION_YEARLY_PRICE_USD
+      - SUBSCRIPTION_LIFETIME_PRICE_USD
+      - TELEGRAM_STARS_TO_USD
+      - MAX_PROMOCODE_LENGTH
+      - POSTHOG_API_KEY
     volumes:
       - bot-data:/data
     expose:
