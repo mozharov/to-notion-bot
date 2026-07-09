@@ -2,8 +2,10 @@ import {parseEnv, z} from 'znv'
 import 'dotenv/config'
 import type {UserFromGetMe} from 'grammy/types'
 
+const env = Object.fromEntries(Object.entries(process.env).filter(([, value]) => value !== ''))
+
 export const config = {
-  ...parseEnv(process.env, {
+  ...parseEnv(env, {
     NODE_ENV: z.enum(['development', 'production']).default('production'),
     PORT: z.coerce.number().default(8443),
     BOT_TOKEN: z.string().nonempty(),
