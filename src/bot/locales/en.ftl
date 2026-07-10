@@ -15,7 +15,7 @@ start = 🚀 Turn Telegram into your second brain!
     🎯 Work with @to_notion_robot mention or auto-save all
     📂 Connect different Notion DBs to different chats
     👥 Perfect for teams - unlimited group chats
-    ⚡ Subscription from $5/month = all features unlocked
+    ⚡ First month free, then from $5/month
 
     Let's choose a chat from which I will send messages to Notion.
 
@@ -160,11 +160,11 @@ help = <b>How to use the bot:</b>
 
     <b>Use the /feedback command to send a message directly to the bot author.</b>
 
-left-messages-limit-reached = ⚠️ <b>You have reached the limit of messages.</b>
+left-messages-limit-reached = ⚠️ <b>Your free trial has ended.</b>
     Buy a subscription to continue using the bot without any limits.
 
 subscription = 🚀 <b>Subscription</b>
-    The free version of the bot allows you to send up to 30 messages to Notion to evaluate its capabilities.
+    The free version of the bot gives you a 1-month trial to evaluate its capabilities.
 
     <b>For unlimited use of the bot, choose a plan below.</b>
 

@@ -6,7 +6,7 @@ export const usersTable = sqliteTable(
   {
     id: text('id').primaryKey().notNull(),
     telegramId: integer('telegram_id', {mode: 'number'}).unique().notNull(),
-    leftMessages: integer('left_messages', {mode: 'number'}).default(30).notNull(), // -1 if no limit (has subscription)
+    leftMessages: integer('left_messages', {mode: 'number'}).default(0).notNull(), // -1 = unlimited access (trial, subscription, or lifetime); 0 = blocked (trial/subscription expired)
     subscriptionEndsAt: integer('subscription_ends_at', {mode: 'timestamp'}), // null if no end date
     createdAt: integer('created_at', {mode: 'timestamp'})
       .notNull()

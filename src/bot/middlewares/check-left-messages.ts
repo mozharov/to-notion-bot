@@ -1,6 +1,5 @@
 import {InlineKeyboard, type Middleware} from 'grammy'
 import {getChatByTelegramId} from '../../models/chats.js'
-import {updateUser} from '../../models/users.js'
 import {bot} from '../bot.js'
 import {getSubscriptionUrl} from '../helpers/urls/subscription.js'
 
@@ -21,8 +20,6 @@ export const checkLeftMessages: Middleware = async (ctx, next) => {
         }),
       },
     )
-  } else if (chat.owner.leftMessages > 0) {
-    await updateUser(chat.owner.id, {leftMessages: chat.owner.leftMessages - 1})
   }
   return next()
 }

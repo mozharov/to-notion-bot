@@ -11,7 +11,12 @@ export async function getOrCreateUser(telegramId: number): Promise<User> {
 }
 
 export async function createUser(telegramId: number): Promise<User> {
-  const [user] = await db.insert(usersTable).values({id: randomUUID(), telegramId}).returning()
+  const trialEndsAt = new Date()
+  trialEndsAt.setMonth(trialEndsAt.getMonth() + 1)
+  const [user] = await db
+    .insert(usersTable)
+    .values({id: randomUUID(), telegramId, leftMessages: -1, subscriptionEndsAt: trialEndsAt})
+    .returning()
   if (!user) throw new Error('Failed to create user')
   return user
 }
