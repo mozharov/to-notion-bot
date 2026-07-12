@@ -30,8 +30,6 @@ services:
       - POSTHOG_API_KEY
     volumes:
       - bot-data:/data
-    expose:
-      - "8443"
     restart: unless-stopped
     healthcheck:
       test:
@@ -47,8 +45,6 @@ services:
   landing:
     build:
       context: ./landing
-    expose:
-      - "80"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/health || exit 1"]
