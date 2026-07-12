@@ -1,0 +1,14 @@
+# To Notion Bot
+
+> Telegram bot that forwards any message from Telegram to Notion — text, files, photos, videos, voice notes, contacts, checklists and more — across any chat, straight into a Notion database. Replying to a saved message updates the existing Notion page instead of creating a duplicate.
+
+## Product
+
+- [Landing page (English)](https://to-notion.mozharov.me/): features, pricing, comparison with alternatives, and FAQ.
+- [Landing page (Russian)](https://to-notion.mozharov.me/ru/): the same content in Russian.
+- [Open the bot on Telegram](https://t.me/to_notion_robot): start using To Notion Bot.
+
+## Policies
+
+- [Privacy Policy](https://to-notion.mozharov.me/privacy): what data is collected and how it is used.
+- [Terms of Use](https://to-notion.mozharov.me/terms): terms governing use of the bot.
