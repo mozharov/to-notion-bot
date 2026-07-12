@@ -408,6 +408,11 @@ a:hover { color: color-mix(in srgb, var(--accent) 78%, #000); }
 .nav__links { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
 .nav__link { color: var(--muted); font-size: 14.5px; font-weight: 500; }
 .nav__link:hover { color: var(--ink); }
+.lang-switch { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; }
+.lang-switch a { color: var(--muted); }
+.lang-switch a:hover { color: var(--ink); }
+.lang-switch a[aria-current="true"] { color: var(--ink); font-weight: 600; }
+.lang-switch .sep { color: var(--line2); }
 
 /* ============================================================
    Hero

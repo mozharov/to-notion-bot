@@ -14,7 +14,7 @@
     "build": "npm run build:clean && npm run build:compile && npm run build:copy-locales && npm run build:copy-assets",
     "start": "node dist/main.js",
     "start:dev": "DEBUG=grammy* nodemon src/main.ts",
-    "landing": "serve landing -l 8080",
+    "landing": "serve landing/public -l 8080",
     "format": "prettier --write src",
     "lint": "eslint ."
   },

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Политика конфиденциальности — To Notion Bot</title>
+  <meta name="description" content="Как To Notion Bot собирает, использует и хранит ваши данные.">
+  <link rel="icon" type="image/jpeg" href="/assets/logo.jpg">
+  <link rel="canonical" href="https://to-notion.mozharov.me/ru/privacy">
+  <link rel="alternate" hreflang="en" href="https://to-notion.mozharov.me/privacy">
+  <link rel="alternate" hreflang="ru" href="https://to-notion.mozharov.me/ru/privacy">
+  <link rel="alternate" hreflang="x-default" href="https://to-notion.mozharov.me/privacy">
+  <link rel="preload" href="/fonts/hanken-cyrillic-ext.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="header">
+    <nav class="nav">
+      <a href="/ru/" class="brand">
+        <img class="brand__logo" src="/assets/logo.jpg" alt="To Notion Bot" width="30" height="30">
+        <span class="brand__name">To Notion Bot</span>
+      </a>
+      <div class="nav__links">
+        <a href="/ru/#features" class="nav__link">Возможности</a>
+        <a href="/ru/#pricing" class="nav__link">Цены</a>
+        <span class="lang-switch"><a href="/privacy" hreflang="en">EN</a><span class="sep">|</span><a href="/ru/privacy" aria-current="true" hreflang="ru">RU</a></span>
+        <a href="https://t.me/to_notion_robot" class="btn btn--dark btn--sm">Открыть в Telegram</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="legal">
+    <h1>Политика конфиденциальности</h1>
+    <p class="updated">Последнее обновление: 6 июля 2026 г.</p>
+
+    <p>
+      «To Notion Bot» («Бот», «мы», «нас») — это Telegram-бот, который пересылает сообщения, файлы,
+      контакты и чек-листы из чата Telegram в базу или страницу Notion, которую вы подключаете.
+      Эта политика объясняет, какие данные мы собираем и как они используются.
+    </p>
+
+    <h2>Данные, которые мы храним</h2>
+    <p>Мы храним минимум данных, необходимый для работы Бота:</p>
+    <ul>
+      <li>
+        <strong>Базовые данные аккаунта Telegram</strong> — ваш Telegram user ID, а для каждого
+        подключённого чата — его Telegram chat ID, тип чата и название.
+      </li>
+      <li>
+        <strong>Ссылки на сообщения</strong> — ID сообщения в Telegram и соответствующий ID
+        страницы Notion, которую оно создало, чтобы правки и ответы обновляли нужную страницу
+        Notion, а не создавали дубликаты. Само содержимое сообщений мы не храним.
+      </li>
+      <li>
+        <strong>Данные подключения Notion</strong> — OAuth-токен доступа и идентификаторы
+        воркспейса/базы, выданные Notion при авторизации интеграции, чтобы мы могли записывать
+        в ваш воркспейс Notion от вашего имени.
+      </li>
+      <li>
+        <strong>Настройки чата</strong> — заданные вами параметры (язык, режим уведомлений,
+        привязанная база) и, если вы оформили подписку, базовый статус биллинга (период подписки,
+        ID счёта в Stars), необходимый для управления тарифом.
+      </li>
+    </ul>
+
+    <h2>Данные, которые мы не храним</h2>
+    <ul>
+      <li>Мы не храним на постоянной основе текст, файлы или медиа ваших сообщений.</li>
+      <li>
+        Файлы (фото, документы, голосовые и т. д.) передаются напрямую из Telegram в Notion
+        через Бот и не сохраняются на наших серверах.
+      </li>
+      <li>Мы не продаём и не передаём ваши данные третьим лицам в рекламных целях.</li>
+    </ul>
+
+    <h2>Как используются данные</h2>
+    <p>
+      Перечисленные выше данные используются исключительно для работы Бота: сопоставления входящих
+      сообщений Telegram с нужной страницей Notion, аутентификации в API Notion от вашего имени и
+      применения ваших настроек чата и статуса подписки.
+    </p>
+
+    <h2>Сторонние сервисы</h2>
+    <ul>
+      <li><strong>Telegram</strong> — используется как транспорт сообщений (Telegram Bot API).</li>
+      <li><strong>Notion</strong> — используется как хранилище, которое вы явно подключаете через OAuth.</li>
+      <li>
+        Мы можем использовать базовую, уважающую приватность аналитику (например, PostHog), чтобы
+        понимать использование функций и частоту ошибок. Эти события анонимны и не содержат
+        содержимого сообщений.
+      </li>
+    </ul>
+
+    <h2>Хранение и удаление данных</h2>
+    <p>
+      Описанные выше данные хранятся до тех пор, пока ваш чат подключён к Боту. Вы можете отключить
+      воркспейс Notion, удалить Бот из чата или запросить полное удаление своих данных в любой
+      момент через команду <code>/feedback</code> в Боте или связавшись с нами (см. ниже). Отзыв
+      доступа Бота в настройках интеграций Notion немедленно делает сохранённый токен доступа
+      недействительным.
+    </p>
+
+    <h2>Безопасность</h2>
+    <p>
+      Токены доступа хранятся в нашей базе данных и используются только на стороне сервера для
+      запросов к API Notion от вашего имени. Мы принимаем разумные технические меры для защиты
+      этих данных от несанкционированного доступа.
+    </p>
+
+    <h2>Изменения в политике</h2>
+    <p>
+      Мы можем периодически обновлять эту Политику конфиденциальности. Существенные изменения будут
+      отражены обновлением даты «Последнее обновление» выше.
+    </p>
+
+    <h2>Контакты</h2>
+    <p>
+      Вопросы об этой политике или ваших данных можно отправить через команду <code>/feedback</code>
+      внутри Бота.
+    </p>
+
+    <nav class="legal__nav">
+      <a href="/ru/terms">Условия использования</a>
+      <a href="/ru/">← На главную</a>
+    </nav>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <img src="/assets/logo.jpg" alt="To Notion Bot" width="28" height="28">
+        <span>To Notion Bot</span>
+      </div>
+      <div class="footer__links">
+        <a href="https://t.me/to_notion_robot">Telegram-бот</a>
+        <a href="https://t.me/vmozharov">Автор</a>
+        <a href="/ru/privacy">Конфиденциальность</a>
+        <a href="/ru/terms">Условия</a>
+      </div>
+      <p class="footer__legal">Сохраняйте любые сообщения из Telegram в Notion — файлы, голосовые, контакты и чек-листы. © 2026 To Notion Bot.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

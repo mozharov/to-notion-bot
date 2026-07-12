@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Telegram → Notion: бот для сохранения сообщений, файлов и голосовых в Notion</title>
+  <meta name="description" content="Пересылайте текст, файлы, голосовые, контакты и чек-листы из любого чата Telegram прямо в базу Notion. Ответьте на сообщение — и страница обновится, без дубликатов. Работает в группах и каналах. Первый месяц бесплатно.">
+  <meta property="og:title" content="Сохраняйте сообщения из Telegram в Notion — To Notion Bot">
+  <meta property="og:description" content="Превратите Telegram во входящие для Notion. Файлы, голосовые и ссылки — в один тап. Ответьте, чтобы обновить страницу, без дубликатов.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <link rel="icon" type="image/jpeg" href="/assets/logo.jpg">
+  <link rel="canonical" href="https://to-notion.mozharov.me/ru/">
+  <link rel="alternate" hreflang="en" href="https://to-notion.mozharov.me/">
+  <link rel="alternate" hreflang="ru" href="https://to-notion.mozharov.me/ru/">
+  <link rel="alternate" hreflang="x-default" href="https://to-notion.mozharov.me/">
+  <link rel="preload" href="/fonts/hanken-cyrillic-ext.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "To Notion Bot",
+    "url": "https://to-notion.mozharov.me/ru/",
+    "image": "https://to-notion.mozharov.me/assets/logo.jpg",
+    "applicationCategory": "BusinessApplication",
+    "inLanguage": "ru",
+    "description": "Пересылайте текст, файлы, голосовые, контакты и чек-листы из любого чата Telegram прямо в базу Notion. Ответьте на сообщение — и страница обновится, без дубликатов.",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Бесплатный период",
+        "price": "0",
+        "priceCurrency": "USD",
+        "eligibleDuration": "P1M",
+        "url": "https://to-notion.mozharov.me/ru/#pricing",
+        "availability": "https://schema.org/InStock",
+        "category": "free trial"
+      },
+      {
+        "@type": "Offer",
+        "name": "Месяц",
+        "price": "5.00",
+        "priceCurrency": "USD",
+        "priceValidUntil": "2027-07-12",
+        "url": "https://to-notion.mozharov.me/ru/#pricing",
+        "availability": "https://schema.org/InStock",
+        "category": "subscription"
+      },
+      {
+        "@type": "Offer",
+        "name": "Год",
+        "price": "40.00",
+        "priceCurrency": "USD",
+        "priceValidUntil": "2027-07-12",
+        "url": "https://to-notion.mozharov.me/ru/#pricing",
+        "availability": "https://schema.org/InStock",
+        "category": "subscription"
+      },
+      {
+        "@type": "Offer",
+        "name": "Навсегда",
+        "price": "100.00",
+        "priceCurrency": "USD",
+        "priceValidUntil": "2027-07-12",
+        "url": "https://to-notion.mozharov.me/ru/#pricing",
+        "availability": "https://schema.org/InStock",
+        "category": "one-time purchase"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="header">
+    <nav class="nav">
+      <a href="#top" class="brand">
+        <img class="brand__logo" src="/assets/logo.jpg" alt="To Notion Bot" width="30" height="30">
+        <span class="brand__name">To Notion Bot</span>
+      </a>
+      <div class="nav__links">
+        <a href="#features" class="nav__link">Возможности</a>
+        <a href="#how" class="nav__link">Как это работает</a>
+        <a href="#compare" class="nav__link">Сравнение</a>
+        <a href="#pricing" class="nav__link">Цены</a>
+        <span class="lang-switch"><a href="/" hreflang="en">EN</a><span class="sep">|</span><a href="/ru/" aria-current="true" hreflang="ru">RU</a></span>
+        <a href="https://t.me/to_notion_robot" class="btn btn--dark btn--sm">Открыть в Telegram</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="top" class="hero container">
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <p class="eyebrow">Telegram → Notion</p>
+        <h1>Сохраняйте любые сообщения из Telegram в Notion</h1>
+        <p class="hero__lead">Пересылайте текст, файлы, голосовые, контакты и чек-листы из любого чата прямо в вашу базу Notion. Ответьте на сообщение — и бот обновит ту же страницу: без дубликатов и копипаста.</p>
+        <div class="hero__actions">
+          <a href="https://t.me/to_notion_robot" class="btn btn--dark">Добавить в Telegram — бесплатно <span>→</span></a>
+          <a href="#how" class="btn btn--light">Как это работает</a>
+        </div>
+        <div class="hero__meta">
+          <span>✓ Первый месяц бесплатно</span>
+          <span class="dot">·</span>
+          <span>затем от $5/мес</span>
+          <span class="dot">·</span>
+          <span>возврат в течение 30 дней</span>
+        </div>
+      </div>
+
+      <!-- HERO VISUAL: message → page flow -->
+      <div class="hero__visual">
+        <div style="background:var(--soft);border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 24px 60px -30px rgba(33,31,28,0.35);">
+          <!-- telegram chat (dark) -->
+          <div style="background:#0e1621;border-radius:16px;overflow:hidden;">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#17212b;">
+              <span style="color:#5aa6e8;font-size:22px;line-height:1;margin-right:-2px;">‹</span>
+              <img src="/assets/logo.jpg" alt="To Notion Bot" width="34" height="34" style="width:34px;height:34px;border-radius:50%;object-fit:cover;">
+              <span style="display:flex;flex-direction:column;line-height:1.2;flex:1;min-width:0;"><span style="font-weight:600;font-size:14px;color:#fff;">To Notion Bot</span><span style="font-size:12px;color:#7a8a99;">бот</span></span>
+              <span style="color:#7a8a99;font-size:17px;">⋮</span>
+            </div>
+            <div style="padding:14px 12px;display:flex;flex-direction:column;gap:9px;">
+              <div style="align-self:flex-end;max-width:86%;background:linear-gradient(180deg,#8f70f0,#7c58ee);border-radius:16px 16px 6px 16px;padding:8px 11px 6px;">
+                <div style="font-size:12px;color:#e9e0ff;font-weight:600;margin-bottom:4px;">Переслано от Ника</div>
+                <div style="display:flex;align-items:center;gap:9px;">
+                  <span style="width:34px;height:40px;border-radius:6px;background:#fff;flex:none;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:6px 5px;">
+                    <span style="height:2px;background:#c9ced6;border-radius:1px;"></span>
+                    <span style="height:2px;background:#c9ced6;border-radius:1px;width:78%;"></span>
+                    <span style="height:2px;background:#c9ced6;border-radius:1px;"></span>
+                    <span style="height:2px;background:#c9ced6;border-radius:1px;width:55%;"></span>
+                  </span>
+                  <span style="display:flex;flex-direction:column;min-width:0;"><span style="font-size:13.5px;color:#fff;font-weight:600;">report_25466.pdf</span><span style="font-size:12px;color:#e2d8ff;">90.7 КБ PDF</span></span>
+                </div>
+                <div style="font-size:13.5px;color:#fff;line-height:1.4;margin-top:6px;">Как построить продукт вокруг SEO</div>
+                <div style="text-align:right;font-size:11px;color:#e2d8ff;margin-top:3px;">00:19 <span style="color:#d7e7ff;">✓✓</span></div>
+              </div>
+              <div style="align-self:flex-start;max-width:92%;background:#182533;border-radius:16px 16px 16px 6px;padding:8px 11px;">
+                <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;color:#ff8099;">To Notion Bot</span></div>
+                <div style="border-left:2px solid #a98bff;padding-left:8px;margin-bottom:6px;"><span style="font-size:12.5px;color:#a98bff;font-weight:600;display:block;line-height:1.3;">Ник</span><span style="font-size:12.5px;color:#8595a3;">report_25466.pdf</span></div>
+                <div style="font-size:14px;line-height:1.4;color:#fff;">Новая страница <span style="color:#62b0ff;">создана</span> в базе Notion</div>
+                <div style="text-align:right;font-size:11px;color:#6d7f8f;margin-top:3px;">00:19</div>
+              </div>
+            </div>
+          </div>
+          <!-- connector -->
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 0;">
+            <span style="height:1px;flex:1;background:var(--line2);"></span>
+            <span style="font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px;"><span style="color:var(--accent);">↓</span> сохранено в notion</span>
+            <span style="height:1px;flex:1;background:var(--line2);"></span>
+          </div>
+          <!-- notion page (light) -->
+          <div style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px 20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+              <div style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:#9b9a97;"><span style="font-size:13px;">📖</span>Список чтения</div>
+              <div style="display:flex;align-items:center;gap:13px;color:#9b9a97;font-size:12.5px;"><span>Поделиться</span><span style="font-size:14px;">💬</span><span style="letter-spacing:1px;">⋯</span></div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;">
+              <span style="font-size:26px;line-height:1;flex:none;">📄</span>
+              <span style="font-size:23px;font-weight:700;letter-spacing:-0.02em;line-height:1.16;color:#37352f;">Как построить продукт вокруг SEO</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+              <div style="display:flex;gap:10px;align-items:center;font-size:13px;"><span style="width:92px;color:#9b9a97;display:flex;align-items:center;gap:6px;flex:none;"><span style="font-size:12px;">📅</span>Создано</span><span style="color:#37352f;">Только что</span></div>
+              <div style="display:flex;gap:10px;align-items:center;font-size:13px;"><span style="width:92px;color:#9b9a97;display:flex;align-items:center;gap:6px;flex:none;"><span style="font-size:12px;">🔗</span>Источник</span><span style="color:#37352f;">Telegram</span></div>
+              <div style="display:flex;gap:10px;align-items:center;font-size:13px;"><span style="width:92px;color:#9b9a97;display:flex;align-items:center;gap:6px;flex:none;"><span style="font-size:12px;">🏷️</span>Теги</span><span style="background:#e9e2f6;color:#5b3ea6;font-size:12px;padding:2px 8px;border-radius:4px;">Чтение</span></div>
+            </div>
+            <div style="height:1px;background:#ecebea;margin-bottom:12px;"></div>
+            <div style="display:flex;align-items:center;gap:9px;padding:7px 6px;border-radius:6px;margin-bottom:2px;">
+              <span style="width:22px;height:26px;border-radius:3px;background:#f6f5f3;border:1px solid #e6e5e2;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:4px 3px;flex:none;"><span style="height:2px;background:#cfcdc8;border-radius:1px;"></span><span style="height:2px;background:#cfcdc8;border-radius:1px;width:70%;"></span><span style="height:2px;background:#cfcdc8;border-radius:1px;"></span></span>
+              <span style="font-size:13.5px;color:#37352f;font-weight:500;">report_25466.pdf</span>
+              <span style="font-size:12px;color:#9b9a97;">90.7 КБ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE STRIP -->
+  <section class="band">
+    <div class="strip">
+      <span>Сохранение в один тап</span><span class="dot">·</span>
+      <span>Любые типы файлов</span><span class="dot">·</span>
+      <span>Голосовые и видеосообщения</span><span class="dot">·</span>
+      <span>Безлимит групповых чатов</span><span class="dot">·</span>
+      <span>Несколько воркспейсов</span><span class="dot">·</span>
+      <span>Режимы отправки и статусы</span><span class="dot">·</span>
+      <span>Развивается по запросам</span>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="section container">
+    <p class="eyebrow">Всё, что вы захватываете</p>
+    <h2 class="title" style="max-width:22ch;">Сделан под то, как вы реально пользуетесь Telegram</h2>
+    <div class="grid grid--features">
+      <article class="card feature">
+        <span class="feature__n">01</span>
+        <h3>Ответ обновляет, а не дублирует</h3>
+        <p>Ответьте на уже сохранённое сообщение — и бот отредактирует существующую страницу Notion, а не создаст ещё одну дублирующую запись.</p>
+      </article>
+      <article class="card feature">
+        <span class="feature__n">02</span>
+        <h3>Файлы из Telegram — в Notion</h3>
+        <p>PDF, изображения, аудио, видео и документы до 20 МБ попадают в Notion как настоящие вложения, а не мёртвые ссылки.</p>
+      </article>
+      <article class="card feature">
+        <span class="feature__n">03</span>
+        <h3>Сохраняет форматирование и голосовые</h3>
+        <p>Жирный, курсив и ссылки остаются на месте. Голосовые и видеосообщения тоже сохраняются.</p>
+      </article>
+      <article class="card feature">
+        <span class="feature__n">04</span>
+        <h3>Контакты и чек-листы</h3>
+        <p>Пересланные контакты становятся структурированными записями, а сообщения можно превратить в чек-листы Notion.</p>
+      </article>
+      <article class="card feature">
+        <span class="feature__n">05</span>
+        <h3>Группы и каналы</h3>
+        <p>Добавьте бота в любую группу или канал. Сохраняйте всё автоматически — или только сообщения с @упоминанием.</p>
+      </article>
+      <article class="card feature">
+        <span class="feature__n">06</span>
+        <h3>Несколько воркспейсов и баз</h3>
+        <p>Направляйте разные чаты в разные базы Notion в нескольких воркспейсах — всё из одного места.</p>
+      </article>
+      <article class="card feature">
+        <span class="feature__n">07</span>
+        <h3>Режимы отправки и статус доставки</h3>
+        <p>Ответ со ссылкой на новую страницу, тихая реакция или полное подтверждение — вы всегда знаете, что сообщение сохранено.</p>
+      </article>
+      <article class="card feature">
+        <span class="feature__n">08</span>
+        <h3>Контекст для команды</h3>
+        <p>Каждая запись хранит, кто отправил и из какого чата или канала она пришла — идеально для общих воркспейсов.</p>
+      </article>
+      <article class="card feature">
+        <span class="feature__n">09</span>
+        <h3>Развивается по вашим запросам</h3>
+        <p>Активно разрабатывается открыто — новые функции выходят исходя из того, что реально просят пользователи.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- REPLY-UPDATE SHOWCASE -->
+  <section class="band">
+    <div class="container section split">
+      <div>
+        <p class="eyebrow">В чём разница</p>
+        <h2 class="title">Ответьте, чтобы обновить. Без дубликатов.</h2>
+        <p class="lead">Другие боты плодят новую запись на каждое сообщение и незаметно засоряют базу. To Notion Bot позволяет ответить на уже сохранённое сообщение — и редактирует ту же страницу. Ваш Notion остаётся чистым.</p>
+        <ul class="checklist">
+          <li>Добавляйте заметки к существующей странице</li>
+          <li>Прикрепляйте новые файлы к той же записи</li>
+          <li>Никаких дублей и ручной уборки</li>
+        </ul>
+      </div>
+      <!-- reply thread mock (dark) -->
+      <div style="max-width:400px;width:100%;justify-self:center;background:#0e1621;border-radius:22px;overflow:hidden;box-shadow:0 30px 70px -34px rgba(33,31,28,0.5);border:1px solid var(--line2);">
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#17212b;">
+          <span style="color:#5aa6e8;font-size:22px;line-height:1;margin-right:-2px;">‹</span>
+          <span style="width:34px;height:34px;border-radius:50%;flex:none;background:linear-gradient(135deg,#3ec6c0,#2f9be0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;">ОК</span>
+          <span style="display:flex;flex-direction:column;line-height:1.2;flex:1;min-width:0;"><span style="font-weight:600;font-size:14px;color:#fff;">Отчёты клиентов</span><span style="font-size:12px;color:#7a8a99;">3 участника</span></span>
+          <span style="color:#7a8a99;font-size:17px;">⋮</span>
+        </div>
+        <div style="padding:14px 12px;display:flex;flex-direction:column;gap:9px;">
+          <div style="align-self:flex-end;max-width:86%;background:linear-gradient(180deg,#8f70f0,#7c58ee);border-radius:16px 16px 6px 16px;padding:8px 11px 6px;">
+            <div style="display:flex;align-items:center;gap:9px;">
+              <span style="width:34px;height:40px;border-radius:6px;background:#fff;flex:none;display:flex;flex-direction:column;justify-content:center;gap:3px;padding:6px 5px;">
+                <span style="height:2px;background:#c9ced6;border-radius:1px;"></span>
+                <span style="height:2px;background:#c9ced6;border-radius:1px;width:78%;"></span>
+                <span style="height:2px;background:#c9ced6;border-radius:1px;"></span>
+                <span style="height:2px;background:#c9ced6;border-radius:1px;width:55%;"></span>
+              </span>
+              <span style="display:flex;flex-direction:column;min-width:0;"><span style="font-size:13.5px;color:#fff;font-weight:600;">report_25466.pdf</span><span style="font-size:12px;color:#e2d8ff;">90.7 КБ PDF</span></span>
+            </div>
+            <div style="text-align:right;font-size:11px;color:#e2d8ff;margin-top:3px;">00:19 <span style="color:#d7e7ff;">✓✓</span></div>
+          </div>
+          <div style="align-self:flex-start;max-width:92%;background:#182533;border-radius:16px 16px 16px 6px;padding:8px 11px;">
+            <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;color:#ff8099;">To Notion Bot</span></div>
+            <div style="border-left:2px solid #a98bff;padding-left:8px;margin-bottom:6px;"><span style="font-size:12.5px;color:#a98bff;font-weight:600;display:block;line-height:1.3;">Ник</span><span style="font-size:12.5px;color:#8595a3;">report_25466.pdf</span></div>
+            <div style="font-size:14px;line-height:1.4;color:#fff;">Новая страница <span style="color:#62b0ff;">создана</span> в базе Notion</div>
+            <div style="text-align:right;font-size:11px;color:#6d7f8f;margin-top:3px;">00:19</div>
+          </div>
+          <div style="align-self:flex-end;max-width:86%;background:linear-gradient(180deg,#8f70f0,#7c58ee);border-radius:16px 16px 6px 16px;padding:9px 11px 6px;">
+            <div style="border-left:2px solid rgba(255,255,255,0.75);padding-left:8px;margin-bottom:8px;"><span style="font-size:12.5px;color:#fff;font-weight:600;display:block;line-height:1.3;">Ник</span><span style="font-size:12.5px;color:#e2d8ff;">report_25466.pdf</span></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="width:34px;height:34px;border-radius:50%;background:#fff;flex:none;display:flex;align-items:center;justify-content:center;"><span style="width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:10px solid #7c58ee;margin-left:2px;"></span></span>
+              <span style="display:flex;align-items:center;gap:2px;height:20px;flex:1;">
+                <span style="width:2px;height:6px;background:#e6dcff;border-radius:1px;"></span><span style="width:2px;height:11px;background:#f2ecff;border-radius:1px;"></span><span style="width:2px;height:16px;background:#fff;border-radius:1px;"></span><span style="width:2px;height:9px;background:#f2ecff;border-radius:1px;"></span><span style="width:2px;height:14px;background:#fff;border-radius:1px;"></span><span style="width:2px;height:7px;background:#e6dcff;border-radius:1px;"></span><span style="width:2px;height:18px;background:#fff;border-radius:1px;"></span><span style="width:2px;height:10px;background:#f2ecff;border-radius:1px;"></span><span style="width:2px;height:13px;background:#fff;border-radius:1px;"></span><span style="width:2px;height:6px;background:#e6dcff;border-radius:1px;"></span><span style="width:2px;height:15px;background:#fff;border-radius:1px;"></span><span style="width:2px;height:8px;background:#f2ecff;border-radius:1px;"></span>
+              </span>
+              <span style="font-size:11px;color:#fff;background:rgba(255,255,255,0.22);border-radius:10px;padding:2px 7px;font-weight:600;flex:none;">→А</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;"><span style="font-size:11px;color:#e2d8ff;">00:10</span><span style="font-size:11px;color:#e2d8ff;">00:20 <span style="color:#d7e7ff;">✓✓</span></span></div>
+          </div>
+          <div style="align-self:flex-start;max-width:92%;background:#182533;border-radius:16px 16px 16px 6px;padding:8px 11px;">
+            <div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:5px;"><span style="font-size:13px;font-weight:600;color:#ff8099;">To Notion Bot</span></div>
+            <div style="border-left:2px solid #a98bff;padding-left:8px;margin-bottom:6px;"><span style="font-size:12.5px;color:#a98bff;font-weight:600;display:block;line-height:1.3;">Владислав Можаров</span><span style="font-size:12.5px;color:#8595a3;">Голосовое сообщение</span></div>
+            <div style="font-size:14px;line-height:1.4;color:#fff;">Страница <span style="color:#62b0ff;">обновлена</span> в базе Notion</div>
+            <div style="text-align:right;font-size:11px;color:#6d7f8f;margin-top:3px;">00:20</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="section container">
+    <p class="eyebrow">Настройка меньше чем за минуту</p>
+    <h2 class="title" style="max-width:20ch;">Как подключить Telegram к Notion</h2>
+    <div class="grid grid--steps">
+      <div class="step">
+        <span class="step__n">1</span>
+        <h3>Запустите бота</h3>
+        <p>Откройте @to_notion_robot в Telegram и нажмите «Старт».</p>
+      </div>
+      <div class="step">
+        <span class="step__n">2</span>
+        <h3>Подключите Notion</h3>
+        <p>Авторизуйте свой воркспейс Notion в два тапа.</p>
+      </div>
+      <div class="step">
+        <span class="step__n">3</span>
+        <h3>Выберите базу</h3>
+        <p>Укажите, в какую базу Notion сохранять сообщения из каждого чата.</p>
+      </div>
+      <div class="step">
+        <span class="step__n">4</span>
+        <h3>Отправляйте что угодно</h3>
+        <p>Перешлите или напишите сообщение — оно мгновенно окажется в Notion.</p>
+      </div>
+    </div>
+    <div class="center-cta">
+      <a href="https://t.me/to_notion_robot" class="btn btn--dark">Начать с @to_notion_robot <span>→</span></a>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section class="band">
+    <div class="container section">
+      <p class="eyebrow">Один бот — много задач</p>
+      <h2 class="title" style="max-width:20ch;">Превратите Telegram во входящие для Notion</h2>
+      <div class="grid grid--usecases">
+        <article class="card usecase">
+          <h3>Ваш второй мозг</h3>
+          <p>Сохраняйте ссылки, идеи и голосовые на ходу; позже ответьте, чтобы дополнить ту же страницу.</p>
+        </article>
+        <article class="card usecase">
+          <h3>База знаний команды</h3>
+          <p>Направьте групповой чат в общую базу Notion — всё сразу или только @упоминания.</p>
+        </article>
+        <article class="card usecase">
+          <h3>Ресёрч и вырезки</h3>
+          <p>Сохраняйте статьи, PDF и скриншоты прямо в базу для чтения.</p>
+        </article>
+        <article class="card usecase">
+          <h3>Личная CRM</h3>
+          <p>Пересылайте контакты и напоминания в базу с людьми.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="compare" class="section container">
+    <p class="eyebrow">Честное сравнение</p>
+    <h2 class="title" style="max-width:26ch;">To Notion Bot и другие способы сохранять Telegram в Notion</h2>
+    <div class="table-wrap">
+      <div class="table">
+        <div class="table__row table__head">
+          <div class="table__cell--label">Возможность</div>
+          <div class="table__cell table__cell--own">To Notion Bot</div>
+          <div class="table__cell">Telegram&nbsp;to&nbsp;Notion</div>
+          <div class="table__cell">Gramtion</div>
+          <div class="table__cell">Zapier&nbsp;/&nbsp;Make</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Ответ обновляет ту же страницу (без дублей)</div>
+          <div class="table__cell table__cell--own">✓</div>
+          <div class="table__cell">—</div><div class="table__cell">—</div><div class="table__cell">—</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Сохранение файлов и вложений</div>
+          <div class="table__cell table__cell--own">✓</div>
+          <div class="table__cell">✓</div><div class="table__cell">✓</div><div class="table__cell">✓</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Все форматы сообщений (контакты, чек-листы, голосовые, видео…)</div>
+          <div class="table__cell table__cell--own">✓</div>
+          <div class="table__cell">Частично</div><div class="table__cell">Частично</div><div class="table__cell">✓</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Личные чаты, группы и каналы</div>
+          <div class="table__cell table__cell--own">✓</div>
+          <div class="table__cell">Чаты и группы</div><div class="table__cell">Только группы</div><div class="table__cell">✓</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Несколько воркспейсов и баз</div>
+          <div class="table__cell table__cell--own">✓</div>
+          <div class="table__cell">—</div><div class="table__cell">—</div><div class="table__cell">✓</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Режимы отправки (тихо, реакции, ссылки на страницу)</div>
+          <div class="table__cell table__cell--own">✓</div>
+          <div class="table__cell">—</div><div class="table__cell">—</div><div class="table__cell">—</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Контекст для команды — кто отправил и откуда</div>
+          <div class="table__cell table__cell--own">✓</div>
+          <div class="table__cell">—</div><div class="table__cell">—</div><div class="table__cell">—</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Активно развивается по запросам</div>
+          <div class="table__cell table__cell--own">✓</div>
+          <div class="table__cell">—</div><div class="table__cell">—</div><div class="table__cell">—</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Время настройки</div>
+          <div class="table__cell table__cell--own">~ 1 мин</div>
+          <div class="table__cell">~ 1 мин</div><div class="table__cell">~ 1 мин</div><div class="table__cell">30+ мин</div>
+        </div>
+        <div class="table__row">
+          <div class="table__cell--label">Стартовая цена</div>
+          <div class="table__cell table__cell--own">Бесплатно, затем $5/мес</div>
+          <div class="table__cell">$3/мес</div><div class="table__cell">$25/мес</div><div class="table__cell">$20+/мес</div>
+        </div>
+      </div>
+    </div>
+    <p class="table__note">По публично документированным функциям на июль 2026. Возможности конкурентов могут меняться.</p>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="band">
+    <div class="container section">
+      <div class="pricing-head">
+        <p class="eyebrow">Простые цены</p>
+        <h2 class="title">Первый месяц бесплатно. Дальше — оплата Telegram Stars.</h2>
+        <p class="lead">Без банковской карты и внешних платёжек. Оплата прямо в Telegram — и полный возврат всех Stars в течение 30 дней, если не подойдёт.</p>
+      </div>
+      <div class="grid grid--plans">
+        <div class="plan">
+          <h3 class="plan__name">Месяц</h3>
+          <div class="plan__price"><b>$5</b><span>/мес</span></div>
+          <p class="plan__note">Оплата помесячно в Telegram Stars.</p>
+          <ul class="plan__perks">
+            <li>Безлимит сохранений</li>
+            <li>Все форматы сообщений и файлы</li>
+            <li>Безлимит групповых чатов</li>
+            <li>Несколько воркспейсов Notion</li>
+            <li>Ответ обновляет — без дублей</li>
+          </ul>
+          <a href="https://t.me/to_notion_robot" class="btn btn--light">Начать бесплатный месяц</a>
+        </div>
+        <div class="plan plan--popular">
+          <span class="plan__badge">Выгоднее всего</span>
+          <h3 class="plan__name">Год</h3>
+          <div class="plan__price"><b>$40</b><span>/год</span></div>
+          <p class="plan__note">≈ $3.33/мес — экономия 33%.</p>
+          <ul class="plan__perks">
+            <li>Безлимит сохранений</li>
+            <li>Все форматы сообщений и файлы</li>
+            <li>Безлимит групповых чатов</li>
+            <li>Несколько воркспейсов Notion</li>
+            <li>Ответ обновляет — без дублей</li>
+          </ul>
+          <a href="https://t.me/to_notion_robot" class="btn btn--dark">Начать бесплатный месяц</a>
+        </div>
+        <div class="plan">
+          <h3 class="plan__name">Навсегда</h3>
+          <div class="plan__price"><b>$100</b><span>разово</span></div>
+          <p class="plan__note">Платите один раз — пользуйтесь всегда.</p>
+          <ul class="plan__perks">
+            <li>Безлимит сохранений</li>
+            <li>Все форматы сообщений и файлы</li>
+            <li>Безлимит групповых чатов</li>
+            <li>Несколько воркспейсов Notion</li>
+            <li>Ответ обновляет — без дублей</li>
+          </ul>
+          <a href="https://t.me/to_notion_robot" class="btn btn--light">Получить навсегда</a>
+        </div>
+      </div>
+      <p class="pricing-foot">Цены указаны в USD; списываются в Telegram Stars при оплате. Нужен другой способ оплаты? Напишите автору.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section container faq">
+    <p class="eyebrow">Вопросы</p>
+    <h2 class="title" style="margin-bottom:clamp(28px,4vw,44px);">Всё, что вы могли бы спросить</h2>
+    <div class="faq__list">
+      <details class="faq__item" open>
+        <summary>Как сохранять файлы из Telegram в Notion?</summary>
+        <div class="faq__answer"><p>Перешлите или отправьте файл в чат, подключённый к боту. Документы, изображения, аудио и видео до 20 МБ загружаются на страницу Notion как настоящие вложения, а не просто ссылки.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Можно ли сохранять сообщения из группы или канала Telegram?</summary>
+        <div class="faq__answer"><p>Да. Добавьте бота в любую группу или канал и выберите: сохранять каждое сообщение автоматически или только те, где есть @упоминание бота.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Он создаёт дублирующие страницы?</summary>
+        <div class="faq__answer"><p>Нет. Ответьте на уже сохранённое сообщение — и бот обновит существующую страницу Notion, а не создаст новую, так что база остаётся чистой.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Какие типы и размеры файлов поддерживаются?</summary>
+        <div class="faq__answer"><p>Любой тип файла до 20 МБ — PDF, изображения, аудио, видео, документы и другое, плюс голосовые и видеосообщения.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Сохраняется ли форматирование текста?</summary>
+        <div class="faq__answer"><p>Да. Жирный, курсив, ссылки и переносы строк сохраняются при переносе сообщения в Notion.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Можно ли подключить больше одного воркспейса Notion?</summary>
+        <div class="faq__answer"><p>Да. Подключайте несколько воркспейсов и направляйте разные чаты в разные базы из одного места.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>Как подключить Telegram к Notion?</summary>
+        <div class="faq__answer">
+          <p>Откройте @to_notion_robot, нажмите «Старт», авторизуйте Notion, выберите базу и отправьте сообщение. Вся настройка занимает меньше минуты.</p>
+          <a href="https://t.me/to_notion_robot">Открыть @to_notion_robot →</a>
+        </div>
+      </details>
+      <details class="faq__item">
+        <summary>Есть ли бесплатный тариф?</summary>
+        <div class="faq__answer"><p>Первый месяц полностью бесплатный. Дальше тарифы начинаются от $5 в месяц, удобно оплачиваются через Telegram Stars.</p></div>
+      </details>
+      <details class="faq__item">
+        <summary>А если я передумаю?</summary>
+        <div class="faq__answer"><p>На каждый тариф действует гарантия возврата 30 дней. Используйте команду /refund — и ваши Telegram Stars вернутся, без лишних вопросов.</p></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final container">
+    <div class="final__box">
+      <h2>Ваш Telegram, сохранённый в Notion — автоматически.</h2>
+      <p>Начните бесплатно на месяц. Сохраните первое сообщение за следующие 60 секунд.</p>
+      <div class="final__actions">
+        <a href="https://t.me/to_notion_robot" class="btn btn--white">Добавить в Telegram — бесплатно <span>→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <img src="/assets/logo.jpg" alt="To Notion Bot" width="28" height="28">
+        <span>To Notion Bot</span>
+      </div>
+      <div class="footer__links">
+        <a href="https://t.me/to_notion_robot">Telegram-бот</a>
+        <a href="https://t.me/vmozharov">Автор</a>
+        <a href="#faq">Вопросы</a>
+        <a href="/ru/privacy">Конфиденциальность</a>
+        <a href="/ru/terms">Условия</a>
+      </div>
+      <p class="footer__legal">Сохраняйте любые сообщения из Telegram в Notion — файлы, голосовые, контакты и чек-листы. © 2026 To Notion Bot.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
