@@ -300,10 +300,10 @@
   --soft2: #f3f1ed;
   --ink: #211f1c;
   --ink2: #37352f;
-  --muted: #77746e;
+  --muted: #6f6c66;
   --line: rgba(33, 31, 28, 0.09);
   --line2: rgba(33, 31, 28, 0.16);
-  --accent: #087eae;
+  --accent: #08739e;
   --maxw: 1140px;
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
