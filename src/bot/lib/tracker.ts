@@ -8,6 +8,11 @@ export class Tracker {
     posthog.identify({distinctId: this.distinctId, properties})
   }
 
+  public alias(previousDistinctId: string) {
+    if (!this.distinctId) return
+    posthog.alias({distinctId: this.distinctId, alias: previousDistinctId})
+  }
+
   public capture(event: string, properties?: Properties) {
     if (!this.distinctId) return
     posthog.capture({event, distinctId: this.distinctId, properties})

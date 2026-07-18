@@ -14,7 +14,7 @@ export default tseslint.config(
       },
     },
   },
-  { ignores: ['eslint.config.mjs', 'drizzle.config.ts', 'dist/*'] },
+  { ignores: ['eslint.config.mjs', 'drizzle.config.ts', 'dist/*', 'landing/*'] },
   {
     rules: {
       '@typescript-eslint/prefer-nullish-coalescing': "off",

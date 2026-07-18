@@ -6,8 +6,16 @@ import {buildSubscriptionKeyboard} from '../../helpers/keyboards/subscription.js
 import {isUserHasLifetimeAccess} from '../../helpers/user.js'
 import {config} from '../../../config.js'
 
+// posthog-js generates a UUID as the anonymous distinct_id for landing-page visitors;
+// we recognize that shape here to merge it into the Telegram user's PostHog profile.
+const LANDING_DISTINCT_ID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export const startCommand: Middleware<ChatTypeContext<Context, 'private'>> = async ctx => {
   const startParam = ctx.match
+
+  if (typeof startParam === 'string' && LANDING_DISTINCT_ID_PATTERN.test(startParam)) {
+    ctx.tracker.alias(startParam)
+  }
 
   if (startParam === 'subscription') {
     ctx.tracker.capture('start command with subscription')
