@@ -4,11 +4,11 @@ import {getWorkspaceByIdOrThrow} from '../../../models/notion-workspaces.js'
 import {setState} from '../../services/session.js'
 
 export const linkToDatabaseCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('link to database callback')
   const {telegramId, workspaceId} = parseMatch(ctx.match)
   await ctx.deleteMessage()
   const chat = await getChatByTelegramIdOrThrow(telegramId)
   const workspace = await getWorkspaceByIdOrThrow(workspaceId)
+  ctx.tracker.capture('link to database callback', {chatId: chat.id, workspaceId: workspace.id})
   const image = `${process.cwd()}/dist/assets/link-to-database.png`
   const cancelKeyboard = new InlineKeyboard().add({
     text: ctx.t('cancel'),

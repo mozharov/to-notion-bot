@@ -5,11 +5,14 @@ import {buildChatNotionWorkspacePagesKeyboard} from '../../helpers/keyboards/cha
 import {NotionClient} from '../../../lib/notion-client.js'
 
 export const selectNotionWorkspaceCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('select notion workspace callback')
   const {telegramId, workspaceId} = parseMatch(ctx.match)
 
   const chat = await getChatByTelegramIdOrThrow(telegramId)
   const workspace = await getWorkspaceByIdOrThrow(workspaceId)
+  ctx.tracker.capture('select notion workspace callback', {
+    chatId: chat.id,
+    workspaceId: workspace.id,
+  })
   await updateChat(chat.id, {notionWorkspaceId: workspace.id})
 
   const notionService = new NotionClient(workspace.accessToken)

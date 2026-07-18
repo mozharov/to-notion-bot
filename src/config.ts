@@ -60,7 +60,9 @@ export const config = {
 
   get origin(): string {
     const hasProtocol = /^https?:\/\//.test(this.HOST)
-    return hasProtocol ? this.HOST : `http${this.NODE_ENV === 'development' ? '' : 's'}://${this.HOST}`
+    return hasProtocol
+      ? this.HOST
+      : `http${this.NODE_ENV === 'development' ? '' : 's'}://${this.HOST}`
   },
 
   get notionRedirectUri(): string {

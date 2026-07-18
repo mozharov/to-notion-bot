@@ -51,6 +51,11 @@ export async function getChatByIdOrThrow(id: string): Promise<Chat> {
   return chat
 }
 
+export async function getChatById(id: string): Promise<Chat | null> {
+  const [chat] = await db.select().from(chatsTable).where(eq(chatsTable.id, id))
+  return chat ?? null
+}
+
 export async function getChatByTelegramId(telegramId: number): Promise<ExtendedChat | null> {
   return db
     .select()

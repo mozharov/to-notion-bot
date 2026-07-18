@@ -20,10 +20,25 @@ notionRouter.get('/notion', async ctx => {
 
   if (error === 'access_denied') {
     ctx.log.info('User denied access')
+    const deniedUser = typeof userId === 'string' ? await getUser(userId) : null
+    if (deniedUser) {
+      posthog.capture({
+        distinctId: deniedUser.telegramId.toString(),
+        event: 'notion oauth denied',
+      })
+    }
     ctx.body = 'User denied access for Notion'
     return
   } else if (error) {
     ctx.log.error({error}, 'Error while auth for Notion')
+    const errorUser = typeof userId === 'string' ? await getUser(userId) : null
+    if (errorUser) {
+      posthog.capture({
+        distinctId: errorUser.telegramId.toString(),
+        event: 'notion oauth error',
+        properties: {error: String(error)},
+      })
+    }
     return ctx.throw(500, 'Error while auth for Notion')
   }
 
@@ -60,12 +75,22 @@ notionRouter.get('/notion', async ctx => {
   }
   if (data.error) {
     ctx.log.error({response: data}, 'Error while auth for Notion')
+    posthog.capture({
+      distinctId: user.telegramId.toString(),
+      event: 'notion oauth token exchange failed',
+      properties: {error: data.error},
+    })
     return ctx.throw(500, 'Error while auth for Notion')
   }
 
   const workspace = await getWorkspaceByOwnerAndWorkspaceId(user.id, data.workspace_id)
   const countWorkspaces = await countByOwner(user.id)
   if (!workspace && countWorkspaces >= config.MAX_WORKSPACES_PER_USER) {
+    posthog.capture({
+      distinctId: user.telegramId.toString(),
+      event: 'notion oauth max workspaces reached',
+      properties: {workspaces: countWorkspaces},
+    })
     return ctx.throw(
       400,
       'User has too many workspaces. Please delete one old workspace to create new one.',
@@ -96,6 +121,11 @@ notionRouter.get('/notion', async ctx => {
   posthog.capture({
     distinctId: user.telegramId.toString(),
     event: 'completed notion integration',
+    properties: {
+      workspaceId: workspaceData.workspaceId,
+      isReconnect: !!workspace,
+      workspacesCount: countWorkspaces + (workspace ? 0 : 1),
+    },
   })
   ctx.redirect(`https://t.me/${bot.botInfo.username}`)
 })

@@ -3,6 +3,7 @@ import {getUserByTelegramId, updateUser} from '../../../models/users.js'
 
 export const giveCommand: Middleware<CommandContext<Context>> = async ctx => {
   const {userId} = parseMatch(ctx.match)
+  ctx.tracker.capture('give command', {targetUserId: userId})
   const user = await getUserByTelegramId(userId)
   if (!user) return ctx.reply(ctx.t('user-not-found'))
   await updateUser(user.id, {

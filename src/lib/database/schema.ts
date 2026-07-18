@@ -24,6 +24,7 @@ export const filesTable = sqliteTable(
       .default('file')
       .notNull(),
     extension: text('extension').notNull(),
+    chatId: text('chat_id').references(() => chatsTable.id, {onDelete: 'set null'}),
     createdAt: integer('created_at', {mode: 'timestamp'})
       .notNull()
       .default(sql`(unixepoch())`),

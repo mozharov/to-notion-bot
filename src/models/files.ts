@@ -6,7 +6,11 @@ import {eq, and} from 'drizzle-orm'
 
 export type File = typeof filesTable.$inferSelect
 
-export async function createFile(file: GrammyFile, type: File['type']): Promise<File> {
+export async function createFile(
+  file: GrammyFile,
+  type: File['type'],
+  chatId: File['chatId'],
+): Promise<File> {
   const [savedFile] = await db
     .insert(filesTable)
     .values({
@@ -14,6 +18,7 @@ export async function createFile(file: GrammyFile, type: File['type']): Promise<
       fileId: file.file_id,
       type,
       extension: file.file_path?.split('.').pop() ?? 'unknown',
+      chatId,
     })
     .returning()
   if (!savedFile) throw new Error('Cannot create file')

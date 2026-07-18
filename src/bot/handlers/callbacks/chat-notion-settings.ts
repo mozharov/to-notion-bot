@@ -5,10 +5,10 @@ import {getWorkspacesByOwner} from '../../../models/notion-workspaces.js'
 import {buildChatNotionSettingsKeyboard} from '../../helpers/keyboards/chat-notion-settings.js'
 
 export const chatNotionSettingsCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('chat notion settings callback')
   const {telegramId} = parseMatch(ctx.match)
 
   const chat = await getChatByTelegramIdOrThrow(telegramId)
+  ctx.tracker.capture('chat notion settings callback', {chatId: chat.id})
   const owner = await getOrCreateUser(chat.owner.telegramId)
   const workspaces = await getWorkspacesByOwner(owner.id)
 

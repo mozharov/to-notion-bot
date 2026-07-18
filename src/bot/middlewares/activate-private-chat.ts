@@ -22,6 +22,7 @@ export const activatePrivateChat: Middleware<ChatTypeContext<Context, 'private'>
       silentMode: false,
       status: 'active',
     })
+    ctx.tracker.capture('user signed up', {languageCode})
   } else {
     if (chat.languageCode !== languageCode || chat.botStatus !== 'unblocked') {
       await updateChat(chat.id, {languageCode, botStatus: 'unblocked'})

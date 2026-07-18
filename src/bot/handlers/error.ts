@@ -7,6 +7,11 @@ export const errorHandler: ErrorHandler = async err => {
 
   log.error({error}, 'Bot error')
 
+  ctx.tracker.capture('bot error', {
+    errorType: error instanceof KnownError ? error.translationKey : 'unknown',
+    message: error instanceof Error ? error.message : String(error),
+  })
+
   const errorResponse =
     error instanceof KnownError
       ? ctx.t(error.translationKey, error.translationParams)

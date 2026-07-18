@@ -4,8 +4,8 @@ import {randomUUID} from 'crypto'
 import {config} from '../../../config.js'
 
 export const promocodeCommand: Middleware<CommandContext<Context>> = async ctx => {
-  ctx.tracker.capture('promocode command')
   const {code, days, uses} = parseMatch(ctx.match)
+  ctx.tracker.capture('promocode command', {code, days, uses})
   const promocode = code ? code.toUpperCase() : randomUUID().slice(0, 6).toUpperCase()
   try {
     await createPromocode(promocode, days, uses)

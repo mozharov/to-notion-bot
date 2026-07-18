@@ -8,6 +8,7 @@ export const refundCallback: Middleware<ChatTypeContext<Context, 'private'>> = a
   const user = await getOrCreateUser(ctx.from.id)
   const invoice = await getUserRefundableInvoice(user.id)
   if (!invoice) {
+    ctx.tracker.capture('refund not available')
     await ctx.reply(ctx.t('refund.not-available'))
     return
   }
@@ -16,6 +17,7 @@ export const refundCallback: Middleware<ChatTypeContext<Context, 'private'>> = a
   if (invoice.telegramInvoiceId) {
     await ctx.api.refundStarPayment(user.telegramId, invoice.telegramInvoiceId)
     await updateInvoice(invoice.id, {status: 'refunded'})
+    ctx.tracker.capture('refund completed', {plan: invoice.period})
     await ctx.reply(ctx.t('refund.telegram'))
     ctx.log.info('Refunded telegram invoice')
   } else throw new Error('No invoice id')

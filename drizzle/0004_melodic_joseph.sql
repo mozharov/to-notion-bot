@@ -1,0 +1,1 @@
+ALTER TABLE `files` ADD `chat_id` text REFERENCES chats(id);

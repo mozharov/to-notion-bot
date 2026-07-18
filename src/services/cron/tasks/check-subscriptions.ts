@@ -6,6 +6,7 @@ import {getChatByTelegramIdOrThrow} from '../../../models/chats.js'
 import {getUsersWithExpiredSubscription} from '../../../models/users.js'
 import {InlineKeyboard} from 'grammy'
 import {getSubscriptionUrl} from '../../../bot/helpers/urls/subscription.js'
+import {posthog} from '../../../lib/posthog.js'
 
 export async function checkSubscriptions() {
   const expiredUsers = await getUsersWithExpiredSubscription()
@@ -28,6 +29,7 @@ export async function checkSubscriptions() {
         translate('subscription.expired', chat.languageCode),
         {parse_mode: 'HTML', reply_markup: keyboard},
       )
+      posthog.capture({distinctId: user.telegramId.toString(), event: 'subscription expired'})
     } catch (error) {
       logger.error({error, userId: user.id}, 'Error processing expired subscription')
     }

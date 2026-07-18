@@ -6,13 +6,17 @@ import {createNotionDatabase, deleteNotionDatabase} from '../../../models/notion
 import {NotFoundDatabaseError} from '../../errors/not-found-database-error.js'
 
 export const selectNotionDatabaseCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('select notion database callback')
   const {telegramId, databaseId} = parseMatch(ctx.match)
 
   const chat = await getChatByTelegramIdOrThrow(telegramId)
   if (!chat.notionWorkspaceId || !chat.notionWorkspace) {
     throw new Error('Chat has no notion workspace')
   }
+  ctx.tracker.capture('select notion database callback', {
+    chatId: chat.id,
+    databaseId,
+    isChange: !!chat.notionDatabaseId,
+  })
   const notionService = new NotionClient(chat.notionWorkspace.accessToken)
   const database = await notionService.getDatabase(databaseId).catch((error: unknown) => {
     if (error instanceof Error && 'status' in error && error.status === 404) {

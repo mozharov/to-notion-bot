@@ -9,10 +9,10 @@ import {getOrCreateUser} from '../../../models/users.js'
 import {buildWorkspacesKeyboard} from '../../helpers/keyboards/workspaces.js'
 
 export const deleteWorkspaceCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('delete workspace callback')
   const {workspaceId} = parseMatch(ctx.match)
 
   const workspace = await getWorkspaceByIdOrThrow(workspaceId)
+  ctx.tracker.capture('delete workspace callback', {workspaceId: workspace.id})
 
   await deleteWorkspace(workspace.id)
   await ctx.answerCallbackQuery({text: ctx.t('workspace-settings.deleted', {name: workspace.name})})

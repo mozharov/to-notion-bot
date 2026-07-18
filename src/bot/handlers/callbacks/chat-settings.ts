@@ -4,9 +4,9 @@ import {editMessageWithChatSettings} from '../../helpers/messages/edit-message-w
 import {getChatByTelegramIdOrThrow} from '../../../models/chats.js'
 
 export const chatSettingsCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('chat settings callback')
   const {telegramId} = parseMatch(ctx.match)
   const chat = await getChatByTelegramIdOrThrow(telegramId)
+  ctx.tracker.capture('chat settings callback', {chatId: chat.id, chatType: chat.type})
   await editMessageWithChatSettings(ctx, chat)
 }
 

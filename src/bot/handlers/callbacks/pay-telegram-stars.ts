@@ -24,6 +24,7 @@ export const payTelegramStarsCallback: CallbackQueryMiddleware<Context> = async 
   ctx.tracker.capture('pay telegram stars callback', {plan})
   const user = await getOrCreateUser(ctx.from.id)
   if (isUserHasLifetimeAccess(user)) {
+    ctx.tracker.capture('pay telegram stars blocked, already has lifetime')
     await ctx.reply(ctx.t('subscription.already-has'))
     return
   }
@@ -42,6 +43,7 @@ export const payTelegramStarsCallback: CallbackQueryMiddleware<Context> = async 
     'XTR',
     [{amount, label: getInvoiceLabel(plan)}],
   )
+  ctx.tracker.capture('invoice sent', {plan, amount})
 }
 
 function parseMatch(match: string | RegExpMatchArray): {plan: SubscriptionPlan} {

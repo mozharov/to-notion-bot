@@ -3,10 +3,10 @@ import {editMessageWithChatSettings} from '../../helpers/messages/edit-message-w
 import {getChatByTelegramIdOrThrow, updateChat} from '../../../models/chats.js'
 
 export const toggleChatLanguageCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('change chat language callback')
   const {telegramId} = parseMatch(ctx.match)
   const chat = await getChatByTelegramIdOrThrow(telegramId)
   const languageCode = chat.languageCode === 'en' ? 'ru' : 'en'
+  ctx.tracker.capture('change chat language callback', {chatId: chat.id, languageCode})
   await updateChat(chat.id, {languageCode})
   await ctx.i18n.renegotiateLocale()
   await editMessageWithChatSettings(ctx, {...chat, languageCode})

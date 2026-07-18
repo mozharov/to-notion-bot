@@ -34,6 +34,7 @@ export async function linkToDatabaseAction(
   const match = DATABASE_ID_REGEX.exec(link)
   const databaseId = match ? match[0] : null
   if (!LINK_REGEX.test(text) || !databaseId) {
+    ctx.tracker.capture('link to database action, invalid link')
     const cancelKeyboard = new InlineKeyboard().add({
       text: ctx.t('cancel'),
       callback_data: 'cancel',
@@ -54,6 +55,10 @@ export async function linkToDatabaseAction(
   })
 
   const title = database.title[0]?.plain_text
+  ctx.tracker.capture('link to database action, linked', {
+    chatId: chat.id,
+    workspaceId: workspace.id,
+  })
 
   const keyboard = new InlineKeyboard()
   keyboard.row().add({

@@ -81,7 +81,7 @@ export const messageHandler: Middleware<
     const replyTgFile = await getTelegramFile(ctx, replyToMessage)
     if (replyTgFile) {
       const fileType = getFileType(replyToMessage)
-      const file = await createFile(replyTgFile, fileType)
+      const file = await createFile(replyTgFile, fileType, chat.id)
       const fileBlock = convertFileToNotionBlock(file)
       blocks.unshift(fileBlock)
     }
@@ -90,13 +90,21 @@ export const messageHandler: Middleware<
   const tgFile = await getTelegramFile(ctx)
   if (tgFile) {
     const fileType = getFileType(message)
-    const file = await createFile(tgFile, fileType)
+    const file = await createFile(tgFile, fileType, chat.id)
     const fileBlock = convertFileToNotionBlock(file)
     blocks.push(fileBlock)
   }
 
-  ctx.tracker.capture('message', {
+  const chatContext = {
     chat: chat.id,
+    chatType: chat.type,
+    onlyMentionMode: chat.onlyMentionMode,
+    silentMode: chat.silentMode,
+    languageCode: chat.languageCode,
+  }
+
+  ctx.tracker.capture('message', {
+    ...chatContext,
     file: !!tgFile,
     fileSize: tgFile?.file_size,
     textLength: text?.length,
@@ -136,9 +144,12 @@ export const messageHandler: Middleware<
       blocks,
     )
     .catch((error: unknown) => {
-      if (error instanceof Error && 'status' in error && error.status === 404) {
-        throw new NotFoundDatabaseError()
-      }
+      const isNotFound = error instanceof Error && 'status' in error && error.status === 404
+      ctx.tracker.capture('message forward failed', {
+        ...chatContext,
+        reason: isNotFound ? 'database-not-found' : 'unknown',
+      })
+      if (isNotFound) throw new NotFoundDatabaseError()
       throw error
     })
   await createMessage({
@@ -147,6 +158,10 @@ export const messageHandler: Middleware<
     chatId: chat.id,
     senderId,
     sentAt,
+  })
+  ctx.tracker.capture('message forwarded to notion', {
+    ...chatContext,
+    updateNotionPage: !!prevMessage,
   })
   return notifyUser(ctx, message.message_id, chat, isUpdate, silentMode, notionPageId)
 }

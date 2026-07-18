@@ -9,6 +9,7 @@ export async function feedbackAction(ctx: ChatTypeContext<Context, 'private'>, n
   await clearState(ctx.from.id)
   const message = ctx.message
   if (!message) {
+    ctx.tracker.capture('feedback canceled')
     await ctx.reply(ctx.t('action-canceled'))
     return next()
   }
@@ -18,5 +19,6 @@ export async function feedbackAction(ctx: ChatTypeContext<Context, 'private'>, n
     `Feedback from @${ctx.from.username}.\n${JSON.stringify(user, null, 2)}`,
   )
   await ctx.copyMessage(config.TG_ADMIN_ID)
+  ctx.tracker.capture('feedback sent')
   await ctx.reply(ctx.t('feedback.sent'))
 }

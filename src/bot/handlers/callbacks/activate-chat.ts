@@ -4,8 +4,8 @@ import {editMessageWithChatSettings} from '../../helpers/messages/edit-message-w
 
 export const activateChatCallback: CallbackQueryMiddleware<Context> = async ctx => {
   const {telegramId, action} = parseMatch(ctx.match)
-  ctx.tracker.capture(`${action} chat callback`)
   const chat = await getChatByTelegramIdOrThrow(telegramId)
+  ctx.tracker.capture(`${action} chat callback`, {chatId: chat.id, chatType: chat.type})
   const newStatus = action === 'activate' ? 'active' : 'inactive'
   await updateChat(chat.id, {status: newStatus})
   await editMessageWithChatSettings(ctx, {...chat, status: newStatus})

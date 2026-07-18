@@ -8,10 +8,10 @@ import {
 import {buildChatsKeyboard} from '../../helpers/keyboards/chats.js'
 
 export const deleteChatCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('delete chat callback')
   const {telegramId} = parseMatch(ctx.match)
   const chat = await getChatByTelegramIdOrThrow(telegramId)
   if (chat.type === 'private') throw new Error('Cannot delete private chat')
+  ctx.tracker.capture('delete chat callback', {chatId: chat.id, chatType: chat.type})
 
   await Promise.all([
     ctx.api.leaveChat(chat.telegramId).catch((error: unknown) => {

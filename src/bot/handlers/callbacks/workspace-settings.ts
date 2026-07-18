@@ -6,10 +6,10 @@ import {getOrCreateUser} from '../../../models/users.js'
 import {buildWorkspaceSettingsKeyboard} from '../../helpers/keyboards/workspace-settings.js'
 
 export const workspaceSettingsCallback: CallbackQueryMiddleware<Context> = async ctx => {
-  ctx.tracker.capture('workspace settings callback')
   const {workspaceId} = parseMatch(ctx.match)
 
   const workspace = await getWorkspaceByIdOrThrow(workspaceId)
+  ctx.tracker.capture('workspace settings callback', {workspaceId: workspace.id})
   const user = await getOrCreateUser(ctx.from.id)
   const chats = await countChatsByWorkspace(workspace.id, user.id)
 
