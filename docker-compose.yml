@@ -14,20 +14,20 @@ services:
       - NOTION_SECRET_TOKEN=${NOTION_SECRET_TOKEN:?Set NOTION_SECRET_TOKEN in Coolify environment variables}
       - TG_ADMIN_ID=${TG_ADMIN_ID:?Set TG_ADMIN_ID in Coolify environment variables}
       - LOG_LEVEL=${LOG_LEVEL:-info}
-      # Optional — only forwarded to the container if set on the host/Coolify,
-      # otherwise the defaults in src/config.ts apply.
-      - NGROK_TOKEN
-      - BOT_ID
-      - BOT_NAME
-      - BOT_USERNAME
-      - MAX_CHATS_PER_USER
-      - MAX_WORKSPACES_PER_USER
-      - SUBSCRIPTION_MONTHLY_PRICE_USD
-      - SUBSCRIPTION_YEARLY_PRICE_USD
-      - SUBSCRIPTION_LIFETIME_PRICE_USD
-      - TELEGRAM_STARS_TO_USD
-      - MAX_PROMOCODE_LENGTH
-      - POSTHOG_API_KEY
+      # Optional — ${VAR:-} keeps these editable in Coolify's UI while still falling back
+      # to "" (filtered out in src/config.ts, so the schema defaults there apply) if unset.
+      - NGROK_TOKEN=${NGROK_TOKEN:-}
+      - BOT_ID=${BOT_ID:-}
+      - BOT_NAME=${BOT_NAME:-}
+      - BOT_USERNAME=${BOT_USERNAME:-}
+      - MAX_CHATS_PER_USER=${MAX_CHATS_PER_USER:-}
+      - MAX_WORKSPACES_PER_USER=${MAX_WORKSPACES_PER_USER:-}
+      - SUBSCRIPTION_MONTHLY_PRICE_USD=${SUBSCRIPTION_MONTHLY_PRICE_USD:-}
+      - SUBSCRIPTION_YEARLY_PRICE_USD=${SUBSCRIPTION_YEARLY_PRICE_USD:-}
+      - SUBSCRIPTION_LIFETIME_PRICE_USD=${SUBSCRIPTION_LIFETIME_PRICE_USD:-}
+      - TELEGRAM_STARS_TO_USD=${TELEGRAM_STARS_TO_USD:-}
+      - MAX_PROMOCODE_LENGTH=${MAX_PROMOCODE_LENGTH:-}
+      - POSTHOG_API_KEY=${POSTHOG_API_KEY:-}
     volumes:
       - bot-data:/data
     restart: unless-stopped
@@ -46,9 +46,9 @@ services:
     build:
       context: ./landing
     environment:
-      # Optional — leave unset to keep the landing page's PostHog tracking disabled.
-      - POSTHOG_KEY
-      - POSTHOG_HOST
+      # Optional — leave POSTHOG_KEY unset in Coolify to keep tracking disabled.
+      - POSTHOG_KEY=${POSTHOG_KEY:-}
+      - POSTHOG_HOST=${POSTHOG_HOST:-https://eu.i.posthog.com}
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/health || exit 1"]
