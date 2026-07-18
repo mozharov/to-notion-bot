@@ -3,6 +3,7 @@ import type {SuccessfulPayment} from 'grammy/types'
 import {getInvoiceOrThrow, updateInvoice} from '../../models/invoices.js'
 import {updateUser} from '../../models/users.js'
 import {extendSubscriptionEndDate} from '../helpers/subscription.js'
+import {config} from '../../config.js'
 
 export const successfulPayment: Middleware<
   Context & {message: {successful_payment: SuccessfulPayment}}
@@ -10,7 +11,12 @@ export const successfulPayment: Middleware<
   const tgPayment = ctx.message.successful_payment
   const invoice = await getInvoiceOrThrow({id: tgPayment.invoice_payload})
   if (!invoice.period) throw new Error('Invoice has no period')
-  ctx.tracker.capture('successful payment', {plan: invoice.period})
+  ctx.tracker.capture('successful payment', {
+    plan: invoice.period,
+    starsAmount: invoice.amount,
+    amount: Math.round(invoice.amount * config.TELEGRAM_STARS_TO_USD * 100) / 100,
+    currency: 'USD',
+  })
 
   const subscriptionEndsAt =
     invoice.period === 'lifetime'

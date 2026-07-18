@@ -70,7 +70,18 @@ notionRouter.get('/notion', async ctx => {
     access_token: string
     workspace_id: string
     workspace_name?: string
+    workspace_icon?: string
     bot_id: string
+    owner?: {
+      type: 'user' | 'workspace'
+      user?: {
+        id: string
+        name?: string
+        avatar_url?: string
+        person?: {email?: string}
+      }
+    }
+    duplicated_template_id?: string | null
     error?: string
   }
   if (data.error) {
@@ -107,6 +118,19 @@ notionRouter.get('/notion', async ctx => {
 
   if (workspace) await updateWorkspace({id: workspace.id, ...workspaceData})
   else await createWorkspace(workspaceData)
+
+  posthog.identify({
+    distinctId: user.telegramId.toString(),
+    properties: {
+      email: data.owner?.user?.person?.email,
+      name: data.owner?.user?.name,
+      avatar_url: data.owner?.user?.avatar_url,
+      notion_owner_type: data.owner?.type,
+      notion_workspace_name: data.workspace_name,
+      notion_workspace_icon: data.workspace_icon,
+      notion_duplicated_template_id: data.duplicated_template_id,
+    },
+  })
 
   const chat = await getChatByTelegramId(user.telegramId)
   if (chat) {
