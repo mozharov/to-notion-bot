@@ -3,11 +3,14 @@ import {getChatByTelegramId} from '../../models/chats.js'
 import {isUserHasLifetimeAccess} from '../helpers/user.js'
 import {config} from '../../config.js'
 
+// Computed fresh on every update, but queued as $set and piggybacked onto whichever capture()
+// call this update naturally triggers (see Tracker.capture) - no dedicated $identify event needed.
 export const identifyUser: Middleware = async (ctx, next) => {
   if (!ctx.from) return next()
+
   const chat = await getChatByTelegramId(ctx.from.id)
   const owner = chat?.owner
-  ctx.tracker.identify({
+  ctx.tracker.setPersonProperties({
     telegram_id: ctx.from.id,
     is_internal_user: ctx.from.id === config.TG_ADMIN_ID,
     language_code: ctx.from.language_code,
