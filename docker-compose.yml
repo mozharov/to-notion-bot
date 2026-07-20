@@ -2,6 +2,9 @@ services:
   bot:
     build:
       context: .
+    cpus: '0.2'
+    mem_limit: 500M
+    memswap_limit: 1G
     environment:
       - NODE_ENV=production
       - PORT=8443
@@ -45,6 +48,9 @@ services:
   landing:
     build:
       context: ./landing
+    cpus: '0.2'
+    mem_limit: 200M
+    memswap_limit: 400M
     environment:
       # Optional — leave POSTHOG_KEY unset in Coolify to keep tracking disabled.
       - POSTHOG_KEY=${POSTHOG_KEY:-}
