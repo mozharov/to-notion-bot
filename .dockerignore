@@ -3,7 +3,7 @@
 /.devcontainer
 /.github
 /.vscode
-/.pnpm-store
+/.claude
 **/*.spec.ts
 .dockerignore
 .gitignore
@@ -15,5 +15,4 @@ eslint.config.mjs
 .env*
 main.db*
 drizzle.config.ts
-.npmrc
 .devdbrc

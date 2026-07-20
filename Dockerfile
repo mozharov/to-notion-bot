@@ -1,16 +1,16 @@
-FROM node:22.22-slim AS base
+FROM oven/bun:1.3.14-slim AS base
 WORKDIR /app
 
 FROM base AS deps
-COPY package.json package-lock.json ./
+COPY package.json bun.lock ./
 
 FROM deps AS build
-RUN --mount=type=cache,id=npm,target=/root/.npm npm ci --include=dev
+RUN --mount=type=cache,id=bun,target=/root/.bun/install/cache bun install --frozen-lockfile
 COPY . .
-RUN npm run build
+RUN bun run build
 
 FROM deps AS prod-deps
-RUN --mount=type=cache,id=npm,target=/root/.npm npm ci --omit=dev
+RUN --mount=type=cache,id=bun,target=/root/.bun/install/cache bun install --frozen-lockfile --production
 
 FROM base
 COPY --from=prod-deps /app/node_modules /app/node_modules
@@ -20,4 +20,4 @@ COPY --from=build /app/drizzle /app/drizzle
 ENV PORT=8443
 VOLUME /data
 EXPOSE 8443
-CMD [ "node", "dist/main" ]
+CMD [ "bun", "dist/main.js" ]

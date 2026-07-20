@@ -1,8 +1,7 @@
 import {parseEnv, z} from 'znv'
-import 'dotenv/config'
 import type {UserFromGetMe} from 'grammy/types'
 
-const env = Object.fromEntries(Object.entries(process.env).filter(([, value]) => value !== ''))
+const env = Object.fromEntries(Object.entries(Bun.env).filter(([, value]) => value !== ''))
 
 export const config = {
   ...parseEnv(env, {

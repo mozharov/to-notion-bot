@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "baseUrl": "src",
-    "module": "Node16",
+    "module": "Preserve",
+    "moduleResolution": "Bundler",
     "target": "ES2022",
     "strict": true,
     "outDir": "dist",
@@ -17,11 +18,8 @@
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "allowJs": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["bun"]
   },
-  "include": ["src/**/*.ts"],
-  "ts-node": {
-    "esm": true,
-    "transpileOnly": true
-  }
+  "include": ["src/**/*.ts"]
 }

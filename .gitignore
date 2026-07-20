@@ -1,11 +1,7 @@
 /node_modules
 /dist
-/.pnpm-store
 /sql
 /.DS_Store
-.env.local
+/.claude
 main.db*
 .env*
-*.todo
-.devdbrc
-.claude

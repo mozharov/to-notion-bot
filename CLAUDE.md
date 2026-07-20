@@ -9,19 +9,21 @@ A Telegram bot ("To Notion Bot") that forwards messages, files, contacts, and ch
 ## Commands
 
 ```bash
-npm run start:dev      # run with nodemon + ts-node against src/, DEBUG=grammy* for grammY debug logs
-npm run build           # clean, tsc compile, copy locales (*.ftl) and assets into dist/
-npm start                # run compiled dist/main.js
-npm run lint             # eslint .
-npm run format           # prettier --write src
+bun run start:dev      # run src/ directly with Bun watch mode, DEBUG=grammy* for grammY debug logs
+bun run build          # clean, tsc compile, copy locales (*.ftl) and assets into dist/
+bun start              # run compiled dist/main.js with Bun
+bun run lint           # eslint .
+bun run format         # prettier --write src
 ```
 
 There is no test suite in this repo (no test runner configured).
 
-Database migrations (Drizzle + better-sqlite3):
+Database migrations (Drizzle + `bun:sqlite`):
+
 ```bash
-npx drizzle-kit generate   # generate a new migration from schema.ts changes into ./drizzle
+bunx drizzle-kit generate   # generate a new migration from schema.ts changes into ./drizzle
 ```
+
 Migrations run automatically on boot via `migrateDatabase()` in [src/main.ts](src/main.ts) when `DB_MIGRATE=true` (default).
 
 Required environment variables are declared/validated in [src/config.ts](src/config.ts) via `znv`/`zod` (`BOT_TOKEN`, `BOT_WEBHOOK_SECRET`, `DB_URL`, `NOTION_CLIENT_ID`, `NOTION_SECRET_TOKEN`, `HOST`, `TG_ADMIN_ID`, etc.). There's no `.env.example` in the repo — check `config.ts` for the full list when setting up a local environment.
@@ -46,7 +48,7 @@ Required environment variables are declared/validated in [src/config.ts](src/con
 
 ### Data layer
 
-- SQLite via `better-sqlite3` + Drizzle ORM. Schema lives entirely in [src/lib/database/schema.ts](src/lib/database/schema.ts); tables: `users`, `chats`, `notion_workspaces`, `notion_databases`, `messages`, `files`, `sessions`, `invoices`, `promocodes`, `promocodes_users`.
+- SQLite via Bun's built-in `bun:sqlite` + Drizzle ORM. Schema lives entirely in [src/lib/database/schema.ts](src/lib/database/schema.ts); tables: `users`, `chats`, `notion_workspaces`, `notion_databases`, `messages`, `files`, `sessions`, `invoices`, `promocodes`, `promocodes_users`.
 - `chats` is the central entity: each Telegram chat (private/group/channel) has an `ownerId` (a `users` row), and optionally a `notionWorkspaceId` + `notionDatabaseId` once configured. `chats.status` gates whether messages are actually forwarded.
 - `messages` maps a Telegram message (by `telegramMessageId` + `chatId`) to the Notion `notionPageId` it produced — this is how replies/edits know to update rather than recreate a Notion page.
 - One module per table under `src/models/` (`src/models/chats.ts`, etc.) — these are the only place raw Drizzle queries should live; handlers/services call into these instead of importing `db` directly. Several models return "extended" types that left-join related tables (see `ExtendedChat` in [src/models/chats.ts](src/models/chats.ts)).
@@ -68,7 +70,7 @@ Required environment variables are declared/validated in [src/config.ts](src/con
 
 ## Conventions
 
-- ESM throughout (`"type": "module"`); relative imports must use explicit `.js` extensions (even though source is `.ts`) to satisfy `Node16` module resolution.
-- No semicolons, single quotes, no bracket spacing — enforced by Prettier ([.prettierrc](.prettierrc)); run `npm run format` before committing.
+- ESM throughout (`"type": "module"`); relative imports use explicit `.js` extensions so both Bun's TypeScript runtime and compiled output resolve them consistently.
+- No semicolons, single quotes, no bracket spacing — enforced by Prettier ([.prettierrc](.prettierrc)); run `bun run format` before committing.
 - ESLint uses `typescript-eslint`'s `strictTypeChecked`/`stylisticTypeChecked` configs — new code should satisfy strict type-checked linting (no unsafe `any` usage, exhaustive checks, etc.).
 - IDs for DB rows are UUIDs generated with `randomUUID()` at insert time (not auto-increment), matching the UUID regexes used in callback-data routing.

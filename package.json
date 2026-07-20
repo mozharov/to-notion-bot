@@ -3,29 +3,21 @@
   "type": "module",
   "version": "1.1.1",
   "private": true,
+  "packageManager": "bun@1.3.14",
   "engines": {
-    "node": ">=22 <25"
+    "bun": ">=1.3.14"
   },
   "scripts": {
     "build:clean": "rm -rf dist",
     "build:compile": "tsc -p tsconfig.json",
     "build:copy-locales": "mkdir -p dist/bot/locales && cp -r src/bot/locales/*.ftl dist/bot/locales/",
     "build:copy-assets": "mkdir -p dist/assets && cp -r src/assets/* dist/assets/",
-    "build": "npm run build:clean && npm run build:compile && npm run build:copy-locales && npm run build:copy-assets",
-    "start": "node dist/main.js",
-    "start:dev": "DEBUG=grammy* nodemon src/main.ts",
+    "build": "bun run build:clean && bun run build:compile && bun run build:copy-locales && bun run build:copy-assets",
+    "start": "bun dist/main.js",
+    "start:dev": "DEBUG=grammy* bun --watch src/main.ts",
     "landing": "serve landing/public -l 8080",
     "format": "prettier --write src",
     "lint": "eslint ."
-  },
-  "nodemonConfig": {
-    "watch": [
-      "src"
-    ],
-    "signal": "SIGTERM",
-    "execMap": {
-      "ts": "node --loader ts-node/esm --no-warnings=ExperimentalWarning"
-    }
   },
   "dependencies": {
     "@grammyjs/auto-retry": "^2.0.2",
@@ -34,9 +26,7 @@
     "@koa/bodyparser": "^5.1.1",
     "@koa/router": "^13.1.0",
     "@notionhq/client": "^2.2.15",
-    "better-sqlite3": "^11.8.1",
     "bottleneck": "^2.19.5",
-    "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.4",
     "got": "^14.4.5",
     "grammy": "^1.39.3",
@@ -50,17 +40,15 @@
   "devDependencies": {
     "@eslint/js": "^9.19.0",
     "@ngrok/ngrok": "^1.4.1",
-    "@types/better-sqlite3": "^7.6.12",
+    "@types/bun": "^1.3.14",
     "@types/koa": "^2.15.0",
     "@types/koa__router": "^12.0.4",
     "@types/node-cron": "^3.0.11",
     "drizzle-kit": "^0.30.2",
     "eslint": "^9.19.0",
-    "nodemon": "^3.1.9",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.4.2",
     "serve": "^14.2.6",
-    "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.21.0"
   }
